@@ -1,4 +1,8 @@
-using System.Configuration;
+using System.ComponentModel;
+using System.Globalization;
+using System.Text.RegularExpressions;
+using System.Windows.Forms;
+using static System.Windows.Forms.DataFormats;
 
 namespace ORCToolKit
 {
@@ -10,6 +14,19 @@ namespace ORCToolKit
 
             Text = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name} v{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}";
             LoadGameFolder(Properties.Settings.Default.GamePath);
+
+            // fill our languages
+            foreach (CultureInfo Culture in Program.AvailableCultures)
+            {
+                ToolStripMenuItem LanguageItem = new ToolStripMenuItem()
+                {
+                    Text = Culture.NativeName,
+                    Tag = Culture,
+                    Checked = CultureInfo.CurrentCulture.Equals(Culture)
+                };
+
+                MenuStripItemLanguage.DropDownItems.Add(LanguageItem);
+            }
         }
 
         private void GamePathBrowseButton_Click(object sender, EventArgs e)
@@ -24,9 +41,21 @@ namespace ORCToolKit
             }
         }
 
-        private void FormFileExplorer_FormClosing(object sender, FormClosingEventArgs e)
+        private void MenuStripItemExit_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.Save();
+            Application.Exit();
+        }
+
+        private void MenuStripItemLanguage_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+            ToolStripMenuItem? SelectedLanguageItem = e.ClickedItem as ToolStripMenuItem;
+            if (SelectedLanguageItem != null)
+            {
+                Program.SetCulture((CultureInfo)SelectedLanguageItem.Tag);
+
+                foreach (ToolStripMenuItem LanguageItem in MenuStripItemLanguage.DropDownItems)
+                    LanguageItem.Checked = SelectedLanguageItem.Equals(LanguageItem);
+            }
         }
 
         private void LoadGameFolder(string GamePath)
