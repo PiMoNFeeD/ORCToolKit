@@ -39,10 +39,15 @@ namespace ORCToolKit
 			GameFilesExplorer = new TreeViewFileExplorer();
 			MenuStrip = new MenuStrip();
 			MenuStripItemFile = new ToolStripMenuItem();
-			MenuStripItemExit = new ToolStripMenuItem();
+			MenuStripItemFileExit = new ToolStripMenuItem();
 			MenuStripItemSettings = new ToolStripMenuItem();
-			MenuStripItemLanguage = new ToolStripMenuItem();
+			MenuStripItemSettingsLanguage = new ToolStripMenuItem();
+			GameFileExplorerContextMenu = new ContextMenuStrip( components );
+			GameFileExplorerContextMenuItemOpen = new ToolStripMenuItem();
+			MenuStripItemTools = new ToolStripMenuItem();
+			MenuStripItemToolsLocalizationEditor = new ToolStripMenuItem();
 			MenuStrip.SuspendLayout();
+			GameFileExplorerContextMenu.SuspendLayout();
 			SuspendLayout();
 			// 
 			// GamePathLabel
@@ -84,11 +89,13 @@ namespace ORCToolKit
 			GameFilesExplorer.SelectedImageIndex = 0;
 			GameFilesExplorer.Size = new Size( 760, 478 );
 			GameFilesExplorer.TabIndex = 3;
+			GameFilesExplorer.NodeMouseClick += GameFilesExplorer_NodeMouseClick;
+			GameFilesExplorer.NodeMouseDoubleClick += GameFilesExplorer_NodeMouseDoubleClick;
 			// 
 			// MenuStrip
 			// 
 			MenuStrip.BackColor = SystemColors.Control;
-			MenuStrip.Items.AddRange( new ToolStripItem[] { MenuStripItemFile, MenuStripItemSettings } );
+			MenuStrip.Items.AddRange( new ToolStripItem[] { MenuStripItemFile, MenuStripItemTools, MenuStripItemSettings } );
 			MenuStrip.Location = new Point( 0, 0 );
 			MenuStrip.Name = "MenuStrip";
 			MenuStrip.Size = new Size( 784, 24 );
@@ -96,31 +103,58 @@ namespace ORCToolKit
 			// 
 			// MenuStripItemFile
 			// 
-			MenuStripItemFile.DropDownItems.AddRange( new ToolStripItem[] { MenuStripItemExit } );
+			MenuStripItemFile.DropDownItems.AddRange( new ToolStripItem[] { MenuStripItemFileExit } );
 			MenuStripItemFile.Name = "MenuStripItemFile";
 			MenuStripItemFile.Size = new Size( 37, 20 );
 			MenuStripItemFile.Text = "File";
 			// 
-			// MenuStripItemExit
+			// MenuStripItemFileExit
 			// 
-			MenuStripItemExit.Name = "MenuStripItemExit";
-			MenuStripItemExit.Size = new Size( 93, 22 );
-			MenuStripItemExit.Text = "Exit";
-			MenuStripItemExit.Click += MenuStripItemExit_Click;
+			MenuStripItemFileExit.Name = "MenuStripItemFileExit";
+			MenuStripItemFileExit.Size = new Size( 93, 22 );
+			MenuStripItemFileExit.Text = "Exit";
+			MenuStripItemFileExit.Click += MenuStripItemFileExit_Click;
 			// 
 			// MenuStripItemSettings
 			// 
-			MenuStripItemSettings.DropDownItems.AddRange( new ToolStripItem[] { MenuStripItemLanguage } );
+			MenuStripItemSettings.DropDownItems.AddRange( new ToolStripItem[] { MenuStripItemSettingsLanguage } );
 			MenuStripItemSettings.Name = "MenuStripItemSettings";
 			MenuStripItemSettings.Size = new Size( 61, 20 );
 			MenuStripItemSettings.Text = "Settings";
 			// 
-			// MenuStripItemLanguage
+			// MenuStripItemSettingsLanguage
 			// 
-			MenuStripItemLanguage.Name = "MenuStripItemLanguage";
-			MenuStripItemLanguage.Size = new Size( 126, 22 );
-			MenuStripItemLanguage.Text = "Language";
-			MenuStripItemLanguage.DropDownItemClicked += MenuStripItemLanguage_DropDownItemClicked;
+			MenuStripItemSettingsLanguage.Name = "MenuStripItemSettingsLanguage";
+			MenuStripItemSettingsLanguage.Size = new Size( 180, 22 );
+			MenuStripItemSettingsLanguage.Text = "Language";
+			MenuStripItemSettingsLanguage.DropDownItemClicked += MenuStripItemSettingsLanguage_DropDownItemClicked;
+			// 
+			// GameFileExplorerContextMenu
+			// 
+			GameFileExplorerContextMenu.Items.AddRange( new ToolStripItem[] { GameFileExplorerContextMenuItemOpen } );
+			GameFileExplorerContextMenu.Name = "GameFileExplorerContextMenu";
+			GameFileExplorerContextMenu.Size = new Size( 104, 26 );
+			// 
+			// GameFileExplorerContextMenuItemOpen
+			// 
+			GameFileExplorerContextMenuItemOpen.Name = "GameFileExplorerContextMenuItemOpen";
+			GameFileExplorerContextMenuItemOpen.Size = new Size( 103, 22 );
+			GameFileExplorerContextMenuItemOpen.Text = "Open";
+			GameFileExplorerContextMenuItemOpen.Click += GameFileExplorerContextMenuItemOpen_Click;
+			// 
+			// MenuStripItemTools
+			// 
+			MenuStripItemTools.DropDownItems.AddRange( new ToolStripItem[] { MenuStripItemToolsLocalizationEditor } );
+			MenuStripItemTools.Name = "MenuStripItemTools";
+			MenuStripItemTools.Size = new Size( 46, 20 );
+			MenuStripItemTools.Text = "Tools";
+			// 
+			// MenuStripItemToolsLocalizationEditor
+			// 
+			MenuStripItemToolsLocalizationEditor.Name = "MenuStripItemToolsLocalizationEditor";
+			MenuStripItemToolsLocalizationEditor.Size = new Size( 180, 22 );
+			MenuStripItemToolsLocalizationEditor.Text = "Localization Editor";
+			MenuStripItemToolsLocalizationEditor.Click += MenuStripItemToolsLocalizationEditor_Click;
 			// 
 			// FormFileExplorer
 			// 
@@ -128,6 +162,7 @@ namespace ORCToolKit
 			AutoScaleMode = AutoScaleMode.Font;
 			BackColor = SystemColors.Control;
 			ClientSize = new Size( 784, 561 );
+			ContextMenuStrip = GameFileExplorerContextMenu;
 			Controls.Add( GameFilesExplorer );
 			Controls.Add( GamePathBrowseButton );
 			Controls.Add( GamePathTextBox );
@@ -142,6 +177,7 @@ namespace ORCToolKit
 			WindowState = FormWindowState.Maximized;
 			MenuStrip.ResumeLayout( false );
 			MenuStrip.PerformLayout();
+			GameFileExplorerContextMenu.ResumeLayout( false );
 			ResumeLayout( false );
 			PerformLayout();
 		}
@@ -154,8 +190,12 @@ namespace ORCToolKit
 		private TreeViewFileExplorer GameFilesExplorer;
 		private MenuStrip MenuStrip;
 		private ToolStripMenuItem MenuStripItemFile;
-		private ToolStripMenuItem MenuStripItemExit;
+		private ToolStripMenuItem MenuStripItemFileExit;
 		private ToolStripMenuItem MenuStripItemSettings;
-		private ToolStripMenuItem MenuStripItemLanguage;
+		private ToolStripMenuItem MenuStripItemSettingsLanguage;
+		private ContextMenuStrip GameFileExplorerContextMenu;
+		private ToolStripMenuItem GameFileExplorerContextMenuItemOpen;
+		private ToolStripMenuItem MenuStripItemTools;
+		private ToolStripMenuItem MenuStripItemToolsLocalizationEditor;
 	}
 }

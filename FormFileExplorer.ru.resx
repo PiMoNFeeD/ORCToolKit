@@ -4410,13 +4410,22 @@
   <data name="MenuStripItemFile.Text" xml:space="preserve">
     <value>Файл</value>
   </data>
-  <data name="MenuStripItemExit.Text" xml:space="preserve">
+  <data name="MenuStripItemFileExit.Text" xml:space="preserve">
     <value>Выход</value>
   </data>
   <data name="MenuStripItemSettings.Text" xml:space="preserve">
     <value>Настройки</value>
   </data>
-  <data name="MenuStripItemLanguage.Text" xml:space="preserve">
+  <data name="MenuStripItemSettingsLanguage.Text" xml:space="preserve">
     <value>Язык</value>
+  </data>
+  <data name="GameFileExplorerContextMenuItemOpen.Text" xml:space="preserve">
+    <value>Открыть</value>
+  </data>
+  <data name="MenuStripItemTools.Text" xml:space="preserve">
+    <value>Инструменты</value>
+  </data>
+  <data name="MenuStripItemToolsLocalizationEditor.Text" xml:space="preserve">
+    <value>Редактор локализации</value>
   </data>
 </root>

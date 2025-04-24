@@ -14,7 +14,7 @@ namespace ORCToolKit
 			{
 				if ( _cultures.Count == 0 )
 				{
-					ResourceManager ResourceManager = new ResourceManager( typeof( FormFileExplorer ) );
+					ResourceManager ResourceManager = new ResourceManager( typeof( Resources.ORCToolKit ) );
 					try
 					{
 						foreach ( CultureInfo Culture in CultureInfo.GetCultures( CultureTypes.AllCultures ) )
@@ -34,15 +34,20 @@ namespace ORCToolKit
 
 				return _cultures;
 			}
-			private set { }
 		}
 
-		static private void RecursiveApplyMenuItemResources( ToolStripMenuItem MenuItem, ref ComponentResourceManager ResourceManager )
+		static private void RecursiveApplyMenuItemResources( ToolStripItem StripItem, ref ComponentResourceManager ResourceManager )
 		{
 			// fuck this shit why are windows forms so fucking retarded that I need to do this
-			ResourceManager.ApplyResources( MenuItem, MenuItem.Name );
-			foreach ( ToolStripMenuItem DropDownMenuItem in MenuItem.DropDownItems )
-				RecursiveApplyMenuItemResources( DropDownMenuItem, ref ResourceManager );
+			ResourceManager.ApplyResources( StripItem, StripItem.Name );
+			if ( StripItem is ToolStripDropDownItem StripDropDownItem )
+			{
+				foreach ( ToolStripItem DropDownItem in StripDropDownItem.DropDownItems )
+				{
+					if ( DropDownItem is ToolStripMenuItem )
+						RecursiveApplyMenuItemResources( (ToolStripMenuItem)DropDownItem, ref ResourceManager );
+				}
+			}
 		}
 
 		static public void ReloadFormResources( Form Form )
@@ -53,14 +58,26 @@ namespace ORCToolKit
 			{
 				ResourceManager.ApplyResources( FormControl, FormControl.Name );
 
-				// HACK: handle menus separately, their items are not controls! fucking annoying...
-				MenuStrip? FormMenuStrip = FormControl as MenuStrip;
-				if ( FormMenuStrip != null )
+				// HACK: handle strips separately, their items are not controls! fucking annoying...
+				if ( FormControl is ToolStrip FormMenuStrip )
 				{
 					ResourceManager.ApplyResources( FormMenuStrip, FormMenuStrip.Name );
-					foreach ( ToolStripMenuItem MenuItem in FormMenuStrip.Items )
-						RecursiveApplyMenuItemResources( MenuItem, ref ResourceManager );
+					foreach ( ToolStripItem StripItem in FormMenuStrip.Items )
+						RecursiveApplyMenuItemResources( StripItem, ref ResourceManager );
 				}
+
+				// EVEN WORSE!!!
+				if ( FormControl is DataGridView FormDataGridView )
+				{
+					foreach ( DataGridViewColumn Column in FormDataGridView.Columns )
+						ResourceManager.ApplyResources( Column, Column.Name );
+				}
+			}
+			ContextMenuStrip? FormContextMenuStrip = Form.ContextMenuStrip;
+			if (FormContextMenuStrip != null)
+			{
+				foreach ( ToolStripItem StripItem in FormContextMenuStrip.Items )
+					RecursiveApplyMenuItemResources( StripItem, ref ResourceManager );
 			}
 		}
 
