@@ -1,8 +1,4 @@
-using System.ComponentModel;
 using System.Globalization;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using static System.Windows.Forms.DataFormats;
 
 namespace ORCToolKit
 {
@@ -11,6 +7,7 @@ namespace ORCToolKit
 		public FormFileExplorer()
 		{
 			InitializeComponent();
+			Program.ReloadFormResources( this );
 
 			Text = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name} v{System.Reflection.Assembly.GetExecutingAssembly().GetName().Version}";
 			LoadGameFolder( Properties.Settings.Default.GamePath );

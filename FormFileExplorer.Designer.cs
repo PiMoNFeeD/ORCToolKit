@@ -52,11 +52,11 @@ namespace ORCToolKit
 			GamePathLabel.Name = "GamePathLabel";
 			GamePathLabel.Size = new Size( 115, 15 );
 			GamePathLabel.TabIndex = 0;
-            resources.ApplyResources( GamePathLabel, GamePathLabel.Name );
-            // 
-            // GamePathTextBox
-            // 
-            GamePathTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
+			GamePathLabel.Text = "Path to game folder:";
+			// 
+			// GamePathTextBox
+			// 
+			GamePathTextBox.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
 			GamePathTextBox.Location = new Point( 12, 42 );
 			GamePathTextBox.Name = "GamePathTextBox";
 			GamePathTextBox.ReadOnly = true;
@@ -71,13 +71,13 @@ namespace ORCToolKit
 			GamePathBrowseButton.RightToLeft = RightToLeft.No;
 			GamePathBrowseButton.Size = new Size( 75, 23 );
 			GamePathBrowseButton.TabIndex = 2;
+			GamePathBrowseButton.Text = "Browse";
 			GamePathBrowseButton.UseVisualStyleBackColor = true;
 			GamePathBrowseButton.Click += GamePathBrowseButton_Click;
-            resources.ApplyResources( GamePathBrowseButton, GamePathBrowseButton.Name );
-            // 
-            // GameFilesExplorer
-            // 
-            GameFilesExplorer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			// 
+			// GameFilesExplorer
+			// 
+			GameFilesExplorer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 			GameFilesExplorer.ImageIndex = 0;
 			GameFilesExplorer.Location = new Point( 12, 71 );
 			GameFilesExplorer.Name = "GameFilesExplorer";
@@ -99,28 +99,28 @@ namespace ORCToolKit
 			MenuStripItemFile.DropDownItems.AddRange( new ToolStripItem[] { MenuStripItemExit } );
 			MenuStripItemFile.Name = "MenuStripItemFile";
 			MenuStripItemFile.Size = new Size( 37, 20 );
-            resources.ApplyResources( MenuStripItemFile, MenuStripItemFile.Name );
-            // 
-            // MenuStripItemExit
-            // 
-            MenuStripItemExit.Name = "MenuStripItemExit";
+			MenuStripItemFile.Text = "File";
+			// 
+			// MenuStripItemExit
+			// 
+			MenuStripItemExit.Name = "MenuStripItemExit";
 			MenuStripItemExit.Size = new Size( 93, 22 );
+			MenuStripItemExit.Text = "Exit";
 			MenuStripItemExit.Click += MenuStripItemExit_Click;
-            resources.ApplyResources( MenuStripItemExit, MenuStripItemExit.Name );
-            // 
-            // MenuStripItemSettings
-            // 
-            MenuStripItemSettings.DropDownItems.AddRange( new ToolStripItem[] { MenuStripItemLanguage } );
+			// 
+			// MenuStripItemSettings
+			// 
+			MenuStripItemSettings.DropDownItems.AddRange( new ToolStripItem[] { MenuStripItemLanguage } );
 			MenuStripItemSettings.Name = "MenuStripItemSettings";
 			MenuStripItemSettings.Size = new Size( 61, 20 );
-            resources.ApplyResources( MenuStripItemSettings, MenuStripItemSettings.Name );
-            // 
-            // MenuStripItemLanguage
-            // 
-            MenuStripItemLanguage.Name = "MenuStripItemLanguage";
+			MenuStripItemSettings.Text = "Settings";
+			// 
+			// MenuStripItemLanguage
+			// 
+			MenuStripItemLanguage.Name = "MenuStripItemLanguage";
 			MenuStripItemLanguage.Size = new Size( 126, 22 );
+			MenuStripItemLanguage.Text = "Language";
 			MenuStripItemLanguage.DropDownItemClicked += MenuStripItemLanguage_DropDownItemClicked;
-            resources.ApplyResources( MenuStripItemLanguage, MenuStripItemLanguage.Name );
 			// 
 			// FormFileExplorer
 			// 

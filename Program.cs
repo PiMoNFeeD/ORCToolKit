@@ -2,7 +2,6 @@ using ORCToolKit.Properties;
 using System.ComponentModel;
 using System.Globalization;
 using System.Resources;
-using System.Text.RegularExpressions;
 
 namespace ORCToolKit
 {
@@ -46,6 +45,25 @@ namespace ORCToolKit
 				RecursiveApplyMenuItemResources( DropDownMenuItem, ref ResourceManager );
 		}
 
+		static public void ReloadFormResources( Form Form )
+		{
+			ComponentResourceManager ResourceManager = new ComponentResourceManager( Form.GetType() );
+			ResourceManager.ApplyResources( Form, Form.Name );
+			foreach ( Control FormControl in Form.Controls )
+			{
+				ResourceManager.ApplyResources( FormControl, FormControl.Name );
+
+				// HACK: handle menus separately, their items are not controls! fucking annoying...
+				MenuStrip? FormMenuStrip = FormControl as MenuStrip;
+				if ( FormMenuStrip != null )
+				{
+					ResourceManager.ApplyResources( FormMenuStrip, FormMenuStrip.Name );
+					foreach ( ToolStripMenuItem MenuItem in FormMenuStrip.Items )
+						RecursiveApplyMenuItemResources( MenuItem, ref ResourceManager );
+				}
+			}
+		}
+
 		static public void SetCulture( CultureInfo Culture )
 		{
 			CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = Culture;
@@ -54,23 +72,7 @@ namespace ORCToolKit
 
 			// reload localization in all forms
 			foreach ( Form OpenedForm in Application.OpenForms )
-			{
-				ComponentResourceManager ResourceManager = new ComponentResourceManager( OpenedForm.GetType() );
-				ResourceManager.ApplyResources( OpenedForm, OpenedForm.Name );
-				foreach ( Control FormControl in OpenedForm.Controls )
-				{
-					ResourceManager.ApplyResources( FormControl, FormControl.Name );
-
-					// HACK: handle menus separately, their items are not controls! fucking annoying...
-					MenuStrip FormMenuStrip = FormControl as MenuStrip;
-					if ( FormMenuStrip != null )
-					{
-						ResourceManager.ApplyResources( FormMenuStrip, FormMenuStrip.Name );
-						foreach ( ToolStripMenuItem MenuItem in FormMenuStrip.Items )
-							RecursiveApplyMenuItemResources( MenuItem, ref ResourceManager );
-					}
-				}
-			}
+				ReloadFormResources( OpenedForm );
 		}
 
 		/// <summary>

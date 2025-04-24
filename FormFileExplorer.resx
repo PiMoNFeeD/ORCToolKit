@@ -4401,22 +4401,4 @@
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 </value>
   </data>
-  <data name="GamePathLabel.Text" xml:space="preserve">
-    <value>Path to game folder:</value>
-  </data>
-  <data name="GamePathBrowseButton.Text" xml:space="preserve">
-    <value>Browse</value>
-  </data>
-  <data name="MenuStripItemFile.Text" xml:space="preserve">
-    <value>File</value>
-  </data>
-  <data name="MenuStripItemExit.Text" xml:space="preserve">
-    <value>Exit</value>
-  </data>
-  <data name="MenuStripItemSettings.Text" xml:space="preserve">
-    <value>Settings</value>
-  </data>
-  <data name="MenuStripItemLanguage.Text" xml:space="preserve">
-    <value>Language</value>
-  </data>
 </root>
