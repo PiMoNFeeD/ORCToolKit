@@ -1,10 +1,11 @@
-﻿using System.Text;
+﻿using System.Runtime.InteropServices;
+using System.Text;
 
 namespace ORCToolKit
 {
 	static public class BinaryReaderExtensions
 	{
-		static public string ReadNullTerminatedString(this BinaryReader Reader, Encoding TargetEncoding)
+		static public string ReadNullTerminatedString( this BinaryReader Reader, Encoding TargetEncoding )
 		{
 			List<byte> StringBytes = new List<byte>();
 
@@ -23,7 +24,7 @@ namespace ORCToolKit
 			return TargetEncoding.GetString( StringBytes.ToArray() );
 		}
 
-		static public string ReadFixedLengthString(this BinaryReader Reader, Encoding TargetEncoding, Int32 Length )
+		static public string ReadFixedLengthString( this BinaryReader Reader, Encoding TargetEncoding, Int32 Length )
 		{
 			return TargetEncoding.GetString( Reader.ReadBytes( Length ).TakeWhile( c => c != 0 ).ToArray() );
 		}

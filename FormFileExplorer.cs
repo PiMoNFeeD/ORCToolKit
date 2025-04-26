@@ -49,7 +49,7 @@ namespace ORCToolKit
 		{
 			// file
 			FileInfo SelectedFileInfo = (FileInfo)SelectedNode.Tag;
-			FileTypes.Deducer.GuessAndOpen( SelectedFileInfo );
+			FileTypes.Deducer.GuessFromFileAndOpen( SelectedFileInfo );
 		}
 
 		private void GamePathBrowseButton_Click( object sender, EventArgs e )

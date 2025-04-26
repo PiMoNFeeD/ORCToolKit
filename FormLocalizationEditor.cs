@@ -1,64 +1,35 @@
-﻿using System.Text.RegularExpressions;
-using System.Windows.Forms;
-using ORCToolKit.FileTypes;
-using ORCToolKit.Search;
+﻿using ORCToolKit.Search;
 
 namespace ORCToolKit
 {
-	public partial class FormLocalizationEditor: Form
+	public partial class FormLocalizationEditor: FormEditor
 	{
-		private bool HasUnsavedEdits = false;
-		private LocalizationFile CurrentDocument = new LocalizationFile();
-
-		private FormSearch FormSearch = new FormSearch();
-		private string LastSearchString = string.Empty;
-		private bool LastSearchWholeWord = false;
-		private bool LastSearchCaseSensitive = false;
+		private FileTypes.LocalizationFile _file = new FileTypes.LocalizationFile();
+		override protected FileTypes.IFileType? CurrentFile { get { return _file; } }
+		override protected string FileDialogFilter { get { return "All files (*.*)|*.*"; } }
 
 		public FormLocalizationEditor()
 		{
 			InitializeComponent();
 			Program.ReloadFormResources( this );
 
-			TextEntriesGridView.DataSource = CurrentDocument.TextEntries;
-			OnEntriesUpdated();
-
-			FormSearch.OnSearch += FormSearch_OnSearch;
+			OnEntriesUpdated += FormLocalizationEditor_OnEntriesUpdated;
+			TextEntriesGridView.DataSource = _file.TextEntries;
 		}
 
-		public void OpenFile( FileInfo LocalizationFileInfo )
+		private void FormLocalizationEditor_OnEntriesUpdated( Object? sender, EventArgs e )
 		{
-			HasUnsavedEdits = false;
-			CurrentDocument.LoadFromFile( LocalizationFileInfo );
-			OnEntriesUpdated();
+			MenuStripItemFileSave.Enabled = (_file.TextEntries.Count > 0);
+			MenuStripItemEditInsertEntryBefore.Enabled = (_file.TextEntries.Count > 0);
+			MenuStripItemEditRemoveEntry.Enabled = (_file.TextEntries.Count > 0);
+			MenuStripItemEditSearch.Enabled = (_file.TextEntries.Count > 0);
+			MenuStripItemEditSearchForward.Enabled = (_file.TextEntries.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
+			MenuStripItemEditSearchBackward.Enabled = (_file.TextEntries.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
+			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.TextEntries.Count );
 		}
 
-		public void SaveFile( FileInfo LocalizedFileInfo )
+		override protected bool TrySearch( SearchDirection Direction, string SearchString, bool WholeWord, bool CaseSensitive )
 		{
-			HasUnsavedEdits = false;
-			CurrentDocument.SaveToFile( LocalizedFileInfo );
-		}
-
-		private bool InvokeSaveDialog()
-		{
-			using ( SaveFileDialog FileDialog = new SaveFileDialog() )
-			{
-				FileDialog.Filter = "All files (*.*)|*.*";
-				FileDialog.RestoreDirectory = true;
-				if ( FileDialog.ShowDialog() == DialogResult.OK )
-				{
-					FileInfo LocalizationFileInfo = new FileInfo( FileDialog.FileName );
-					SaveFile( LocalizationFileInfo );
-					return true;
-				}
-			}
-
-			return false;
-		}
-
-		private void InvokeSearch( SearchDirection Direction, string SearchString, bool WholeWord, bool CaseSensitive )
-		{
-			LastSearchString = SearchString;
 			MenuStripItemEditSearchForward.Enabled = true;
 			MenuStripItemEditSearchBackward.Enabled = true;
 
@@ -77,26 +48,10 @@ namespace ORCToolKit
 									continue;
 							}
 
-							string Text = (string)Cell.Value;
-
-							bool Match = false;
-							if ( WholeWord )
-							{
-								// use regex for whole word matching
-								RegexOptions Options = RegexOptions.Compiled;
-								if ( !CaseSensitive )
-									Options |= RegexOptions.IgnoreCase;
-								Match = Regex.IsMatch( Text, $@"\b{SearchString}\b", Options );
-							}
-							else
-							{
-								Match = Text.Contains( SearchString, CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase );
-							}
-
-							if ( Match )
+							if ( SearchCompareString( (string)Cell.Value, SearchString, WholeWord, CaseSensitive ) )
 							{
 								TextEntriesGridView.CurrentCell = Cell;
-								return;
+								return true;
 							}
 						}
 					}
@@ -116,26 +71,10 @@ namespace ORCToolKit
 									continue;
 							}
 
-							string Text = (string)Cell.Value;
-
-							bool Match = false;
-							if ( WholeWord )
-							{
-								// use regex for whole word matching
-								RegexOptions Options = RegexOptions.Compiled;
-								if ( !CaseSensitive )
-									Options |= RegexOptions.IgnoreCase;
-								Match = Regex.IsMatch( Text, $@"\b{SearchString}\b", Options );
-							}
-							else
-							{
-								Match = Text.Contains( SearchString, CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase );
-							}
-
-							if ( Match )
+							if ( SearchCompareString( (string)Cell.Value, SearchString, WholeWord, CaseSensitive ) )
 							{
 								TextEntriesGridView.CurrentCell = Cell;
-								return;
+								return true;
 							}
 						}
 					}
@@ -144,66 +83,17 @@ namespace ORCToolKit
 				}
 			}
 
-			MessageBox.Show( string.Format( Resources.ORCToolKit.SearchFailedText, SearchString ), Resources.ORCToolKit.SearchFailedTitle,
-				MessageBoxButtons.OK, MessageBoxIcon.Error );
-		}
-
-		private bool CheckUnsavedChanges()
-		{
-			if ( !HasUnsavedEdits )
-				return true;
-
-			switch ( MessageBox.Show( Resources.ORCToolKit.UnsavedChangesText, Resources.ORCToolKit.UnsavedChangesTitle,
-				MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information ) )
-			{
-				case DialogResult.Yes:
-					return InvokeSaveDialog();
-				case DialogResult.No:
-					return true;
-				case DialogResult.Cancel:
-					return false;
-			}
-
 			return false;
-		}
-
-		private void OnEntriesUpdated()
-		{
-			MenuStripItemFileSave.Enabled = (CurrentDocument.TextEntries.Count > 0);
-			MenuStripItemEditInsertEntryBefore.Enabled = (CurrentDocument.TextEntries.Count > 0);
-			MenuStripItemEditRemoveEntry.Enabled = (CurrentDocument.TextEntries.Count > 0);
-			MenuStripItemEditSearch.Enabled = (CurrentDocument.TextEntries.Count > 0);
-			MenuStripItemEditSearchForward.Enabled = (CurrentDocument.TextEntries.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
-			MenuStripItemEditSearchBackward.Enabled = (CurrentDocument.TextEntries.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
-			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, CurrentDocument.TextEntries.Count );
 		}
 
 		private void MenuStripItemFileNew_Click( object sender, EventArgs e )
 		{
-			if ( CheckUnsavedChanges() )
-			{
-				CurrentDocument.Reset();
-				HasUnsavedEdits = false;
-				OnEntriesUpdated();
-			}
+			NewFile();
 		}
 
 		private void MenuStripItemFileOpen_Click( object sender, EventArgs e )
 		{
-			if ( CheckUnsavedChanges() )
-			{
-				using ( OpenFileDialog FileDialog = new OpenFileDialog() )
-				{
-					FileDialog.Filter = "All files (*.*)|*.*";
-					FileDialog.RestoreDirectory = true;
-					FileDialog.Multiselect = false;
-					if ( FileDialog.ShowDialog() == DialogResult.OK )
-					{
-						FileInfo LocalizationFileInfo = new FileInfo( FileDialog.FileName );
-						OpenFile( LocalizationFileInfo );
-					}
-				}
-			}
+			InvokeOpenDialog();
 		}
 
 		private void MenuStripItemFileSave_Click( object sender, EventArgs e )
@@ -220,9 +110,9 @@ namespace ORCToolKit
 			// clamp to valid range
 			HighestSelectedRow = Int32.Clamp( HighestSelectedRow + 1, 0, TextEntriesGridView.Rows.Count );
 
-			CurrentDocument.TextEntries.Insert( HighestSelectedRow, new LocalizationFile.TextEntry() { Name = string.Empty, Text = string.Empty } );
+			_file.TextEntries.Insert( HighestSelectedRow, new FileTypes.LocalizationFile.TextEntry() { Name = string.Empty, Text = string.Empty } );
 			HasUnsavedEdits = true;
-			OnEntriesUpdated();
+			EntriesUpdated();
 		}
 
 		private void MenuStripItemEditInsertEntryBefore_Click( object sender, EventArgs e )
@@ -232,17 +122,17 @@ namespace ORCToolKit
 				LowestSelectedRow = Int32.Min( LowestSelectedRow, SelectedCell.RowIndex );
 			LowestSelectedRow = Int32.Clamp( LowestSelectedRow, 0, TextEntriesGridView.Rows.Count );
 
-			CurrentDocument.TextEntries.Insert( LowestSelectedRow, new LocalizationFile.TextEntry() { Name = string.Empty, Text = string.Empty } );
+			_file.TextEntries.Insert( LowestSelectedRow, new FileTypes.LocalizationFile.TextEntry() { Name = string.Empty, Text = string.Empty } );
 			HasUnsavedEdits = true;
-			OnEntriesUpdated();
+			EntriesUpdated();
 		}
 
 		private void MenuStripItemEditRemoveEntry_Click( object sender, EventArgs e )
 		{
 			foreach ( DataGridViewCell SelectedCell in TextEntriesGridView.SelectedCells )
-				CurrentDocument.TextEntries.RemoveAt( SelectedCell.RowIndex );
+				_file.TextEntries.RemoveAt( SelectedCell.RowIndex );
 			HasUnsavedEdits = (TextEntriesGridView.Rows.Count > 0);
-			OnEntriesUpdated();
+			EntriesUpdated();
 		}
 
 		private void MenuStripItemFileExit_Click( object sender, EventArgs e )
@@ -250,15 +140,9 @@ namespace ORCToolKit
 			Close();
 		}
 
-		private void FormLocalizationEditor_FormClosing( object sender, FormClosingEventArgs e )
-		{
-			if ( !CheckUnsavedChanges() )
-				e.Cancel = true;
-		}
-
 		private void MenuStripItemEditSearch_Click( object sender, EventArgs e )
 		{
-			FormSearch.Show();
+			InvokeSearchDialog();
 		}
 
 		private void FormSearch_OnSearch( object sender, SearchEventArgs e )

@@ -228,7 +228,6 @@
 			Name = "FormLocalizationEditor";
 			StartPosition = FormStartPosition.CenterScreen;
 			Text = "ORC ToolKit";
-			FormClosing += FormLocalizationEditor_FormClosing;
 			((System.ComponentModel.ISupportInitialize)TextEntriesGridView).EndInit();
 			StatusStrip.ResumeLayout( false );
 			StatusStrip.PerformLayout();
