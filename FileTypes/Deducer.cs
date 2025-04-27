@@ -55,15 +55,15 @@ namespace ORCToolKit.FileTypes
 			return Type;
 		}
 
-		static public void GuessFromFileAndOpen( FileInfo FileInfoToGuess, Form? ParentForm = null )
+		static public Form? GuessFromFileAndOpen( FileInfo FileInfoToGuess, Form? ParentForm = null, bool Silent = false )
 		{
 			using ( FileStream Stream = FileInfoToGuess.OpenRead() )
 			{
-				GuessFromBufferAndOpen( FileInfoToGuess.FullName, Stream );
+				return GuessFromBufferAndOpen( FileInfoToGuess.FullName, Stream, ParentForm, Silent );
 			}
 		}
 
-		static public void GuessFromBufferAndOpen( string? FileName, Stream FileBuffer, Form? ParentForm = null )
+		static public Form? GuessFromBufferAndOpen( string? FileName, Stream FileBuffer, Form? ParentForm = null, bool Silent = false )
 		{
 			switch ( GuessFromBuffer( FileName, FileBuffer ) )
 			{
@@ -75,7 +75,7 @@ namespace ORCToolKit.FileTypes
 						LocalizationEditor.ShowDialog( ParentForm );
 					else
 						LocalizationEditor.Show();
-					break;
+					return LocalizationEditor;
 				}
 				case FileType.SSGArchive:
 				{
@@ -85,23 +85,28 @@ namespace ORCToolKit.FileTypes
 						SSGArchiveEditor.ShowDialog( ParentForm );
 					else
 						SSGArchiveEditor.Show();
-					break;
+					return SSGArchiveEditor;
 				}
 				case FileType.SWB2Database:
 				default:
 				{
-					if ( MessageBox.Show( Resources.ORCToolKit.FileTypeDeducerOpenUnknownText, Resources.ORCToolKit.FileTypeDeducerOpenUnknownTitle,
-						MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
+					if ( !Silent )
 					{
-						// HACK: pass the file onto explorer to deal with it for us...
-						Process FileProcess = new Process();
-						FileProcess.StartInfo.FileName = "explorer";
-						FileProcess.StartInfo.Arguments = "\"" + FileName + "\"";
-						FileProcess.Start();
+						if ( MessageBox.Show( Resources.ORCToolKit.FileTypeDeducerOpenUnknownText, Resources.ORCToolKit.FileTypeDeducerOpenUnknownTitle,
+							MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
+						{
+							// HACK: pass the file onto explorer to deal with it for us...
+							Process FileProcess = new Process();
+							FileProcess.StartInfo.FileName = "explorer";
+							FileProcess.StartInfo.Arguments = "\"" + FileName + "\"";
+							FileProcess.Start();
+						}
 					}
 					break;
 				}
 			}
+
+			return null;
 		}
 	}
 }

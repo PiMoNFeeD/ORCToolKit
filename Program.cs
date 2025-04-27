@@ -1,3 +1,4 @@
+using ORCToolKit.FileTypes;
 using ORCToolKit.Properties;
 using System.ComponentModel;
 using System.Globalization;
@@ -96,7 +97,7 @@ namespace ORCToolKit
 		///  The main entry point for the application.
 		/// </summary>
 		[STAThread]
-		static void Main()
+		static void Main( string[] Args )
 		{
 			// make sure we don't get screwed over...
 			if ( string.IsNullOrWhiteSpace( Settings.Default.Language ) )
@@ -106,7 +107,17 @@ namespace ORCToolKit
 			// To customize application configuration such as set high DPI settings or default font,
 			// see https://aka.ms/applicationconfiguration.
 			ApplicationConfiguration.Initialize();
-			Application.Run( new FormFileExplorer() );
+
+			// try to open a file that was given to us by the windows explorer
+			Form? MainForm = null;
+			foreach( string Arg in Args)
+			{
+				MainForm = Deducer.GuessFromFileAndOpen( new FileInfo( Args[Args.Length - 1] ), Silent: true );
+				if ( MainForm != null )
+					break;
+			}
+
+			Application.Run( MainForm ?? new FormFileExplorer() );
 			Settings.Default.Save();
 		}
 	}
