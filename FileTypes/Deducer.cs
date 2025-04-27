@@ -15,9 +15,17 @@ namespace ORCToolKit.FileTypes
 	{
 		static public FileType GuessFromFile( FileInfo FileInfoToGuess )
 		{
-			using ( FileStream Stream = FileInfoToGuess.OpenRead() )
+			try
 			{
-				return GuessFromBuffer( FileInfoToGuess.FullName, Stream );
+				using ( FileStream Stream = FileInfoToGuess.OpenRead() )
+				{
+					return GuessFromBuffer( FileInfoToGuess.FullName, Stream );
+				}
+			}
+			catch ( Exception ex )
+			{
+				MessageBox.Show( ex.Message, Resources.ORCToolKit.UnableToOpenFileTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
+				return FileType.Unknown;
 			}
 		}
 
@@ -41,13 +49,22 @@ namespace ORCToolKit.FileTypes
 				case "":
 				{
 					// extension-less? could be anything, read it and try to make the best guess
-					using ( BinaryReader Reader = new BinaryReader( FileBuffer, Encoding.UTF8, true ) )
+					if ( FileBuffer.Length > 8 )
 					{
-						UInt32 Header1 = Reader.ReadUInt32();
-						UInt32 Header2 = Reader.ReadUInt32();
+						Int64 OldPosition = FileBuffer.Position;
+						FileBuffer.Position = 0;
 
-						if ( MathExtensions.IsPowerOfTwo( Header1 ) && Header2 == 0 )
-							Type = FileType.LocalizationContainer;
+						using ( BinaryReader Reader = new BinaryReader( FileBuffer, Encoding.UTF8, true ) )
+						{
+							UInt32 Header1 = Reader.ReadUInt32();
+							UInt32 Header2 = Reader.ReadUInt32();
+
+							if ( MathExtensions.IsPowerOfTwo( Header1 ) && Header2 == 0 )
+								Type = FileType.LocalizationContainer;
+						}
+
+						// make sure we don't screw up chained read calls
+						FileBuffer.Position = OldPosition;
 					}
 					break;
 				}
@@ -57,9 +74,18 @@ namespace ORCToolKit.FileTypes
 
 		static public Form? GuessFromFileAndOpen( FileInfo FileInfoToGuess, Form? ParentForm = null, bool Silent = false )
 		{
-			using ( FileStream Stream = FileInfoToGuess.OpenRead() )
+			try
 			{
-				return GuessFromBufferAndOpen( FileInfoToGuess.FullName, Stream, ParentForm, Silent );
+				using ( FileStream Stream = FileInfoToGuess.OpenRead() )
+				{
+					return GuessFromBufferAndOpen( FileInfoToGuess.FullName, Stream, ParentForm, Silent );
+				}
+			}
+			catch ( Exception ex )
+			{
+				if ( !Silent )
+					MessageBox.Show( ex.Message, Resources.ORCToolKit.UnableToOpenFileTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
+				return null;
 			}
 		}
 
