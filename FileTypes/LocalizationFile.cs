@@ -1,6 +1,7 @@
 ﻿using System.Numerics;
 using System.Text;
 using System.IO.Hashing;
+using ORCToolKit.Extensions;
 
 namespace ORCToolKit.FileTypes
 {

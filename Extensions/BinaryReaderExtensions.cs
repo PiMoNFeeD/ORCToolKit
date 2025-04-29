@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 
-namespace ORCToolKit
+namespace ORCToolKit.Extensions
 {
 	static public class BinaryReaderExtensions
 	{

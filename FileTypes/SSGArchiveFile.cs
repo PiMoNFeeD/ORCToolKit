@@ -3,6 +3,7 @@ using System.IO.Hashing;
 using System.Diagnostics;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
+using ORCToolKit.Extensions;
 
 namespace ORCToolKit.FileTypes
 {

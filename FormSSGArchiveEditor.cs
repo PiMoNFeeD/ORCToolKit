@@ -1,4 +1,5 @@
-﻿using ORCToolKit.Search;
+﻿using ORCToolKit.Extensions;
+using ORCToolKit.Search;
 
 namespace ORCToolKit
 {

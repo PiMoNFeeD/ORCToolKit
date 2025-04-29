@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using ORCToolKit.Extensions;
+using System.Diagnostics;
 using System.Text;
 
 namespace ORCToolKit.FileTypes
