@@ -131,7 +131,7 @@ namespace ORCToolKit
 				Int32 FileIndex = FilesListView.SelectedIndices[0];
 				using ( MemoryStream FileStream = new MemoryStream( _file.DataSections[FileIndex].RawData ) )
 				{
-					FileTypes.Deducer.GuessFromBufferAndOpen( _file.DataSections[FileIndex].Name, FileStream, this );
+					FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[FileIndex].Name, FileStream, this );
 				}
 			}
 		}
@@ -186,7 +186,7 @@ namespace ORCToolKit
 					{
 						using ( MemoryStream FileStream = new MemoryStream( _file.DataSections[FilesList.SelectedItems[0].Index].RawData, false ) )
 						{
-							FileTypes.Deducer.GuessFromBufferAndOpen( _file.DataSections[FilesList.SelectedItems[0].Index].Name, FileStream, this );
+							FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[FilesList.SelectedItems[0].Index].Name, FileStream, this );
 						}
 					}
 					break;
@@ -200,7 +200,7 @@ namespace ORCToolKit
 			{
 				using ( MemoryStream FileStream = new MemoryStream( _file.DataSections[FilesListView.SelectedItems[0].Index].RawData, false ) )
 				{
-					FileTypes.Deducer.GuessFromBufferAndOpen( _file.DataSections[FilesListView.SelectedItems[0].Index].Name, FileStream, this );
+					FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[FilesListView.SelectedItems[0].Index].Name, FileStream, this );
 				}
 			}
 		}

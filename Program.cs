@@ -126,7 +126,7 @@ namespace ORCToolKit
 			Form? MainForm = null;
 			foreach( string Arg in Args)
 			{
-				MainForm = Deducer.GuessFromFileAndOpen( new FileInfo( Args[Args.Length - 1] ), Silent: true );
+				MainForm = TypeDeducer.GuessFromFileAndOpen( new FileInfo( Args[Args.Length - 1] ), Silent: true );
 				if ( MainForm != null )
 					break;
 			}

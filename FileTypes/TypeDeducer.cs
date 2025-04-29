@@ -11,7 +11,7 @@ namespace ORCToolKit.FileTypes
 		SWB2Database
 	};
 
-	static public class Deducer
+	static public class TypeDeducer
 	{
 		static public FileType GuessFromFile( FileInfo FileInfoToGuess )
 		{
