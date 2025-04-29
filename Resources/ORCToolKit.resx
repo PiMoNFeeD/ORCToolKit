@@ -129,6 +129,9 @@
   <data name="FormFileExplorerInvalidGameFolderTitle" xml:space="preserve">
     <value />
   </data>
+  <data name="No" xml:space="preserve">
+    <value />
+  </data>
   <data name="NumberOfEntries" xml:space="preserve">
     <value />
   </data>
@@ -136,6 +139,18 @@
     <value />
   </data>
   <data name="SearchFailedTitle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SizeInBytes" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SizeInGigabytes" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SizeInKilobytes" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SizeInMegabytes" xml:space="preserve">
     <value />
   </data>
   <data name="UnableToOpenFileTitle" xml:space="preserve">
@@ -148,6 +163,9 @@
     <value />
   </data>
   <data name="UnsavedChangesTitle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Yes" xml:space="preserve">
     <value />
   </data>
 </root>

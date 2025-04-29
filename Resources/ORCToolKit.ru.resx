@@ -129,6 +129,9 @@
   <data name="FormFileExplorerInvalidGameFolderTitle" xml:space="preserve">
     <value>Неправильная папка игры</value>
   </data>
+  <data name="No" xml:space="preserve">
+    <value>Нет</value>
+  </data>
   <data name="NumberOfEntries" xml:space="preserve">
     <value>Количество записей: {0}</value>
   </data>
@@ -137,6 +140,18 @@
   </data>
   <data name="SearchFailedTitle" xml:space="preserve">
     <value>Результаты поиска</value>
+  </data>
+  <data name="SizeInBytes" xml:space="preserve">
+    <value>{0} Б</value>
+  </data>
+  <data name="SizeInGigabytes" xml:space="preserve">
+    <value>{0} ГБ</value>
+  </data>
+  <data name="SizeInKilobytes" xml:space="preserve">
+    <value>{0} КБ</value>
+  </data>
+  <data name="SizeInMegabytes" xml:space="preserve">
+    <value>{0} МБ</value>
   </data>
   <data name="UnableToOpenFileTitle" xml:space="preserve">
     <value>Невозможно открыть файл</value>
@@ -149,5 +164,8 @@
   </data>
   <data name="UnsavedChangesTitle" xml:space="preserve">
     <value>Несохранённые изменения</value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Да</value>
   </data>
 </root>

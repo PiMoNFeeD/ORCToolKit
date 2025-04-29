@@ -28,5 +28,13 @@ namespace ORCToolKit
 		{
 			return TargetEncoding.GetString( Reader.ReadBytes( Length ).TakeWhile( c => c != 0 ).ToArray() );
 		}
+
+		static public T ReadType<T>( this BinaryReader Reader )
+		{
+			GCHandle Handle = GCHandle.Alloc( Reader.ReadBytes( Marshal.SizeOf( typeof( T ) ) ), GCHandleType.Pinned );
+			T Type = (T)Marshal.PtrToStructure( Handle.AddrOfPinnedObject(), typeof( T ) );
+			Handle.Free();
+			return Type;
+		}
 	}
 }

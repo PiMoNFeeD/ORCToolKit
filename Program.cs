@@ -55,9 +55,17 @@ namespace ORCToolKit
 		{
 			ComponentResourceManager ResourceManager = new ComponentResourceManager( Form.GetType() );
 			ResourceManager.ApplyResources( Form, Form.Name );
+
 			foreach ( Control FormControl in Form.Controls )
 			{
 				ResourceManager.ApplyResources( FormControl, FormControl.Name );
+
+				ContextMenuStrip? FormControlContextMenuStrip = FormControl.ContextMenuStrip;
+				if ( FormControlContextMenuStrip != null )
+				{
+					foreach ( ToolStripItem StripItem in FormControlContextMenuStrip.Items )
+						RecursiveApplyMenuItemResources( StripItem, ref ResourceManager );
+				}
 
 				// HACK: handle strips separately, their items are not controls! fucking annoying...
 				if ( FormControl is ToolStrip FormMenuStrip )
@@ -73,7 +81,13 @@ namespace ORCToolKit
 					foreach ( DataGridViewColumn Column in FormDataGridView.Columns )
 						ResourceManager.ApplyResources( Column, Column.Name );
 				}
+				if ( FormControl is ListView FormListView )
+				{
+					foreach ( ColumnHeader Column in FormListView.Columns )
+						ResourceManager.ApplyResources( Column, Column.Name );
+				}
 			}
+
 			ContextMenuStrip? FormContextMenuStrip = Form.ContextMenuStrip;
 			if (FormContextMenuStrip != null)
 			{

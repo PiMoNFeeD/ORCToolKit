@@ -99,6 +99,15 @@ namespace ORCToolKit.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string No {
+            get {
+                return ResourceManager.GetString("No", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string NumberOfEntries {
             get {
                 return ResourceManager.GetString("NumberOfEntries", resourceCulture);
@@ -120,6 +129,42 @@ namespace ORCToolKit.Resources {
         internal static string SearchFailedTitle {
             get {
                 return ResourceManager.GetString("SearchFailedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SizeInBytes {
+            get {
+                return ResourceManager.GetString("SizeInBytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SizeInGigabytes {
+            get {
+                return ResourceManager.GetString("SizeInGigabytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SizeInKilobytes {
+            get {
+                return ResourceManager.GetString("SizeInKilobytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SizeInMegabytes {
+            get {
+                return ResourceManager.GetString("SizeInMegabytes", resourceCulture);
             }
         }
         
@@ -156,6 +201,15 @@ namespace ORCToolKit.Resources {
         internal static string UnsavedChangesTitle {
             get {
                 return ResourceManager.GetString("UnsavedChangesTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string Yes {
+            get {
+                return ResourceManager.GetString("Yes", resourceCulture);
             }
         }
     }

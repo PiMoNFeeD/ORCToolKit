@@ -4428,4 +4428,7 @@
   <data name="MenuStripItemToolsLocalizationEditor.Text" xml:space="preserve">
     <value>Редактор локализации</value>
   </data>
+  <data name="MenuStripItemToolsSSGArchiveEditor.Text" xml:space="preserve">
+    <value>Редактор SSG-архивов</value>
+  </data>
 </root>

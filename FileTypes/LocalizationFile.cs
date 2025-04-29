@@ -39,14 +39,14 @@ namespace ORCToolKit.FileTypes
 			TextEntries.Clear();
 		}
 
-		public void LoadFromBuffer( Stream FileStream )
+		public void LoadFromBuffer( Stream BufferStream )
 		{
 			Reset();
 			TextEntries.Suspend();
 
 			try
 			{
-				using ( BinaryReader Reader = new BinaryReader( FileStream ) )
+				using ( BinaryReader Reader = new BinaryReader( BufferStream ) )
 				{
 					UInt32 NumOfEntriesAllocated = Reader.ReadUInt32();
 					UInt32 MagicNumber = Reader.ReadUInt32();
@@ -56,7 +56,7 @@ namespace ORCToolKit.FileTypes
 						throw new FileFormatException();
 
 					Reader.BaseStream.Position = 8 + 4 * NumOfEntriesAllocated; // start of text entries
-					while ( Reader.BaseStream.Position < FileStream.Length )
+					while ( Reader.BaseStream.Position < BufferStream.Length )
 					{
 						UInt32 EntryOffset = Convert.ToUInt32( Reader.BaseStream.Position );
 
@@ -94,7 +94,7 @@ namespace ORCToolKit.FileTypes
 			}
 		}
 
-		public void SaveToBuffer( Stream FileStream )
+		public void SaveToBuffer( Stream BufferStream )
 		{
 			try
 			{
@@ -119,8 +119,8 @@ namespace ORCToolKit.FileTypes
 					HeaderOffsetDictionary[HeaderOffset] = i;
 				}
 
-				FileStream.SetLength( TotalFileLength );
-				using ( BinaryWriter Writer = new BinaryWriter( FileStream ) )
+				BufferStream.SetLength( TotalFileLength );
+				using ( BinaryWriter Writer = new BinaryWriter( BufferStream ) )
 				{
 					Writer.Write( NumOfEntriesAllocated );
 
