@@ -1,3 +1,4 @@
+using ORCToolKit.FileTypes;
 using System.Globalization;
 
 namespace ORCToolKit
@@ -85,20 +86,13 @@ namespace ORCToolKit
 
 			switch ( e.Button )
 			{
-				case MouseButtons.Left:
-				{
-					break;
-				}
 				case MouseButtons.Right:
 				{
 					FileExplorer.SelectedNode = e.Node; // HACK: Windows Forms doesn't keep selected node when right clicking...
 
 					// open context menu
-					if ( ContextMenuStrip != null )
-					{
-						ContextMenuStrip.Items[0].Tag = FileExplorer.SelectedNode; // remember what node we are going to open
-						ContextMenuStrip.Show( FileExplorer, e.Location );
-					}
+					GameFileExplorerContextMenu.Tag = FileExplorer.SelectedNode; // remember what node we are going to open
+					GameFileExplorerContextMenu.Show( FileExplorer, e.Location );
 
 					break;
 				}
@@ -108,18 +102,21 @@ namespace ORCToolKit
 		private void GameFileExplorerContextMenuItemOpen_Click( object sender, EventArgs e )
 		{
 			ToolStripMenuItem MenuItem = (ToolStripMenuItem)sender;
-			TreeNode SelectedNode = (TreeNode)MenuItem.Tag;
-			if ( SelectedNode.Nodes.Count > 0 )
+			TreeNode? SelectedNode = (TreeNode?)MenuItem.GetCurrentParent()?.Tag;
+			if ( SelectedNode != null )
 			{
-				// folder
-				if ( SelectedNode.IsExpanded )
-					SelectedNode.Collapse();
+				if ( SelectedNode.Nodes.Count > 0 )
+				{
+					// folder
+					if ( SelectedNode.IsExpanded )
+						SelectedNode.Collapse();
+					else
+						SelectedNode.Expand();
+				}
 				else
-					SelectedNode.Expand();
-			}
-			else
-			{
-				OpenExplorerFile( SelectedNode );
+				{
+					OpenExplorerFile( SelectedNode );
+				}
 			}
 		}
 
@@ -133,6 +130,12 @@ namespace ORCToolKit
 		{
 			FormLocalizationEditor LocalizationEditor = new FormLocalizationEditor();
 			LocalizationEditor.Show();
+		}
+
+		private void MenuStripItemToolsSSGArchiveEditor_Click( object sender, EventArgs e )
+		{
+			FormSSGArchiveEditor SGArchiveEditor = new FormSSGArchiveEditor();
+			SGArchiveEditor.Show();
 		}
 	}
 }
