@@ -1,5 +1,11 @@
 ﻿namespace ORCToolKit.FileTypes
 {
+	public enum Endianness
+	{
+		Little,
+		Big,
+	}
+
 	public interface IFileType
 	{
 		public void Reset();

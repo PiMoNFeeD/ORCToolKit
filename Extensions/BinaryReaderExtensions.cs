@@ -1,5 +1,8 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Buffers.Binary;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
+using ORCToolKit.FileTypes;
 
 namespace ORCToolKit.Extensions
 {
@@ -29,12 +32,150 @@ namespace ORCToolKit.Extensions
 			return TargetEncoding.GetString( Reader.ReadBytes( Length ).TakeWhile( c => c != 0 ).ToArray() );
 		}
 
-		static public T ReadType<T>( this BinaryReader Reader )
+		static public T ReadType<T>( this BinaryReader Reader, Endianness Endian = Endianness.Little )
 		{
-			GCHandle Handle = GCHandle.Alloc( Reader.ReadBytes( Marshal.SizeOf( typeof( T ) ) ), GCHandleType.Pinned );
+			byte[] TypeBytes = Reader.ReadBytes( Marshal.SizeOf( typeof( T ) ) );
+			if ( NeedToSwapBytes( Endian ) )
+			{
+				FieldInfo[] TypeFields = typeof( T ).GetFields( BindingFlags.Public | BindingFlags.Instance );
+				foreach ( FieldInfo TypeField in TypeFields )
+					Array.Reverse( TypeBytes, Convert.ToInt32( Marshal.OffsetOf( typeof( T ), TypeField.Name ) ), Marshal.SizeOf( TypeField.FieldType ) );
+			}
+
+			GCHandle Handle = GCHandle.Alloc( TypeBytes, GCHandleType.Pinned );
 			T Type = (T)Marshal.PtrToStructure( Handle.AddrOfPinnedObject(), typeof( T ) );
 			Handle.Free();
 			return Type;
+		}
+
+		static public Int16 ReadInt16( this BinaryReader Reader, Endianness Endian = Endianness.Little )
+		{
+			switch ( Endian )
+			{
+				case Endianness.Little:
+					return BinaryPrimitives.ReadInt16LittleEndian( Reader.ReadBytes( sizeof( Int16 ) ) );
+				case Endianness.Big:
+					return BinaryPrimitives.ReadInt16BigEndian( Reader.ReadBytes( sizeof( Int16 ) ) );
+			}
+
+			throw new ArgumentOutOfRangeException();
+		}
+
+		static public UInt16 ReadUInt16( this BinaryReader Reader, Endianness Endian = Endianness.Little )
+		{
+			switch ( Endian )
+			{
+				case Endianness.Little:
+					return BinaryPrimitives.ReadUInt16LittleEndian( Reader.ReadBytes( sizeof( UInt16 ) ) );
+				case Endianness.Big:
+					return BinaryPrimitives.ReadUInt16BigEndian( Reader.ReadBytes( sizeof( UInt16 ) ) );
+			}
+
+			throw new ArgumentOutOfRangeException();
+		}
+
+		static public Int32 ReadInt32( this BinaryReader Reader, Endianness Endian = Endianness.Little )
+		{
+			switch ( Endian )
+			{
+				case Endianness.Little:
+					return BinaryPrimitives.ReadInt32LittleEndian( Reader.ReadBytes( sizeof( Int32 ) ) );
+				case Endianness.Big:
+					return BinaryPrimitives.ReadInt32BigEndian( Reader.ReadBytes( sizeof( Int32 ) ) );
+			}
+
+			throw new ArgumentOutOfRangeException();
+		}
+
+		static public UInt32 ReadUInt32( this BinaryReader Reader, Endianness Endian = Endianness.Little )
+		{
+			switch ( Endian )
+			{
+				case Endianness.Little:
+					return BinaryPrimitives.ReadUInt32LittleEndian( Reader.ReadBytes( sizeof( UInt32 ) ) );
+				case Endianness.Big:
+					return BinaryPrimitives.ReadUInt32BigEndian( Reader.ReadBytes( sizeof( UInt32 ) ) );
+			}
+
+			throw new ArgumentOutOfRangeException();
+		}
+
+		static public Int64 ReadInt64( this BinaryReader Reader, Endianness Endian = Endianness.Little )
+		{
+			switch ( Endian )
+			{
+				case Endianness.Little:
+					return BinaryPrimitives.ReadInt64LittleEndian( Reader.ReadBytes( sizeof( Int64 ) ) );
+				case Endianness.Big:
+					return BinaryPrimitives.ReadInt64BigEndian( Reader.ReadBytes( sizeof( Int64 ) ) );
+			}
+
+			throw new ArgumentOutOfRangeException();
+		}
+
+		static public UInt64 ReadUInt64( this BinaryReader Reader, Endianness Endian = Endianness.Little )
+		{
+			switch ( Endian )
+			{
+				case Endianness.Little:
+					return BinaryPrimitives.ReadUInt64LittleEndian( Reader.ReadBytes( sizeof( UInt64 ) ) );
+				case Endianness.Big:
+					return BinaryPrimitives.ReadUInt64BigEndian( Reader.ReadBytes( sizeof( UInt64 ) ) );
+			}
+
+			throw new ArgumentOutOfRangeException();
+		}
+
+		static public Half ReadHalf( this BinaryReader Reader, Endianness Endian = Endianness.Little )
+		{
+			switch ( Endian )
+			{
+				case Endianness.Little:
+					return BinaryPrimitives.ReadHalfLittleEndian( Reader.ReadBytes( Marshal.SizeOf<Half>() ) );
+				case Endianness.Big:
+					return BinaryPrimitives.ReadHalfBigEndian( Reader.ReadBytes( Marshal.SizeOf<Half>() ) );
+			}
+
+			throw new ArgumentOutOfRangeException();
+		}
+
+		static public Single ReadSingle( this BinaryReader Reader, Endianness Endian = Endianness.Little )
+		{
+			switch ( Endian )
+			{
+				case Endianness.Little:
+					return BinaryPrimitives.ReadSingleLittleEndian( Reader.ReadBytes( sizeof( Single ) ) );
+				case Endianness.Big:
+					return BinaryPrimitives.ReadSingleBigEndian( Reader.ReadBytes( sizeof( Single ) ) );
+			}
+
+			throw new ArgumentOutOfRangeException();
+		}
+
+		static public Double ReadDouble( this BinaryReader Reader, Endianness Endian = Endianness.Little )
+		{
+			switch ( Endian )
+			{
+				case Endianness.Little:
+					return BinaryPrimitives.ReadDoubleLittleEndian( Reader.ReadBytes( sizeof( Double ) ) );
+				case Endianness.Big:
+					return BinaryPrimitives.ReadDoubleBigEndian( Reader.ReadBytes( sizeof( Double ) ) );
+			}
+
+			throw new ArgumentOutOfRangeException();
+		}
+
+		static private bool NeedToSwapBytes( Endianness Endian = Endianness.Little )
+		{
+			switch ( Endian )
+			{
+				case Endianness.Little:
+					return !BitConverter.IsLittleEndian;
+				case Endianness.Big:
+					return BitConverter.IsLittleEndian;
+			}
+
+			throw new ArgumentOutOfRangeException();
 		}
 	}
 }

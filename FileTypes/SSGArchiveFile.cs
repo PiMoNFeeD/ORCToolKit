@@ -1,6 +1,5 @@
 ﻿using System.Text;
 using System.IO.Hashing;
-using System.Diagnostics;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
 using ORCToolKit.Extensions;
@@ -50,6 +49,7 @@ namespace ORCToolKit.FileTypes
 		}
 
 		private UInt16 FileAlignment = 16;
+		private Endianness FileEndianness = Endianness.Little;
 		private bool SplitCompression = false; // by default, assume we don't split, unless the file we open does split
 		public List<DataSection> DataSections = new List<DataSection>();
 
@@ -82,9 +82,13 @@ namespace ORCToolKit.FileTypes
 			{
 				using ( BinaryReader Reader = new BinaryReader( BufferStream, Encoding.UTF8, true ) )
 				{
-					// TODO: support consoles' big endian format again! need binary reader extensions...
-
+					// determine endianness, the way the game does it
 					SSGHeader Header = Reader.ReadType<SSGHeader>();
+					FileEndianness = Header.Version > 0xFFFF ? Endianness.Big : Endianness.Little;
+
+					// read header again
+					Reader.BaseStream.Position -= Marshal.SizeOf<SSGHeader>();
+					Header = Reader.ReadType<SSGHeader>(FileEndianness);
 					if ( Header.Version != 6 && Header.Version != 5 ) // RE:ORC only has version 5 and 6 archives
 						throw new FileFormatException();
 
@@ -111,7 +115,7 @@ namespace ORCToolKit.FileTypes
 					Reader.BaseStream.Position = Marshal.SizeOf<SSGHeader>() + Header.SectionInfosSize;
 					for ( Int32 BytesRead = 0; BytesRead < Header.CompressedBlocksSize; BytesRead += 4 )
 					{
-						Int32 Size = Reader.ReadInt32();
+						Int32 Size = Reader.ReadInt32( FileEndianness );
 						if ( Size == 0 )
 							break;
 						CompressedBlockSizesList.Add( Size );
@@ -131,7 +135,7 @@ namespace ORCToolKit.FileTypes
 					{
 						Reader.BaseStream.Position = Marshal.SizeOf<SSGHeader>() + Marshal.SizeOf<SSGSection>() * i;
 
-						SSGSection Section = Reader.ReadType<SSGSection>();
+						SSGSection Section = Reader.ReadType<SSGSection>( FileEndianness );
 
 						// this is a very dumb hack to determine whether we need to split compressed blocks of sections or not
 						// doesn't seem to actually affect whether the file loads or not by the game, but I want num of compressed blocks
@@ -383,17 +387,17 @@ namespace ORCToolKit.FileTypes
 				using ( BinaryWriter Writer = new BinaryWriter( BufferStream ) )
 				{
 					// write header
-					Writer.WriteType( Header );
+					Writer.WriteType( Header, FileEndianness );
 					Writer.BaseStream.Position = MathExtensions.AlignValue( Writer.BaseStream.Position, FileAlignment );
 
 					// write section infos
 					foreach ( SSGSection Section in Sections )
-						Writer.WriteType( Section );
+						Writer.WriteType( Section, FileEndianness );
 					Writer.BaseStream.Position = MathExtensions.AlignValue( Writer.BaseStream.Position, FileAlignment );
 
 					// write compressed blocks
 					foreach ( MemoryStream CompressedBlock in CompressedBlocks )
-						Writer.Write( Convert.ToInt32( CompressedBlock.Length ) );
+						Writer.Write( Convert.ToInt32( CompressedBlock.Length ), FileEndianness );
 					Writer.BaseStream.Position = MathExtensions.AlignValue( Writer.BaseStream.Position, FileAlignment );
 
 					// write section names
