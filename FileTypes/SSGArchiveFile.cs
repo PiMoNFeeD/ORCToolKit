@@ -326,8 +326,9 @@ namespace ORCToolKit.FileTypes
 						CompressedSectionsWritten.Add( DataSections[SectionIndex].Name );
 
 						// align it
-						DataToCompress.Position = MathExtensions.AlignValue( DataToCompress.Position, FileAlignment ) - 1;
-						DataToCompress.WriteByte( 0 );
+						Int64 AlignmentBytes = DataToCompress.Position - MathExtensions.AlignValue( DataToCompress.Position, FileAlignment );
+						if ( AlignmentBytes > 0 )
+							DataToCompress.Write( new byte[AlignmentBytes] );
 					}
 					else
 					{
@@ -418,8 +419,9 @@ namespace ORCToolKit.FileTypes
 						Writer.Write( Section.RawData );
 
 						// align the file (in case we don't have compressed data)
-						Writer.BaseStream.Position = MathExtensions.AlignValue( Writer.BaseStream.Position, FileAlignment ) - 1;
-						Writer.Write( (byte)0 );
+						Int64 AlignmentBytes = Writer.BaseStream.Position - MathExtensions.AlignValue( Writer.BaseStream.Position, FileAlignment );
+						if ( AlignmentBytes > 0 )
+							Writer.Write( new byte[AlignmentBytes] );
 					}
 					foreach ( MemoryStream CompressedBlock in CompressedBlocks )
 						Writer.Write( CompressedBlock.GetBuffer(), 0, Convert.ToInt32( CompressedBlock.Length ) );

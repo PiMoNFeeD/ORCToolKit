@@ -11,6 +11,8 @@ namespace ORCToolKit.Extensions
 
 		static public T AlignValue<T>( T Value, T AlignTo ) where T : INumber<T>
 		{
+			if ( AlignTo < T.One )
+				return Value;
 			return Value + (AlignTo - Value % AlignTo) % AlignTo;
 		}
 		static public T RoundUpToPowerOf2<T>( T Value ) where T : INumber<T>
