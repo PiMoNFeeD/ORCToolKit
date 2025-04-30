@@ -48,6 +48,7 @@ namespace ORCToolKit.FileTypes
 			public bool IsCompressed = false;
 		}
 
+		private UInt32 FileVersion = 6;
 		private UInt16 FileAlignment = 16;
 		private Endianness FileEndianness = Endianness.Little;
 		private bool SplitCompression = false; // by default, assume we don't split, unless the file we open does split
@@ -95,7 +96,8 @@ namespace ORCToolKit.FileTypes
 					if ( Header.Padding1 != 0 ) // make sure it's 0 to know we have the right file
 						throw new FileFormatException();
 
-					if ( Header.Version == 5 )
+					FileVersion = Header.Version;
+					if ( FileVersion == 5 )
 					{
 						FileAlignment = 16; // this line of code is brought to you by reverse-engineering the game
 						Header.CompressedBlocksSize = 0; // speculation, it's not 0 but there is no compression
@@ -373,7 +375,7 @@ namespace ORCToolKit.FileTypes
 				}
 
 				SSGHeader Header = new SSGHeader();
-				Header.Version = 6;
+				Header.Version = FileVersion;
 				Header.Padding1 = 0;
 				Header.SectionInfosSize = Marshal.SizeOf<SSGSection>() * DataSections.Count;
 				Header.SectionNamesSize = MathExtensions.AlignValue( NextNameOffset, FileAlignment );
@@ -382,7 +384,10 @@ namespace ORCToolKit.FileTypes
 				CompressedBlocks.ForEach( CompressedBlock => { Header.SectionDataSize += Convert.ToInt32( CompressedBlock.Length ); } ); // these aren't aligned
 				Header.Padding2 = 0;
 				Header.CompressedBlocksSize = MathExtensions.AlignValue( sizeof( Int32 ) * CompressedBlocks.Count, FileAlignment );
-				Header.Alignment = FileAlignment;
+				if ( FileVersion == 5 )
+					Header.Alignment = 0; // version 5 doesn't appear to be storing alignment, and instead forces 16 byte alignment
+				else
+					Header.Alignment = FileAlignment;
 				Header.Padding3 = 0;
 
 				using ( BinaryWriter Writer = new BinaryWriter( BufferStream ) )
