@@ -48,7 +48,6 @@ namespace ORCToolKit
 
 		private void OpenExplorerFile( TreeNode SelectedNode )
 		{
-			// file
 			FileInfo SelectedFileInfo = (FileInfo)SelectedNode.Tag;
 			TypeDeducer.GuessFromFileAndOpen( SelectedFileInfo );
 		}
