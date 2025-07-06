@@ -111,6 +111,10 @@ namespace ORCToolKit.FileTypes
 					LogWriter?.WriteLine( $"CompressedBlocksSize: {Header.CompressedBlocksSize}" );
 					LogWriter?.WriteLine( $"Alignment:            {Header.Alignment}\n" );
 
+					// TODO: console archives are using unknown compression, but it's the same between PS3 and XBOX 360
+					if ( FileEndianness == Endianness.Big && Header.CompressedBlocksSize > 0 )
+						throw new FileFormatException( Resources.ORCToolKit.FileSSGArchiveFileCompressedConsoleNotSupported );
+
 					// read compressed blocks
 					// they come after section infos, but we need them earlier to be able to decompress data
 					List<Int32> CompressedBlockSizesList = new List<Int32>();

@@ -63,6 +63,15 @@ namespace ORCToolKit.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string FileSSGArchiveFileCompressedConsoleNotSupported {
+            get {
+                return ResourceManager.GetString("FileSSGArchiveFileCompressedConsoleNotSupported", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string FileTypeDeducerOpenUnknownText {
             get {
                 return ResourceManager.GetString("FileTypeDeducerOpenUnknownText", resourceCulture);
