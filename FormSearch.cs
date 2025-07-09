@@ -4,7 +4,7 @@ namespace ORCToolKit
 {
 	public partial class FormSearch: Form
 	{
-		public event SearchEventHandler OnSearch;
+		public event SearchEventHandler? OnSearch;
 
 		public FormSearch()
 		{

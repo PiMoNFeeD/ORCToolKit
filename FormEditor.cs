@@ -181,7 +181,7 @@ namespace ORCToolKit
 			return false;
 		}
 
-		private void FormEditor_FormClosing( object sender, FormClosingEventArgs e )
+		private void FormEditor_FormClosing( object? sender, FormClosingEventArgs e )
 		{
 			if ( !CheckUnsavedChanges() )
 				e.Cancel = true;

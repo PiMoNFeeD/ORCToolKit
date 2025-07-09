@@ -20,7 +20,7 @@ namespace ORCToolKit
 			OnEntriesUpdated += FormSSGArchiveEditor_OnEntriesUpdated;
 		}
 
-		private void FormSSGArchiveEditor_OnOpenFile( object sender, EventArgs e )
+		private void FormSSGArchiveEditor_OnOpenFile( object? sender, EventArgs e )
 		{
 			LastOpenedSection = -1;
 			FilesListView.Items.Clear();
@@ -36,7 +36,7 @@ namespace ORCToolKit
 			}
 		}
 
-		private void FormSSGArchiveEditor_OnEntriesUpdated( object sender, EventArgs e )
+		private void FormSSGArchiveEditor_OnEntriesUpdated( object? sender, EventArgs e )
 		{
 			MenuStripItemFileSave.Enabled = (_file.DataSections.Count > 0);
 			MenuStripItemEditSearch.Enabled = (_file.DataSections.Count > 0);
