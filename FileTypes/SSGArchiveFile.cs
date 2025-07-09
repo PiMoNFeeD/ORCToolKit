@@ -394,7 +394,7 @@ namespace ORCToolKit.FileTypes
 					Header.Alignment = FileAlignment;
 				Header.Padding3 = 0;
 
-				using ( BinaryWriter Writer = new BinaryWriter( BufferStream ) )
+				using ( BinaryWriter Writer = new BinaryWriter( BufferStream, Encoding.UTF8, true ) )
 				{
 					// write header
 					Writer.WriteType( Header, FileEndianness );

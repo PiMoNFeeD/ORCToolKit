@@ -121,7 +121,7 @@ namespace ORCToolKit.FileTypes
 				}
 
 				BufferStream.SetLength( TotalFileLength );
-				using ( BinaryWriter Writer = new BinaryWriter( BufferStream ) )
+				using ( BinaryWriter Writer = new BinaryWriter( BufferStream, Encoding.UTF8, true ) )
 				{
 					Writer.Write( NumOfEntriesAllocated );
 

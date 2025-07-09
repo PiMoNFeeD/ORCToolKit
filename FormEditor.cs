@@ -20,12 +20,16 @@ namespace ORCToolKit
 		protected event EventHandler? OnSaveFile;
 		protected event EventHandler? OnEntriesUpdated;
 		virtual protected bool TrySearch( SearchDirection Direction, string SearchString, bool WholeWord, bool CaseSensitive ) { throw new NotImplementedException(); }
+		virtual protected void SaveChild( FileTypes.IFileType? File ) { throw new NotImplementedException(); }
+
+		protected bool OwnedByAnotherEditor = false;
 
 		public FormEditor()
 		{
 			NewFile();
 
 			FormClosing += FormEditor_FormClosing;
+			Shown += FormEditor_Shown;
 			FormSearch.OnSearch += FormSearch_OnSearch;
 		}
 
@@ -59,6 +63,15 @@ namespace ORCToolKit
 				OnSaveFile( this, new EventArgs() );
 		}
 
+		public void SaveFile( FormEditor Editor )
+		{
+			HasUnsavedEdits = false;
+			Editor.SaveChild( CurrentFile );
+
+			if ( OnSaveFile != null )
+				OnSaveFile( this, new EventArgs() );
+		}
+
 		public void EntriesUpdated()
 		{
 			if ( OnEntriesUpdated != null )
@@ -67,6 +80,9 @@ namespace ORCToolKit
 
 		protected bool InvokeOpenDialog()
 		{
+			if ( OwnedByAnotherEditor )
+				return false;
+
 			if ( CheckUnsavedChanges() )
 			{
 				using ( OpenFileDialog FileDialog = new OpenFileDialog() )
@@ -89,6 +105,14 @@ namespace ORCToolKit
 
 		protected bool InvokeSaveDialog()
 		{
+			if ( OwnedByAnotherEditor )
+			{
+				// if we're owned by another editor, we should save into that one instead
+				FormEditor OwnerEditor = (FormEditor)Owner;
+				OwnerEditor.SaveChild( CurrentFile );
+				return true; // save successful
+			}
+
 			using ( SaveFileDialog FileDialog = new SaveFileDialog() )
 			{
 				FileDialog.Filter = FileDialogFilter;
@@ -161,6 +185,11 @@ namespace ORCToolKit
 		{
 			if ( !CheckUnsavedChanges() )
 				e.Cancel = true;
+		}
+
+		private void FormEditor_Shown( object? sender, EventArgs e )
+		{
+			OwnedByAnotherEditor = Owner is FormEditor;
 		}
 
 		private void FormSearch_OnSearch( object sender, SearchEventArgs e )

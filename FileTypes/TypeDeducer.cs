@@ -92,27 +92,18 @@ namespace ORCToolKit.FileTypes
 
 		static public Form? GuessFromBufferAndOpen( string? FileName, Stream FileBuffer, Form? ParentForm = null, bool Silent = false )
 		{
+			FormEditor? Editor = null;
 			switch ( GuessFromBuffer( FileName, FileBuffer ) )
 			{
 				case FileType.LocalizationContainer:
 				{
-					FormLocalizationEditor LocalizationEditor = new FormLocalizationEditor();
-					LocalizationEditor.OpenFile( FileBuffer );
-					if ( ParentForm != null )
-						LocalizationEditor.ShowDialog( ParentForm );
-					else
-						LocalizationEditor.Show();
-					return LocalizationEditor;
+					Editor = new FormLocalizationEditor();
+					break;
 				}
 				case FileType.SSGArchive:
 				{
-					FormSSGArchiveEditor SSGArchiveEditor = new FormSSGArchiveEditor();
-					SSGArchiveEditor.OpenFile( FileBuffer );
-					if ( ParentForm != null )
-						SSGArchiveEditor.ShowDialog( ParentForm );
-					else
-						SSGArchiveEditor.Show();
-					return SSGArchiveEditor;
+					Editor = new FormSSGArchiveEditor();
+					break;
 				}
 				case FileType.SWB2Database:
 				default:
@@ -133,7 +124,15 @@ namespace ORCToolKit.FileTypes
 				}
 			}
 
-			return null;
+			if ( Editor != null )
+			{
+				Editor.OpenFile( FileBuffer );
+				if ( ParentForm != null )
+					Editor.ShowDialog( ParentForm );
+				else
+					Editor.Show();
+			}
+			return Editor;
 		}
 	}
 }

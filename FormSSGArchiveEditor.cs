@@ -1,11 +1,13 @@
 ﻿using ORCToolKit.Extensions;
 using ORCToolKit.Search;
+using System.Diagnostics;
 
 namespace ORCToolKit
 {
 	public partial class FormSSGArchiveEditor: FormEditor
 	{
 		private FileTypes.SSGArchiveFile _file = new FileTypes.SSGArchiveFile();
+		private Int32 LastOpenedSection = -1;
 		override protected FileTypes.IFileType? CurrentFile { get { return _file; } }
 		override protected string FileDialogFilter { get { return "SSG Archives (*.ssg)|*.ssg"; } }
 
@@ -20,6 +22,7 @@ namespace ORCToolKit
 
 		private void FormSSGArchiveEditor_OnOpenFile( object sender, EventArgs e )
 		{
+			LastOpenedSection = -1;
 			FilesListView.Items.Clear();
 			for ( int i = 0; i < _file.DataSections.Count; i++ )
 			{
@@ -90,6 +93,27 @@ namespace ORCToolKit
 			return false;
 		}
 
+		override protected void SaveChild( FileTypes.IFileType? File )
+		{
+			if ( File == null )
+				return;
+
+			Debug.Assert( LastOpenedSection != -1 );
+			if ( LastOpenedSection != -1 )
+			{
+				// TODO: swap RawData for a memory stream to save directly into it, without a middleman stream
+				using ( MemoryStream FileStream = new MemoryStream() )
+				{
+					HasUnsavedEdits = false;
+					File.SaveToBuffer( FileStream );
+
+					_file.DataSections[LastOpenedSection].RawData = FileStream.ToArray();
+					FilesListView.Items[LastOpenedSection].SubItems[2].Text = FileStream.Length.ToString(); // cursed
+					MessageBox.Show( Resources.ORCToolKit.FileSSGArchiveEmbeddedSaveText, Resources.ORCToolKit.FileSSGArchiveEmbeddedSaveTitle, MessageBoxButtons.OK, MessageBoxIcon.Information );
+				}
+			}
+		}
+
 		private void MenuStripItemFileNew_Click( object sender, EventArgs e )
 		{
 			NewFile();
@@ -129,10 +153,10 @@ namespace ORCToolKit
 		{
 			if ( FilesListView.SelectedIndices.Count > 0 )
 			{
-				Int32 FileIndex = FilesListView.SelectedIndices[0];
-				using ( MemoryStream FileStream = new MemoryStream( _file.DataSections[FileIndex].RawData ) )
+				LastOpenedSection = FilesListView.SelectedIndices[0];
+				using ( MemoryStream FileStream = new MemoryStream( _file.DataSections[LastOpenedSection].RawData ) )
 				{
-					FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[FileIndex].Name, FileStream, this );
+					FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[LastOpenedSection].Name, FileStream, this );
 				}
 			}
 		}
@@ -185,9 +209,10 @@ namespace ORCToolKit
 				{
 					if ( FilesList.SelectedItems.Count > 0 )
 					{
-						using ( MemoryStream FileStream = new MemoryStream( _file.DataSections[FilesList.SelectedItems[0].Index].RawData, false ) )
+						LastOpenedSection = FilesList.SelectedItems[0].Index;
+						using ( MemoryStream FileStream = new MemoryStream( _file.DataSections[LastOpenedSection].RawData, false ) )
 						{
-							FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[FilesList.SelectedItems[0].Index].Name, FileStream, this );
+							FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[LastOpenedSection].Name, FileStream, this );
 						}
 					}
 					break;
@@ -199,9 +224,10 @@ namespace ORCToolKit
 		{
 			if ( FilesListView.SelectedItems.Count > 0 )
 			{
-				using ( MemoryStream FileStream = new MemoryStream( _file.DataSections[FilesListView.SelectedItems[0].Index].RawData, false ) )
+				LastOpenedSection = FilesListView.SelectedItems[0].Index;
+				using ( MemoryStream FileStream = new MemoryStream( _file.DataSections[LastOpenedSection].RawData, false ) )
 				{
-					FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[FilesListView.SelectedItems[0].Index].Name, FileStream, this );
+					FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[LastOpenedSection].Name, FileStream, this );
 				}
 			}
 		}
@@ -235,7 +261,7 @@ namespace ORCToolKit
 							DirectoryInfo FileDirectory = new DirectoryInfo( Path.GetDirectoryName( FilePath ) );
 							if ( !FileDirectory.Exists )
 								FileDirectory.Create();
-							
+
 							using ( FileStream File = new FileStream( FilePath.NormalizeSlashes(), FileMode.Create, FileAccess.Write ) )
 							{
 								File.Write( _file.DataSections[SelectedItem.Index].RawData );

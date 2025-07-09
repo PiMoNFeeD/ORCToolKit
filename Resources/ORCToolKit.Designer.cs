@@ -63,6 +63,24 @@ namespace ORCToolKit.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string FileSSGArchiveEmbeddedSaveText {
+            get {
+                return ResourceManager.GetString("FileSSGArchiveEmbeddedSaveText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string FileSSGArchiveEmbeddedSaveTitle {
+            get {
+                return ResourceManager.GetString("FileSSGArchiveEmbeddedSaveTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string FileSSGArchiveFileCompressedConsoleNotSupported {
             get {
                 return ResourceManager.GetString("FileSSGArchiveFileCompressedConsoleNotSupported", resourceCulture);
