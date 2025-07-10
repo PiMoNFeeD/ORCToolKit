@@ -428,7 +428,7 @@ namespace ORCToolKit.FileTypes
 						Writer.Write( Section.RawData );
 
 						// align the file (in case we don't have compressed data)
-						Int64 AlignmentBytes = Writer.BaseStream.Position - MathExtensions.AlignValue( Writer.BaseStream.Position, FileAlignment );
+						Int64 AlignmentBytes = MathExtensions.AlignValue( Writer.BaseStream.Position, FileAlignment ) - Writer.BaseStream.Position;
 						if ( AlignmentBytes > 0 )
 							Writer.Write( new byte[AlignmentBytes] );
 					}
