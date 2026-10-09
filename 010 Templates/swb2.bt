@@ -1,0 +1,148 @@
+//------------------------------------------------
+// SWB2 is a key-value container used by
+// Hexane Engine, Slant Six Games
+//
+// Made by comparing little-endian and big-endian
+// files from PC and XBOX 360 versions of the game
+// to figure out the sizes of each variable
+//------------------------------------------------
+
+// settings
+local const byte PrintWarnings = false;
+
+// determine endianness
+LittleEndian();
+local uint32 magic = ReadInt();
+if ( magic == 1179011411 ) // "SIFF"
+    LittleEndian();
+else if ( magic == 1397311046 ) // "FFIS"
+    BigEndian();
+else
+    Assert( false, "This is not an SWB2 file" );
+
+struct FileHeader
+{
+    uint32 magic1;
+    byte unk1[4];
+    uint32 unk2; // possibly alignment? but the tables don't appear to be aligned..?
+    uint32 unk3; // always zero?
+    Assert( magic1 == 1179011411 ); // "SIFF" or "FFIS"
+    Assert( unk2 == 16 );
+    Assert( unk3 == 0 );
+
+    uint32 magic2;
+    uint32 unk4[3]; // always zero?
+    Assert( magic2 == 1262701639 ); // "GLCK" or "KCLG"
+    Assert( unk4[0] == unk4[1] == unk4[2] == 0 );
+
+    uint32 sizeOfTableData;
+	uint32 numTables;
+} fileHeader;
+Assert( (FileSize() - FTell()) == fileHeader.sizeOfTableData );
+
+typedef enum <ubyte>
+{
+    TYPE_INT32_STORED = 1,	// (u?)int32 that is stored in the file
+    TYPE_FLOAT_STORED = 2,	// float that is stored in the file
+    TYPE_STRING = 3,		// string that is stored in the file
+	// I imagine a TYPE_BYTE_STORED would be somewhere here, but there isn't a single asset with a byte type in the game to check...
+    TYPE_ENTRY_TABLE = 6,	// a table that stores key-value entries
+    TYPE_INT32_ZERO = 7,	// (u?)int32 that is always zero, not stored in the file (0)
+    TYPE_INT32_ONE = 8,		// (u?)int32 that is always one, not stored in the file (1)
+    TYPE_FLOAT_ZERO = 9,	// float that is always zero, not stored in the file (0.0)
+    TYPE_FLOAT_ONE = 10,	// float that is always one, not stored in the file (1.0)
+    TYPE_BYTE_ZERO = 11,	// byte that is always zero, not stored in the file (false)
+    TYPE_BYTE_ONE = 12,		// byte that is always one, not stored in the file (true)
+	TYPE_CRC32 = 13,		// the code path that reads this type either reads TYPE_STRING and then extracts a CRC32 of that string, or reads a uint32 directly; this appears correct after inspecting assets with this type
+} ValueType;
+
+struct EntryTable;
+struct EntryTable
+{
+	struct EntryTableHeader
+	{
+		uint32 identifier;
+		uint32 numEntries;
+	} header;
+
+	struct EntryTableEntry
+	{
+		uint32 key; // this is CRC32 of a string :(
+
+		local uint32 _valueSize;
+		local ValueType _valueType;
+		if ( key == 2952159793 )
+		{
+			// HACK: for some reason, entries with this key store a different layout?!?!?
+			// according to the disassembly of the game, it doesn't even parse this entry, it just skips it!
+			// possibly some debug info of the file?
+			uint32 valueSize;
+			_valueSize = valueSize;
+			_valueType = TYPE_INT32_STORED; // all values appear to be a mix of ints and floats, always byteswaped in batches of 4 bytes... slamming to int32 just so byteswapping is correct
+		}
+		else
+		{
+			ValueType valueType;
+			ubyte unk1; // flags? so far I've seen only 1, 3 and 4 as values, with 3 and 4 exclusive to TYPE_FLOAT_STORED (characters.swb2)
+			ushort valueSize;
+			_valueSize = valueSize;
+			_valueType = valueType;
+		}
+
+		if ( _valueSize > 0 )
+		{
+			switch ( _valueType )
+			{
+				case TYPE_INT32_STORED:
+					Assert( (_valueSize % sizeof( int32 )) == 0 );
+					int32 value[_valueSize / sizeof( int32 )];
+					break;
+				case TYPE_FLOAT_STORED:
+					Assert( (_valueSize % sizeof( float )) == 0 );
+					float value[_valueSize / sizeof( float )];
+					break;
+				case TYPE_STRING:
+					char value[_valueSize];
+					break;
+				case TYPE_ENTRY_TABLE:
+					local int64 oldPos = FTell();
+					EntryTable value;
+					local int64 bytesRead = FTell() - oldPos;
+					Assert( bytesRead == _valueSize, Str( "Size mismatch when parsing embedded entry table; expected %u, read %u", _valueSize, bytesRead ) );
+					break;
+				case TYPE_CRC32:
+					Assert( (_valueSize % sizeof( uint32 )) == 0 );
+					uint32 value[_valueSize / sizeof( uint32 )];
+					break;
+				default:
+					if ( PrintWarnings )
+						Printf( "Unknown value type %u encountered WITH stored value\n", _valueType );
+					char value[_valueSize];
+					break;
+			}
+		}
+		else
+		{
+			switch ( _valueType )
+			{
+				// only these types can store no value
+				case TYPE_INT32_ZERO:
+				case TYPE_INT32_ONE:
+				case TYPE_FLOAT_ZERO:
+				case TYPE_FLOAT_ONE:
+				case TYPE_BYTE_ZERO:
+				case TYPE_BYTE_ONE:
+					break;
+				default:
+					if ( PrintWarnings )
+						Printf( "Unknown value type %u encountered WITHOUT stored value\n", _valueType );
+					break;
+			}
+		}
+	};
+
+	if ( header.numEntries > 0 )
+		EntryTableEntry entry[header.numEntries] <optimize=false>;
+} tables[fileHeader.numTables] <optimize=false>;
+
+Assert( FEof(), Str( "Found extra data (%u bytes) after parsing all tables!\n", FileSize() - FTell() ) );
