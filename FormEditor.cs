@@ -40,6 +40,9 @@ namespace ORCToolKit
 				HasUnsavedEdits = false;
 				CurrentFile?.Reset();
 				EntriesUpdated();
+
+				if ( OnNewFile != null )
+					OnNewFile( this, new EventArgs() );
 			}
 		}
 

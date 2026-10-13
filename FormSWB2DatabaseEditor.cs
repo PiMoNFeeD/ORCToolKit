@@ -14,8 +14,15 @@ namespace ORCToolKit
 			InitializeComponent();
 			Program.ReloadFormResources( this );
 
+			OnNewFile += FormSWB2DatabaseEditor_OnNewFile;
 			OnOpenFile += FormSWB2DatabaseEditor_OnOpenFile;
 			OnEntriesUpdated += FormSWB2DatabaseEditor_OnEntriesUpdated;
+		}
+
+		private void FormSWB2DatabaseEditor_OnNewFile( Object? sender, EventArgs e )
+		{
+			EntryTreeView.Nodes.Clear();
+			EntryPropertyGrid.SelectedObject = null;
 		}
 
 		private void FormSWB2DatabaseEditor_OnOpenFile( Object? sender, EventArgs e )

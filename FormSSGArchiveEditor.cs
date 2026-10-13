@@ -16,8 +16,15 @@ namespace ORCToolKit
 			InitializeComponent();
 			Program.ReloadFormResources( this );
 
+			OnNewFile += FormSSGArchiveEditor_OnNewFile;
 			OnOpenFile += FormSSGArchiveEditor_OnOpenFile;
 			OnEntriesUpdated += FormSSGArchiveEditor_OnEntriesUpdated;
+		}
+
+		private void FormSSGArchiveEditor_OnNewFile( Object? sender, EventArgs e )
+		{
+			LastOpenedSection = -1;
+			FilesListView.Items.Clear();
 		}
 
 		private void FormSSGArchiveEditor_OnOpenFile( object? sender, EventArgs e )
