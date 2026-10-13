@@ -24,13 +24,13 @@ namespace ORCToolKit
 		{
 			LastOpenedSection = -1;
 			FilesListView.Items.Clear();
-			for ( int i = 0; i < _file.DataSections.Count; i++ )
+			foreach ( FileTypes.SSGArchiveFile.DataSection DataSection in _file.DataSections )
 			{
 				ListViewItem ListItem = new ListViewItem();
-				ListItem.Text = _file.DataSections[i].Name;
-				string[] SubItemsRow = { _file.DataSections[i].Type.ToString(),
-										 string.Format( Resources.ORCToolKit.SizeInBytes, _file.DataSections[i].RawData.Length ),
-										 _file.DataSections[i].IsCompressed ? Resources.ORCToolKit.Yes : Resources.ORCToolKit.No };
+				ListItem.Text = DataSection.Name;
+				string[] SubItemsRow = { DataSection.Type.ToString(),
+										 string.Format( Resources.ORCToolKit.SizeInBytes, DataSection.RawData.Length ),
+										 DataSection.IsCompressed ? Resources.ORCToolKit.Yes : Resources.ORCToolKit.No };
 				ListItem.SubItems.AddRange( SubItemsRow );
 				FilesListView.Items.Add( ListItem );
 			}
