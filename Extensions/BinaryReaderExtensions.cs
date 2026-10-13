@@ -48,6 +48,16 @@ namespace ORCToolKit.Extensions
 			return Type;
 		}
 
+		static public T[] ReadTypeArray<T>( this BinaryReader Reader, Int32 Count, Endianness Endian = Endianness.Little )
+		{
+			T[] Result = new T[Count];
+
+			for ( Int32 i = 0; i < Count; i++ )
+				Result[i] = ReadType<T>( Reader, Endian );
+
+			return Result;
+		}
+
 		static public Int16 ReadInt16( this BinaryReader Reader, Endianness Endian = Endianness.Little )
 		{
 			switch ( Endian )
@@ -59,6 +69,16 @@ namespace ORCToolKit.Extensions
 			}
 
 			throw new ArgumentOutOfRangeException();
+		}
+
+		static public Int16[] ReadInt16Array( this BinaryReader Reader, Int32 Count, Endianness Endian = Endianness.Little )
+		{
+			Int16[] Result = new Int16[Count];
+
+			for ( Int32 i = 0; i < Count; i++ )
+				Result[i] = ReadInt16( Reader, Endian );
+
+			return Result;
 		}
 
 		static public UInt16 ReadUInt16( this BinaryReader Reader, Endianness Endian = Endianness.Little )
@@ -74,6 +94,16 @@ namespace ORCToolKit.Extensions
 			throw new ArgumentOutOfRangeException();
 		}
 
+		static public UInt16[] ReadUInt16Array( this BinaryReader Reader, Int32 Count, Endianness Endian = Endianness.Little )
+		{
+			UInt16[] Result = new UInt16[Count];
+
+			for ( Int32 i = 0; i < Count; i++ )
+				Result[i] = ReadUInt16( Reader, Endian );
+
+			return Result;
+		}
+
 		static public Int32 ReadInt32( this BinaryReader Reader, Endianness Endian = Endianness.Little )
 		{
 			switch ( Endian )
@@ -85,6 +115,16 @@ namespace ORCToolKit.Extensions
 			}
 
 			throw new ArgumentOutOfRangeException();
+		}
+
+		static public Int32[] ReadInt32Array( this BinaryReader Reader, Int32 Count, Endianness Endian = Endianness.Little )
+		{
+			Int32[] Result = new Int32[Count];
+
+			for ( Int32 i = 0; i < Count; i++ )
+				Result[i] = ReadInt32( Reader, Endian );
+
+			return Result;
 		}
 
 		static public UInt32 ReadUInt32( this BinaryReader Reader, Endianness Endian = Endianness.Little )
@@ -100,6 +140,16 @@ namespace ORCToolKit.Extensions
 			throw new ArgumentOutOfRangeException();
 		}
 
+		static public UInt32[] ReadUInt32Array( this BinaryReader Reader, Int32 Count, Endianness Endian = Endianness.Little )
+		{
+			UInt32[] Result = new UInt32[Count];
+
+			for ( Int32 i = 0; i < Count; i++ )
+				Result[i] = ReadUInt32( Reader, Endian );
+
+			return Result;
+		}
+
 		static public Int64 ReadInt64( this BinaryReader Reader, Endianness Endian = Endianness.Little )
 		{
 			switch ( Endian )
@@ -111,6 +161,16 @@ namespace ORCToolKit.Extensions
 			}
 
 			throw new ArgumentOutOfRangeException();
+		}
+
+		static public Int64[] ReadInt64Array( this BinaryReader Reader, Int32 Count, Endianness Endian = Endianness.Little )
+		{
+			Int64[] Result = new Int64[Count];
+
+			for ( Int32 i = 0; i < Count; i++ )
+				Result[i] = ReadInt64( Reader, Endian );
+
+			return Result;
 		}
 
 		static public UInt64 ReadUInt64( this BinaryReader Reader, Endianness Endian = Endianness.Little )
@@ -126,6 +186,16 @@ namespace ORCToolKit.Extensions
 			throw new ArgumentOutOfRangeException();
 		}
 
+		static public UInt64[] ReadUInt64Array( this BinaryReader Reader, Int32 Count, Endianness Endian = Endianness.Little )
+		{
+			UInt64[] Result = new UInt64[Count];
+
+			for ( Int32 i = 0; i < Count; i++ )
+				Result[i] = ReadUInt64( Reader, Endian );
+
+			return Result;
+		}
+
 		static public Half ReadHalf( this BinaryReader Reader, Endianness Endian = Endianness.Little )
 		{
 			switch ( Endian )
@@ -137,6 +207,16 @@ namespace ORCToolKit.Extensions
 			}
 
 			throw new ArgumentOutOfRangeException();
+		}
+
+		static public Half[] ReadHalfArray( this BinaryReader Reader, Int32 Count, Endianness Endian = Endianness.Little )
+		{
+			Half[] Result = new Half[Count];
+
+			for ( Int32 i = 0; i < Count; i++ )
+				Result[i] = ReadHalf( Reader, Endian );
+
+			return Result;
 		}
 
 		static public Single ReadSingle( this BinaryReader Reader, Endianness Endian = Endianness.Little )
@@ -152,6 +232,16 @@ namespace ORCToolKit.Extensions
 			throw new ArgumentOutOfRangeException();
 		}
 
+		static public Single[] ReadSingleArray( this BinaryReader Reader, Int32 Count, Endianness Endian = Endianness.Little )
+		{
+			Single[] Result = new Single[Count];
+
+			for ( Int32 i = 0; i < Count; i++ )
+				Result[i] = ReadSingle( Reader, Endian );
+
+			return Result;
+		}
+
 		static public Double ReadDouble( this BinaryReader Reader, Endianness Endian = Endianness.Little )
 		{
 			switch ( Endian )
@@ -163,6 +253,16 @@ namespace ORCToolKit.Extensions
 			}
 
 			throw new ArgumentOutOfRangeException();
+		}
+
+		static public Double[] ReadDoubleArray( this BinaryReader Reader, Int32 Count, Endianness Endian = Endianness.Little )
+		{
+			Double[] Result = new Double[Count];
+
+			for ( Int32 i = 0; i < Count; i++ )
+				Result[i] = ReadDouble( Reader, Endian );
+
+			return Result;
 		}
 
 		static private bool NeedToSwapBytes( Endianness Endian = Endianness.Little )
