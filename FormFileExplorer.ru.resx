@@ -4431,4 +4431,7 @@
   <data name="MenuStripItemToolsSSGArchiveEditor.Text" xml:space="preserve">
     <value>Редактор SSG-архивов</value>
   </data>
+  <data name="MenuStripItemToolsSWB2DatabaseEditor.Text" xml:space="preserve">
+    <value>Редактор SWB2-файлов</value>
+  </data>
 </root>

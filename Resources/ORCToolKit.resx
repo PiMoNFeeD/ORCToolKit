@@ -138,6 +138,39 @@
   <data name="FormFileExplorerInvalidGameFolderTitle" xml:space="preserve">
     <value />
   </data>
+  <data name="FormSWB2DatabaseEditorEntryFlagsDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryFlagsName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryKeyDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryKeyName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryTableIdentifierDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryTableIdentifierName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryTableNumEntriesName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryValueLengthName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryValueName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryValueTypeDescription" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryValueTypeName" xml:space="preserve">
+    <value />
+  </data>
   <data name="No" xml:space="preserve">
     <value />
   </data>

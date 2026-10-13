@@ -106,6 +106,10 @@ namespace ORCToolKit.FileTypes
 					break;
 				}
 				case FileType.SWB2Database:
+				{
+					Editor = new FormSWB2DatabaseEditor();
+					break;
+				}
 				default:
 				{
 					if ( !Silent )

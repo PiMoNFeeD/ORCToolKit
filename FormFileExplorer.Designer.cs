@@ -45,6 +45,7 @@ namespace ORCToolKit
 			MenuStripItemTools = new ToolStripMenuItem();
 			MenuStripItemToolsLocalizationEditor = new ToolStripMenuItem();
 			MenuStripItemToolsSSGArchiveEditor = new ToolStripMenuItem();
+			MenuStripItemToolsSWB2DatabaseEditor = new ToolStripMenuItem();
 			MenuStripItemSettings = new ToolStripMenuItem();
 			MenuStripItemSettingsLanguage = new ToolStripMenuItem();
 			GameFileExplorerContextMenu.SuspendLayout();
@@ -132,7 +133,7 @@ namespace ORCToolKit
 			// 
 			// MenuStripItemTools
 			// 
-			MenuStripItemTools.DropDownItems.AddRange( new ToolStripItem[] { MenuStripItemToolsLocalizationEditor, MenuStripItemToolsSSGArchiveEditor } );
+			MenuStripItemTools.DropDownItems.AddRange( new ToolStripItem[] { MenuStripItemToolsLocalizationEditor, MenuStripItemToolsSSGArchiveEditor, MenuStripItemToolsSWB2DatabaseEditor } );
 			MenuStripItemTools.Name = "MenuStripItemTools";
 			MenuStripItemTools.Size = new Size( 46, 20 );
 			MenuStripItemTools.Text = "Tools";
@@ -150,6 +151,13 @@ namespace ORCToolKit
 			MenuStripItemToolsSSGArchiveEditor.Size = new Size( 171, 22 );
 			MenuStripItemToolsSSGArchiveEditor.Text = "SSG Archive Editor";
 			MenuStripItemToolsSSGArchiveEditor.Click += MenuStripItemToolsSSGArchiveEditor_Click;
+			// 
+			// MenuStripItemToolsSWB2DatabaseEditor
+			// 
+			MenuStripItemToolsSWB2DatabaseEditor.Name = "MenuStripItemToolsSWB2DatabaseEditor";
+			MenuStripItemToolsSWB2DatabaseEditor.Size = new Size( 171, 22 );
+			MenuStripItemToolsSWB2DatabaseEditor.Text = "SWB2 Editor";
+			MenuStripItemToolsSWB2DatabaseEditor.Click += MenuStripItemToolsSWB2DatabaseEditor_Click;
 			// 
 			// MenuStripItemSettings
 			// 
@@ -206,5 +214,6 @@ namespace ORCToolKit
 		private ToolStripMenuItem MenuStripItemTools;
 		private ToolStripMenuItem MenuStripItemToolsLocalizationEditor;
 		private ToolStripMenuItem MenuStripItemToolsSSGArchiveEditor;
+		private ToolStripMenuItem MenuStripItemToolsSWB2DatabaseEditor;
 	}
 }

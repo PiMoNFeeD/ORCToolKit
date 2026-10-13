@@ -138,6 +138,39 @@
   <data name="FormFileExplorerInvalidGameFolderTitle" xml:space="preserve">
     <value>Неправильная папка игры</value>
   </data>
+  <data name="FormSWB2DatabaseEditorEntryFlagsDescription" xml:space="preserve">
+    <value>Значение на данный момент неизвестно.</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryFlagsName" xml:space="preserve">
+    <value>Флаги</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryKeyDescription" xml:space="preserve">
+    <value>Идентификатор, который игра использует для поиска этой записи и получения её значения. Является CRC32-хэшем строки.</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryKeyName" xml:space="preserve">
+    <value>Ключ</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryTableIdentifierDescription" xml:space="preserve">
+    <value>Ключ, который игра использует,чтобы идентифицировать (или найти) эту таблицу записей. Вероятнее всего, является CRC32-хэшем строки.</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryTableIdentifierName" xml:space="preserve">
+    <value>Идентификатор</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryTableNumEntriesName" xml:space="preserve">
+    <value>Количество записей</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryValueLengthName" xml:space="preserve">
+    <value>Количество значений</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryValueName" xml:space="preserve">
+    <value>Значения</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryValueTypeDescription" xml:space="preserve">
+    <value>Задаёт, какое значение хранит данная запись. Не все типы хранят значение.</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryValueTypeName" xml:space="preserve">
+    <value>Тип значения</value>
+  </data>
   <data name="No" xml:space="preserve">
     <value>Нет</value>
   </data>

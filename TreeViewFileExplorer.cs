@@ -62,6 +62,8 @@ namespace ORCToolKit
 			if ( string.IsNullOrEmpty( FolderPath ) )
 				return;
 
+			BeginUpdate();
+
 			Nodes.Clear();
 			FileSystemWatchers.Clear();
 
@@ -77,6 +79,8 @@ namespace ORCToolKit
 				Nodes.Add( CreateFileNode( SubFileInfo ) );
 
 			Sort();
+
+			EndUpdate();
 		}
 
 		[DllImport( "shell32.dll", CharSet = CharSet.Auto )]

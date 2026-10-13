@@ -126,6 +126,105 @@ namespace ORCToolKit.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        internal static string FormSWB2DatabaseEditorEntryFlagsDescription {
+            get {
+                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryFlagsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string FormSWB2DatabaseEditorEntryFlagsName {
+            get {
+                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryFlagsName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string FormSWB2DatabaseEditorEntryKeyDescription {
+            get {
+                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryKeyDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string FormSWB2DatabaseEditorEntryKeyName {
+            get {
+                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryKeyName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string FormSWB2DatabaseEditorEntryTableIdentifierDescription {
+            get {
+                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryTableIdentifierDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string FormSWB2DatabaseEditorEntryTableIdentifierName {
+            get {
+                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryTableIdentifierName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string FormSWB2DatabaseEditorEntryTableNumEntriesName {
+            get {
+                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryTableNumEntriesName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string FormSWB2DatabaseEditorEntryValueLengthName {
+            get {
+                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryValueLengthName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string FormSWB2DatabaseEditorEntryValueName {
+            get {
+                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryValueName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string FormSWB2DatabaseEditorEntryValueTypeDescription {
+            get {
+                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryValueTypeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string FormSWB2DatabaseEditorEntryValueTypeName {
+            get {
+                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryValueTypeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         internal static string No {
             get {
                 return ResourceManager.GetString("No", resourceCulture);

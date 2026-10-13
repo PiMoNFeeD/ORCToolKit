@@ -138,6 +138,39 @@
   <data name="FormFileExplorerInvalidGameFolderTitle" xml:space="preserve">
     <value>Invalid game folder</value>
   </data>
+  <data name="FormSWB2DatabaseEditorEntryFlagsDescription" xml:space="preserve">
+    <value>Purpose is currently unknown.</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryFlagsName" xml:space="preserve">
+    <value>Flags</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryKeyDescription" xml:space="preserve">
+    <value>An identifier which is used by the game to find this entry and obtain the value. This is a CRC32 hash of a string.</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryKeyName" xml:space="preserve">
+    <value>Key</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryTableIdentifierDescription" xml:space="preserve">
+    <value>A key which the game uses to identify (or find) this entry table. This is most likely a CRC32 hash of a string.</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryTableIdentifierName" xml:space="preserve">
+    <value>Identifier</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryTableNumEntriesName" xml:space="preserve">
+    <value>Number of entries</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryValueLengthName" xml:space="preserve">
+    <value>Number of values</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryValueName" xml:space="preserve">
+    <value>Values</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryValueTypeDescription" xml:space="preserve">
+    <value>Defines what kind of value is stored in this entry. Some types don't store any values.</value>
+  </data>
+  <data name="FormSWB2DatabaseEditorEntryValueTypeName" xml:space="preserve">
+    <value>Value Type</value>
+  </data>
   <data name="No" xml:space="preserve">
     <value>No</value>
   </data>

@@ -133,8 +133,14 @@ namespace ORCToolKit
 
 		private void MenuStripItemToolsSSGArchiveEditor_Click( object sender, EventArgs e )
 		{
-			FormSSGArchiveEditor SGArchiveEditor = new FormSSGArchiveEditor();
-			SGArchiveEditor.Show();
+			FormSSGArchiveEditor SSGArchiveEditor = new FormSSGArchiveEditor();
+			SSGArchiveEditor.Show();
+		}
+
+		private void MenuStripItemToolsSWB2DatabaseEditor_Click( object sender, EventArgs e )
+		{
+			FormSWB2DatabaseEditor SWB2DatabaseEditor = new FormSWB2DatabaseEditor();
+			SWB2DatabaseEditor.Show();
 		}
 	}
 }
