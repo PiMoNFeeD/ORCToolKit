@@ -221,6 +221,8 @@ namespace ORCToolKit
 					{
 						// need to move all child nodes to a list, sort it, and re-add them back, because stupid c# does not allow sorting
 						// child nodes only, you can only sort the entire fucking tree at once!
+						BeginUpdate();
+
 						TreeNode[] NewNodes = new TreeNode[ParentNode.Nodes.Count + 1];
 						ParentNode.Nodes.CopyTo( NewNodes, 0 );
 						ParentNode.Nodes.Clear();
@@ -229,12 +231,16 @@ namespace ORCToolKit
 
 						Array.Sort( NewNodes, new ExplorerTreeNodeComparer() );
 						ParentNode.Nodes.AddRange( NewNodes );
+
+						EndUpdate();
 					} );
 				}
 				else
 				{
 					BeginInvoke( delegate
 					{
+						BeginUpdate();
+
 						TreeNode[] NewNodes = new TreeNode[ParentNode.Nodes.Count + 1];
 						ParentNode.Nodes.CopyTo( NewNodes, 0 );
 						ParentNode.Nodes.Clear();
@@ -243,6 +249,8 @@ namespace ORCToolKit
 
 						Array.Sort( NewNodes, new ExplorerTreeNodeComparer() );
 						ParentNode.Nodes.AddRange( NewNodes );
+
+						EndUpdate();
 					} );
 				}
 			}
@@ -252,6 +260,8 @@ namespace ORCToolKit
 				{
 					BeginInvoke( delegate
 					{
+						BeginUpdate();
+
 						TreeNode[] NewNodes = new TreeNode[Nodes.Count + 1];
 						Nodes.CopyTo( NewNodes, 0 );
 						Nodes.Clear();
@@ -260,12 +270,16 @@ namespace ORCToolKit
 
 						Array.Sort( NewNodes, new ExplorerTreeNodeComparer() );
 						Nodes.AddRange( NewNodes );
+
+						EndUpdate();
 					} );
 				}
 				else
 				{
 					BeginInvoke( delegate
 					{
+						BeginUpdate();
+
 						TreeNode[] NewNodes = new TreeNode[Nodes.Count + 1];
 						Nodes.CopyTo( NewNodes, 0 );
 						Nodes.Clear();
@@ -274,6 +288,8 @@ namespace ORCToolKit
 
 						Array.Sort( NewNodes, new ExplorerTreeNodeComparer() );
 						Nodes.AddRange( NewNodes );
+
+						EndUpdate();
 					} );
 				}
 			}
@@ -310,10 +326,14 @@ namespace ORCToolKit
 				{
 					BeginInvoke( delegate
 					{
+						BeginUpdate();
+
 						FileNode.Tag = FileInfo is FileInfo ? new FileInfo( e.FullPath ) : new DirectoryInfo( e.FullPath );
 						FileNode.Name = e.FullPath;
 						FileNode.Text = e.Name;
 						Sort();
+
+						EndUpdate();
 					} );
 					break;
 				}
