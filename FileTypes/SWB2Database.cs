@@ -140,6 +140,85 @@ namespace ORCToolKit.FileTypes
 			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryValueName" )]
 			public object? Value { get; set; } = null;
 
+#if !DEBUG
+			[Browsable( false )]
+#endif
+			public string ValueAsString
+			{
+				get
+				{
+					string Result = string.Empty;
+
+					const Int32 MaxElementsToDisplay = 10;
+					switch ( ValueType )
+					{
+						case EntryValueType.TYPE_INT32_STORED:
+						case EntryValueType.TYPE_FLOAT_STORED:
+						case EntryValueType.TYPE_STRING:
+						case EntryValueType.TYPE_CRC32:
+						{
+							Debug.Assert( Value != null );
+
+							Array Values = Value as Array;
+							if ( Values.Length == 1 )
+							{
+								Result += Values.GetValue( 0 );
+							}
+							else
+							{
+								Result += "[";
+								Int32 Length = Math.Min( MaxElementsToDisplay, Values.Length );
+								for ( Int32 i = 0; i < Length; i++ )
+								{
+									Result += Values.GetValue( i );
+									if ( i == (Length - 1) )
+									{
+										if ( Length < Values.Length )
+											Result += ":...";
+									}
+									else
+									{
+										Result += StringValueSeparator;
+									}
+								}
+								Result += "]";
+							}
+							break;
+						}
+						// this weird logic allows me to automatically propogate default values without having to worry about manually typing them out
+						case EntryValueType.TYPE_INT32_ZERO:
+						case EntryValueType.TYPE_INT32_ONE:
+						{
+							Debug.Assert( Value == null );
+							Result += Convert.ToInt32( ValueType - EntryValueType.TYPE_INT32_ZERO );
+							break;
+						}
+						case EntryValueType.TYPE_FLOAT_ZERO:
+						case EntryValueType.TYPE_FLOAT_ONE:
+						{
+							Debug.Assert( Value == null );
+							Result += Convert.ToSingle( ValueType - EntryValueType.TYPE_FLOAT_ZERO );
+							break;
+						}
+						case EntryValueType.TYPE_BYTE_ZERO:
+						case EntryValueType.TYPE_BYTE_ONE:
+						{
+							Debug.Assert( Value == null );
+							Result += Convert.ToBoolean( ValueType - EntryValueType.TYPE_BYTE_ZERO );
+							break;
+						}
+						// unsupported, should never reach here
+						case EntryValueType.TYPE_ENTRY_TABLE:
+						{
+							Debug.Assert( false );
+							break;
+						}
+					}
+
+					return Result;
+				}
+			}
+
 			public Char StringValueSeparator = ':'; // for some FUCKING reason, some strings are separated by ':', and some by ';'?!?!?!?!?
 
 			[Browsable( false )]
@@ -392,75 +471,7 @@ namespace ORCToolKit.FileTypes
 
 			public override string? ToString()
 			{
-				string Result = $"{Key.ToString()} ({ValueType.ToString()}): ";
-
-				const Int32 MaxElementsToDisplay = 10;
-				switch ( ValueType )
-				{
-					case EntryValueType.TYPE_INT32_STORED:
-					case EntryValueType.TYPE_FLOAT_STORED:
-					case EntryValueType.TYPE_STRING:
-					case EntryValueType.TYPE_CRC32:
-					{
-						Debug.Assert( Value != null );
-
-						Array Values = Value as Array;
-						if ( Values.Length == 1 )
-						{
-							Result += Values.GetValue( 0 );
-						}
-						else
-						{
-							Result += "[";
-							Int32 Length = Math.Min( MaxElementsToDisplay, Values.Length );
-							for ( Int32 i = 0; i < Length; i++ )
-							{
-								Result += Values.GetValue( i );
-								if ( i == (Length - 1) )
-								{
-									if ( Length < Values.Length )
-										Result += ":...";
-								}
-								else
-								{
-									Result += StringValueSeparator;
-								}
-							}
-							Result += "]";
-						}
-						break;
-					}
-					// this weird logic allows me to automatically propogate default values without having to worry about manually typing them out
-					case EntryValueType.TYPE_INT32_ZERO:
-					case EntryValueType.TYPE_INT32_ONE:
-					{
-						Debug.Assert( Value == null );
-						Result += Convert.ToInt32( ValueType - EntryValueType.TYPE_INT32_ZERO );
-						break;
-					}
-					case EntryValueType.TYPE_FLOAT_ZERO:
-					case EntryValueType.TYPE_FLOAT_ONE:
-					{
-						Debug.Assert( Value == null );
-						Result += Convert.ToSingle( ValueType - EntryValueType.TYPE_FLOAT_ZERO );
-						break;
-					}
-					case EntryValueType.TYPE_BYTE_ZERO:
-					case EntryValueType.TYPE_BYTE_ONE:
-					{
-						Debug.Assert( Value == null );
-						Result += Convert.ToBoolean( ValueType - EntryValueType.TYPE_BYTE_ZERO );
-						break;
-					}
-					// unsupported, should never reach here
-					case EntryValueType.TYPE_ENTRY_TABLE:
-					{
-						Debug.Assert( false );
-						break;
-					}
-				}
-
-				return Result;
+				return $"{Key.ToString()} ({ValueType.ToString()}): {ValueAsString}";
 			}
 		}
 
