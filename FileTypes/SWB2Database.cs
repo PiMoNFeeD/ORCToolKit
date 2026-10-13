@@ -1,9 +1,6 @@
 ﻿using ORCToolKit.Extensions;
-using System;
 using System.ComponentModel;
-using System.ComponentModel.Design;
 using System.Diagnostics;
-using System.Drawing.Design;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -335,13 +332,13 @@ namespace ORCToolKit.FileTypes
 						case EntryValueType.TYPE_INT32_STORED:
 						{
 							foreach ( Int32 Value in (this.Value as Int32[]) )
-								Writer.Write( Value );
+								Writer.Write( Value, Endian );
 							break;
 						}
 						case EntryValueType.TYPE_FLOAT_STORED:
 						{
 							foreach ( Single Value in (this.Value as Single[]) )
-								Writer.Write( Value );
+								Writer.Write( Value, Endian );
 							break;
 						}
 						case EntryValueType.TYPE_STRING:
@@ -371,7 +368,7 @@ namespace ORCToolKit.FileTypes
 						case EntryValueType.TYPE_CRC32:
 						{
 							foreach ( UInt32 Value in (this.Value as UInt32[]) )
-								Writer.Write( Value );
+								Writer.Write( Value, Endian );
 							break;
 						}
 						case EntryValueType.TYPE_INT32_ZERO:
