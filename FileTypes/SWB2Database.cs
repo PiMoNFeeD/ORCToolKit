@@ -67,7 +67,6 @@ namespace ORCToolKit.FileTypes
 			private EntryValueType _valueType = EntryValueType.TYPE_BYTE_ZERO;
 
 			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryKeyName" ), LocalizedDescription( "FormSWB2DatabaseEditorEntryKeyDescription" )]
-			[TypeConverter( typeof( CRC32Converter ) )]
 			public CRC32 Key { get; set; } = 0;
 
 			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryValueTypeName" ), LocalizedDescription( "FormSWB2DatabaseEditorEntryValueTypeDescription" )]
@@ -482,7 +481,7 @@ namespace ORCToolKit.FileTypes
 			public List<Entry> Entries = new List<Entry>();
 
 			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryTableIdentifierName" ), LocalizedDescription( "FormSWB2DatabaseEditorEntryTableIdentifierDescription" )]
-			public UInt32 Identifier { get; set; } = 0;
+			public CRC32 Identifier { get; set; } = 0;
 
 			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryTableNumEntriesName" )]
 			public Int32 NumEntries { get { return Entries.Count; } }

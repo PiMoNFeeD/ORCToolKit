@@ -5,6 +5,7 @@ using System.Globalization;
 
 namespace ORCToolKit
 {
+	[TypeConverter( typeof( CRC32Converter ) )]
 	public class CRC32: IComparable, IComparable<CRC32>, IEquatable<CRC32>, IConvertible
 	{
 		private UInt32 _value;
