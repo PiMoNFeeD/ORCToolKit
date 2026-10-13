@@ -53,7 +53,7 @@ typedef enum <ubyte>
     TYPE_FLOAT_ONE = 10,	// float that is always one, not stored in the file (1.0)
     TYPE_BYTE_ZERO = 11,	// byte that is always zero, not stored in the file (false)
     TYPE_BYTE_ONE = 12,		// byte that is always one, not stored in the file (true)
-	TYPE_CRC32 = 13,		// the code path that reads this type either reads TYPE_STRING and then extracts a CRC32 of that string, or reads a uint32 directly; this appears correct after inspecting assets with this type
+	TYPE_STRING_HASH = 13,	// the code path that reads this type either reads TYPE_STRING and then extracts a CRC32 of that string, or reads a uint32 directly; this appears correct after inspecting assets with this type
 } ValueType;
 
 struct EntryTable;
@@ -110,7 +110,7 @@ struct EntryTable
 					local int64 bytesRead = FTell() - oldPos;
 					Assert( bytesRead == _valueSize, Str( "Size mismatch when parsing embedded entry table; expected %u, read %u", _valueSize, bytesRead ) );
 					break;
-				case TYPE_CRC32:
+				case TYPE_STRING_HASH:
 					Assert( (_valueSize % sizeof( uint32 )) == 0 );
 					uint32 value[_valueSize / sizeof( uint32 )];
 					break;

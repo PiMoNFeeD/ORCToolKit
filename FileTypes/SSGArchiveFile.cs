@@ -3,6 +3,7 @@ using System.IO.Hashing;
 using System.IO.Compression;
 using System.Runtime.InteropServices;
 using ORCToolKit.Extensions;
+using System.Diagnostics;
 
 namespace ORCToolKit.FileTypes
 {
@@ -28,21 +29,21 @@ namespace ORCToolKit.FileTypes
 		[StructLayout( LayoutKind.Sequential, Pack = 1 )]
 		private class SSGSection
 		{
-			public Int32 NameCRC32; // -crc32 - 1
+			public UInt32 NameCRC32;
 			public Int32 NameOffset; // relative to section names
 			public Int32 UncompressedSize;
 			public Int32 Unknown; // appears to always be 1
 
 			public Int32 DataOffset; // only reliable for uncompressed, for compressed need to use the size of all uncompressed sections that came before this one
 			public UInt32 Type;
-			public Int32 UncompressedCRC32; // -crc32 - 1
+			public UInt32 UncompressedCRC32;
 			public Int32 CompressedSize; // this might not actually be the size of one section, but a size of multiple compressed sections
 		}
 
 		public class DataSection
 		{
 			public string Name = string.Empty;
-			public Int32 NameCRC32 = 0; // TODO: should NOT be stored, but in some instances it does not match the actual CRC32 of a name string!
+			public UInt32 NameCRC32 = 0; // TODO: should NOT be stored, but in some instances it does not match the actual CRC32 of a name string!
 			public byte[] RawData = Array.Empty<byte>();
 			public UInt32 Type = 0;
 			public bool IsCompressed = false;
@@ -268,14 +269,14 @@ namespace ORCToolKit.FileTypes
 				for ( Int32 SectionIndex = 0; SectionIndex < DataSections.Count; SectionIndex++ )
 				{
 					SSGSection Section = new SSGSection();
-					//Section.NameCRC32 = -(Int32)Crc32.HashToUInt32( Encoding.UTF8.GetBytes( DataSections[SectionIndex].Name ) ) - 1; // TODO: UI/Gallery.ssg mismatch for GalleryImages section!
+					//Section.NameCRC32 = DataSections[SectionIndex].Name.GetCRC32(); // TODO: UI/Gallery.ssg mismatch for GalleryImages section!
 					Section.NameCRC32 = DataSections[SectionIndex].NameCRC32;
 					Section.NameOffset = SectionNames[DataSections[SectionIndex].Name];
 					Section.UncompressedSize = DataSections[SectionIndex].RawData.Length;
 					Section.Unknown = 1;
 
 					Section.Type = DataSections[SectionIndex].Type;
-					Section.UncompressedCRC32 = -(Int32)Crc32.HashToUInt32( DataSections[SectionIndex].RawData.ToArray() ) - 1;
+					Section.UncompressedCRC32 = ~Crc32.HashToUInt32( DataSections[SectionIndex].RawData.ToArray() );
 
 					if ( DataSections[SectionIndex].IsCompressed )
 					{

@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using System.Runtime.InteropServices;
+﻿using System.IO.Hashing;
 using System.Text;
 
 namespace ORCToolKit.Extensions
@@ -16,6 +15,12 @@ namespace ORCToolKit.Extensions
 			//Builder.Replace( '\\', Slash );
 			//Builder.Replace( '/', Slash );
 			//return Builder.ToString();
+		}
+
+		static public UInt32 GetCRC32( this string String )
+		{
+			// the game doesn't invert the hash, C# does; invert it again to return the same value as the game would produce
+			return ~Crc32.HashToUInt32( Encoding.UTF8.GetBytes( String ) );
 		}
 	}
 }

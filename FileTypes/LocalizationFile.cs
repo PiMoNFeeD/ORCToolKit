@@ -14,7 +14,7 @@ namespace ORCToolKit.FileTypes
 
 			public UInt32 GetHeaderOffset( UInt32 Alignment )
 			{
-				return 4 * (~Crc32.HashToUInt32( Encoding.UTF8.GetBytes( Name.ToLower() ) ) % Alignment);
+				return 4 * (Name.ToLower().GetCRC32() % Alignment);
 			}
 			public Int32 GetAlignedSize()
 			{

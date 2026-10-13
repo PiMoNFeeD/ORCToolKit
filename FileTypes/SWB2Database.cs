@@ -21,7 +21,7 @@ namespace ORCToolKit.FileTypes
 			TYPE_FLOAT_ONE = 10,    // float that is always one, not stored in the file (1.0)
 			TYPE_BYTE_ZERO = 11,    // byte that is always zero, not stored in the file (false)
 			TYPE_BYTE_ONE = 12,     // byte that is always one, not stored in the file (true)
-			TYPE_CRC32 = 13,        // the code path that reads this type either reads TYPE_STRING and then extracts a CRC32 of that string,
+			TYPE_STRING_HASH = 13,	// the code path that reads this type either reads TYPE_STRING and then extracts a CRC32 of that string,
 									// or reads a uint32 directly; this appears correct after inspecting assets with this type
 		};
 		private const Int32 StringAlignment = 4;
@@ -90,7 +90,7 @@ namespace ORCToolKit.FileTypes
 						case EntryValueType.TYPE_ENTRY_TABLE:
 							Value = new EntryTable();
 							break;
-						case EntryValueType.TYPE_CRC32:
+						case EntryValueType.TYPE_STRING_HASH:
 							Value = new UInt32[1] { 0 };
 							break;
 						case EntryValueType.TYPE_INT32_ZERO:
@@ -155,7 +155,7 @@ namespace ORCToolKit.FileTypes
 						case EntryValueType.TYPE_INT32_STORED:
 						case EntryValueType.TYPE_FLOAT_STORED:
 						case EntryValueType.TYPE_STRING:
-						case EntryValueType.TYPE_CRC32:
+						case EntryValueType.TYPE_STRING_HASH:
 						{
 							Debug.Assert( Value != null );
 
@@ -262,7 +262,7 @@ namespace ORCToolKit.FileTypes
 							}
 							return Size;
 						}
-						case EntryValueType.TYPE_CRC32:
+						case EntryValueType.TYPE_STRING_HASH:
 						{
 							Debug.Assert( Value != null );
 							return Marshal.SizeOf<UInt32>() * (Value as UInt32[]).Length;
@@ -353,7 +353,7 @@ namespace ORCToolKit.FileTypes
 									throw new FileFormatException();
 								break;
 							}
-							case EntryValueType.TYPE_CRC32:
+							case EntryValueType.TYPE_STRING_HASH:
 							{
 								if ( (EntryHeader.ValueSize % Marshal.SizeOf<UInt32>()) != 0 )
 									throw new FileFormatException();
@@ -376,7 +376,7 @@ namespace ORCToolKit.FileTypes
 							case EntryValueType.TYPE_FLOAT_STORED:
 							case EntryValueType.TYPE_STRING:
 							case EntryValueType.TYPE_ENTRY_TABLE:
-							case EntryValueType.TYPE_CRC32:
+							case EntryValueType.TYPE_STRING_HASH:
 								throw new FileFormatException();
 							// only these types can store no value!
 							case EntryValueType.TYPE_INT32_ZERO:
@@ -444,7 +444,7 @@ namespace ORCToolKit.FileTypes
 							(this.Value as EntryTable).SaveToBuffer( BufferStream, Endian );
 							break;
 						}
-						case EntryValueType.TYPE_CRC32:
+						case EntryValueType.TYPE_STRING_HASH:
 						{
 							foreach ( UInt32 Value in (this.Value as UInt32[]) )
 								Writer.Write( Value, Endian );
