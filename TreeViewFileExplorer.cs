@@ -207,6 +207,11 @@ namespace ORCToolKit
 		{
 			TaggedFileSystemWatcher Watcher = (TaggedFileSystemWatcher)sender;
 
+			// HACK: for some reason, when saving a file, this gets triggered BEFORE a file is actually created??
+			// causes a crash down below if I don't do it...
+			if ( !File.Exists( e.FullPath ) && !Directory.Exists( e.FullPath ) )
+				return;
+
 			TreeNode? ParentNode = (TreeNode?)Watcher.Tag;
 			if ( ParentNode != null )
 			{
@@ -251,7 +256,7 @@ namespace ORCToolKit
 						Nodes.CopyTo( NewNodes, 0 );
 						Nodes.Clear();
 
-						Nodes.Add( CreateFolderNode( new DirectoryInfo( e.FullPath ) ) );
+						NewNodes[NewNodes.Count() - 1] = CreateFolderNode( new DirectoryInfo( e.FullPath ) );
 
 						Array.Sort( NewNodes, new ExplorerTreeNodeComparer() );
 						Nodes.AddRange( NewNodes );
