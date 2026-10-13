@@ -43,9 +43,9 @@ namespace ORCToolKit
 			}
 		}
 
-		private void FormSSGArchiveEditor_OnEntriesUpdated( object? sender, EventArgs e )
+		private void FormSSGArchiveEditor_OnEntriesUpdated( object? sender, EntriesUpdatedEventArgs e )
 		{
-			MenuStripItemFileSave.Enabled = (_file.DataSections.Count > 0);
+			MenuStripItemFileSave.Enabled = e.HasUnsavedEdits;
 			MenuStripItemEditSearch.Enabled = (_file.DataSections.Count > 0);
 			MenuStripItemEditSearchForward.Enabled = (_file.DataSections.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
 			MenuStripItemEditSearchBackward.Enabled = (_file.DataSections.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
@@ -111,7 +111,6 @@ namespace ORCToolKit
 				// TODO: swap RawData for a memory stream to save directly into it, without a middleman stream
 				using ( MemoryStream FileStream = new MemoryStream() )
 				{
-					HasUnsavedEdits = false;
 					File.SaveToBuffer( FileStream );
 
 					_file.DataSections[LastOpenedSection].RawData = FileStream.ToArray();
@@ -119,6 +118,7 @@ namespace ORCToolKit
 					MessageBox.Show( Resources.ORCToolKit.FileSSGArchiveEmbeddedSaveText, Resources.ORCToolKit.FileSSGArchiveEmbeddedSaveTitle, MessageBoxButtons.OK, MessageBoxIcon.Information );
 				}
 			}
+			base.SaveChild( File );
 		}
 
 		private void MenuStripItemFileNew_Click( object sender, EventArgs e )

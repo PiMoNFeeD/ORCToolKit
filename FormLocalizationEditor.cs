@@ -17,9 +17,9 @@ namespace ORCToolKit
 			TextEntriesGridView.DataSource = _file.TextEntries;
 		}
 
-		private void FormLocalizationEditor_OnEntriesUpdated( Object? sender, EventArgs e )
+		private void FormLocalizationEditor_OnEntriesUpdated( Object? sender, EntriesUpdatedEventArgs e )
 		{
-			MenuStripItemFileSave.Enabled = (_file.TextEntries.Count > 0);
+			MenuStripItemFileSave.Enabled = e.HasUnsavedEdits;
 			MenuStripItemEditInsertEntryBefore.Enabled = (_file.TextEntries.Count > 0);
 			MenuStripItemEditRemoveEntry.Enabled = (_file.TextEntries.Count > 0);
 			MenuStripItemEditSearch.Enabled = (_file.TextEntries.Count > 0);
@@ -111,7 +111,6 @@ namespace ORCToolKit
 			HighestSelectedRow = Int32.Clamp( HighestSelectedRow + 1, 0, TextEntriesGridView.Rows.Count );
 
 			_file.TextEntries.Insert( HighestSelectedRow, new FileTypes.LocalizationFile.TextEntry() { Name = string.Empty, Text = string.Empty } );
-			HasUnsavedEdits = true;
 			EntriesUpdated();
 		}
 
@@ -123,7 +122,6 @@ namespace ORCToolKit
 			LowestSelectedRow = Int32.Clamp( LowestSelectedRow, 0, TextEntriesGridView.Rows.Count );
 
 			_file.TextEntries.Insert( LowestSelectedRow, new FileTypes.LocalizationFile.TextEntry() { Name = string.Empty, Text = string.Empty } );
-			HasUnsavedEdits = true;
 			EntriesUpdated();
 		}
 
@@ -131,8 +129,7 @@ namespace ORCToolKit
 		{
 			foreach ( DataGridViewCell SelectedCell in TextEntriesGridView.SelectedCells )
 				_file.TextEntries.RemoveAt( SelectedCell.RowIndex );
-			HasUnsavedEdits = (TextEntriesGridView.Rows.Count > 0);
-			EntriesUpdated();
+			EntriesUpdated( (TextEntriesGridView.Rows.Count > 0) );
 		}
 
 		private void MenuStripItemFileExit_Click( object sender, EventArgs e )

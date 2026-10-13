@@ -30,9 +30,9 @@ namespace ORCToolKit
 			EntryTreeView.LoadSWB2File( _file );
 		}
 
-		private void FormSWB2DatabaseEditor_OnEntriesUpdated( Object? sender, EventArgs e )
+		private void FormSWB2DatabaseEditor_OnEntriesUpdated( Object? sender, EntriesUpdatedEventArgs e )
 		{
-			MenuStripItemFileSave.Enabled = (_file.EntryTables.Count > 0);
+			MenuStripItemFileSave.Enabled = e.HasUnsavedEdits;
 		}
 
 		private void MenuStripItemFileNew_Click( object sender, EventArgs e )
@@ -71,7 +71,7 @@ namespace ORCToolKit
 			TreeNode.Text = EntryPropertyGrid.SelectedObject.ToString(); // update name of this entry
 			EntryPropertyGrid.Refresh();
 
-			HasUnsavedEdits = true;
+			EntriesUpdated();
 		}
 
 		private TreeNode? FindTreeNodeForEntry( object Entry, TreeNodeCollection Nodes )

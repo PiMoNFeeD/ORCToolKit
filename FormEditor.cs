@@ -3,9 +3,18 @@ using System.Text.RegularExpressions;
 
 namespace ORCToolKit
 {
+	public class EntriesUpdatedEventArgs: EventArgs
+	{
+		public readonly bool HasUnsavedEdits;
+
+		public EntriesUpdatedEventArgs( bool HasUnsavedEdits ) { this.HasUnsavedEdits = HasUnsavedEdits; }
+	}
+
+	public delegate void EntriesUpdatedEventHandler( Object? sender, EntriesUpdatedEventArgs args );
+
 	public class FormEditor: Form
 	{
-		protected bool HasUnsavedEdits = false;
+		private bool HasUnsavedEdits = false;
 
 		private FormSearch FormSearch = new FormSearch();
 		protected string LastSearchString = string.Empty;
@@ -18,9 +27,9 @@ namespace ORCToolKit
 		protected event EventHandler? OnNewFile;
 		protected event EventHandler? OnOpenFile;
 		protected event EventHandler? OnSaveFile;
-		protected event EventHandler? OnEntriesUpdated;
+		protected event EntriesUpdatedEventHandler? OnEntriesUpdated;
 		virtual protected bool TrySearch( SearchDirection Direction, string SearchString, bool WholeWord, bool CaseSensitive ) { throw new NotImplementedException(); }
-		virtual protected void SaveChild( FileTypes.IFileType? File ) { throw new NotImplementedException(); }
+		virtual protected void SaveChild( FileTypes.IFileType? File ) { HasUnsavedEdits = false; }
 
 		protected bool OwnedByAnotherEditor = false;
 
@@ -37,24 +46,23 @@ namespace ORCToolKit
 		{
 			if ( CheckUnsavedChanges() )
 			{
-				HasUnsavedEdits = false;
 				CurrentFile?.Reset();
-				EntriesUpdated();
 
 				if ( OnNewFile != null )
 					OnNewFile( this, new EventArgs() );
+
+				EntriesUpdated( false );
 			}
 		}
 
 		public void OpenFile( Stream FileBuffer )
 		{
-			HasUnsavedEdits = false;
 			CurrentFile?.LoadFromBuffer( FileBuffer );
 
 			if ( OnOpenFile != null )
 				OnOpenFile( this, new EventArgs() );
 
-			EntriesUpdated();
+			EntriesUpdated( false );
 		}
 
 		public void SaveFile( Stream FileBuffer )
@@ -75,10 +83,11 @@ namespace ORCToolKit
 				OnSaveFile( this, new EventArgs() );
 		}
 
-		public void EntriesUpdated()
+		public void EntriesUpdated( bool UnsavedEdits = true )
 		{
+			HasUnsavedEdits = UnsavedEdits;
 			if ( OnEntriesUpdated != null )
-				OnEntriesUpdated( this, new EventArgs() );
+				OnEntriesUpdated( this, new EntriesUpdatedEventArgs( HasUnsavedEdits ) );
 		}
 
 		protected bool InvokeOpenDialog()
@@ -193,6 +202,7 @@ namespace ORCToolKit
 		private void FormEditor_Shown( object? sender, EventArgs e )
 		{
 			OwnedByAnotherEditor = Owner is FormEditor;
+			HasUnsavedEdits = false;
 		}
 
 		private void FormSearch_OnSearch( object sender, SearchEventArgs e )
