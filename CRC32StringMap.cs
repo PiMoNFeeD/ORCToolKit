@@ -4,7 +4,7 @@ namespace ORCToolKit
 {
 	static public class CRC32StringMap
 	{
-		static private readonly Dictionary<UInt32, string> _dict = new Dictionary<UInt32, string>();
+		static private readonly Dictionary<CRC32, string> _dict = new Dictionary<CRC32, string>();
 
 		static public void Initialize()
 		{
@@ -19,7 +19,8 @@ namespace ORCToolKit
 		static public CRC32 StoreString( string String )
 		{
 			CRC32 Result = String.GetCRC32();
-			_dict.Add( Result, String );
+			if ( !_dict.ContainsKey( Result ) )
+				_dict.Add( Result, String );
 			return Result;
 		}
 

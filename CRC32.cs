@@ -19,6 +19,8 @@ namespace ORCToolKit
 
 		public override string ToString()
 		{
+			// TODO: this is extremely bad, you can't actually distinguish
+			// between a string that is a number and an actual number...
 			return CRC32StringMap.FindString( _value ) ?? _value.ToString();
 		}
 		public override Int32 GetHashCode() { return _value.GetHashCode(); }
@@ -67,20 +69,20 @@ namespace ORCToolKit
 			if ( value is UInt32 )
 				return new CRC32( (UInt32)value );
 
-			try
+			if ( value is string )
 			{
-				object? Result = base.ConvertFrom( context, culture, value );
-				if ( Result is UInt32 )
-					return new CRC32( (UInt32)Result );
-			}
-			catch ( ArgumentException e )
-			{
+				if ( UInt32.TryParse( (string)value, NumberStyles.Integer, culture, out UInt32 Number ) )
+					return new CRC32( Number );
+
 				// if this isn't a valid number, instead treat it as string
-				if ( value is string )
-					return new CRC32( (string)value );
+				return new CRC32( (string)value );
 			}
 
-			return null;
+			object? Result = base.ConvertFrom( context, culture, value );
+			if ( Result is UInt32 )
+				return new CRC32( (UInt32)Result );
+
+			return base.ConvertFrom( context, culture, value );
 		}
 
 		public override object? ConvertTo( ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType )
