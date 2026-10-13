@@ -84,12 +84,11 @@ namespace ORCToolKit.FileTypes
 				using ( BinaryReader Reader = new BinaryReader( BufferStream, Encoding.UTF8, true ) )
 				{
 					// determine endianness, the way the game does it
-					SSGHeader Header = Reader.ReadType<SSGHeader>();
-					FileEndianness = Header.Version > 0xFFFF ? Endianness.Big : Endianness.Little;
+					UInt32 HeaderVersion = Reader.ReadUInt32( Endianness.Little );
+					FileEndianness = HeaderVersion > 0xFFFF ? Endianness.Big : Endianness.Little;
 
-					// read header again
-					Reader.BaseStream.Position -= Marshal.SizeOf<SSGHeader>();
-					Header = Reader.ReadType<SSGHeader>(FileEndianness);
+					Reader.BaseStream.Position -= Marshal.SizeOf<UInt32>();
+					SSGHeader Header = Reader.ReadType<SSGHeader>( FileEndianness );
 					if ( Header.Version != 6 && Header.Version != 5 ) // RE:ORC only has version 5 and 6 archives
 						throw new FileFormatException();
 
