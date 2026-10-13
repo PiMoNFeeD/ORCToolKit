@@ -20,7 +20,27 @@ namespace ORCToolKit.Extensions
 			{
 				FieldInfo[] TypeFields = typeof( T ).GetFields( BindingFlags.Public | BindingFlags.Instance );
 				foreach ( FieldInfo TypeField in TypeFields )
-					Array.Reverse( TypeBytes, Convert.ToInt32( Marshal.OffsetOf( typeof( T ), TypeField.Name ) ), Marshal.SizeOf( TypeField.FieldType ) );
+				{
+					MarshalAsAttribute? MarshalAs = (MarshalAsAttribute?)TypeField.GetCustomAttribute( typeof( MarshalAsAttribute ), false );
+					if ( MarshalAs != null && MarshalAs.Value == UnmanagedType.ByValArray )
+					{
+						Int32 SizeOfElement = Marshal.SizeOf( TypeField.FieldType.GetElementType() );
+						Int32 Offset = Convert.ToInt32( Marshal.OffsetOf( typeof( T ), TypeField.Name ) );
+
+						for ( Int32 i = 0; i < MarshalAs.SizeConst; i++ )
+						{
+							Array.Reverse( TypeBytes, Offset, SizeOfElement );
+							Offset += SizeOfElement;
+						}
+					}
+					else
+					{
+						if ( TypeField.FieldType.IsEnum ) // hack... why is c# so fucking stupid?
+							Array.Reverse( TypeBytes, Convert.ToInt32( Marshal.OffsetOf( typeof( T ), TypeField.Name ) ), Marshal.SizeOf( TypeField.FieldType.GetEnumUnderlyingType() ) );
+						else
+							Array.Reverse( TypeBytes, Convert.ToInt32( Marshal.OffsetOf( typeof( T ), TypeField.Name ) ), Marshal.SizeOf( TypeField.FieldType ) );
+					}
+				}
 			}
 
 			Marshal.FreeHGlobal( Data );
