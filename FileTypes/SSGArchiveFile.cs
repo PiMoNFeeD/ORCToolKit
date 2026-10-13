@@ -43,7 +43,7 @@ namespace ORCToolKit.FileTypes
 		public class DataSection
 		{
 			public string Name = string.Empty;
-			public UInt32 NameCRC32 = 0; // TODO: should NOT be stored, but in some instances it does not match the actual CRC32 of a name string!
+			public CRC32 NameCRC32 = 0; // TODO: should NOT be stored, but in some instances it does not match the actual CRC32 of a name string!
 			public byte[] RawData = Array.Empty<byte>();
 			public UInt32 Type = 0;
 			public bool IsCompressed = false;

@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 
 namespace ORCToolKit.FileTypes
 {
@@ -66,7 +67,8 @@ namespace ORCToolKit.FileTypes
 			private EntryValueType _valueType = EntryValueType.TYPE_BYTE_ZERO;
 
 			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryKeyName" ), LocalizedDescription( "FormSWB2DatabaseEditorEntryKeyDescription" )]
-			public UInt32 Key { get; set; } = 0;
+			[TypeConverter( typeof( CRC32Converter ) )]
+			public CRC32 Key { get; set; } = 0;
 
 			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryValueTypeName" ), LocalizedDescription( "FormSWB2DatabaseEditorEntryValueTypeDescription" )]
 			public EntryValueType ValueType
@@ -477,11 +479,10 @@ namespace ORCToolKit.FileTypes
 
 		public class EntryTable
 		{
-			public UInt32 _identifier = 0;
 			public List<Entry> Entries = new List<Entry>();
 
 			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryTableIdentifierName" ), LocalizedDescription( "FormSWB2DatabaseEditorEntryTableIdentifierDescription" )]
-			public UInt32 Identifier { get { return _identifier; } set { _identifier = value; } }
+			public UInt32 Identifier { get; set; } = 0;
 
 			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryTableNumEntriesName" )]
 			public Int32 NumEntries { get { return Entries.Count; } }

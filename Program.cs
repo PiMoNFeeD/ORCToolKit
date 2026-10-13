@@ -122,6 +122,8 @@ namespace ORCToolKit
 			// see https://aka.ms/applicationconfiguration.
 			ApplicationConfiguration.Initialize();
 
+			CRC32StringMap.Initialize();
+
 			// try to open a file that was given to us by the windows explorer
 			Form? MainForm = null;
 			foreach( string Arg in Args)

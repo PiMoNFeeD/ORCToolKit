@@ -17,7 +17,7 @@ namespace ORCToolKit.Extensions
 			//return Builder.ToString();
 		}
 
-		static public UInt32 GetCRC32( this string String )
+		static public CRC32 GetCRC32( this string String )
 		{
 			// the game doesn't invert the hash, C# does; invert it again to return the same value as the game would produce
 			return ~Crc32.HashToUInt32( Encoding.UTF8.GetBytes( String ) );
