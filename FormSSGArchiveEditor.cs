@@ -16,9 +16,15 @@ namespace ORCToolKit
 			InitializeComponent();
 			Program.ReloadFormResources( this );
 
+			Shown += FormSSGArchiveEditor_Shown;
 			OnNewFile += FormSSGArchiveEditor_OnNewFile;
 			OnOpenFile += FormSSGArchiveEditor_OnOpenFile;
 			OnEntriesUpdated += FormSSGArchiveEditor_OnEntriesUpdated;
+		}
+
+		private void FormSSGArchiveEditor_Shown( Object? sender, EventArgs e )
+		{
+			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.DataSections.Count );
 		}
 
 		private void FormSSGArchiveEditor_OnNewFile( Object? sender, EventArgs e )

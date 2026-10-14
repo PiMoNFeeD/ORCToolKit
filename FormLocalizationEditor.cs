@@ -13,8 +13,14 @@ namespace ORCToolKit
 			InitializeComponent();
 			Program.ReloadFormResources( this );
 
+			Shown += FormLocalizationEditor_Shown;
 			OnEntriesUpdated += FormLocalizationEditor_OnEntriesUpdated;
 			TextEntriesGridView.DataSource = _file.TextEntries;
+		}
+
+		private void FormLocalizationEditor_Shown( Object? sender, EventArgs e )
+		{
+			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.TextEntries.Count );
 		}
 
 		private void FormLocalizationEditor_OnEntriesUpdated( Object? sender, EntriesUpdatedEventArgs e )
