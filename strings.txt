@@ -1430,6 +1430,8 @@ AllCharactersUpgradedAllAbilities
 AlphaNPA
 AnimatingObject
 ApplyMapVoteWinnerEvent
+Archetype
+Archive
 AreaTex
 AssaultRifleKills
 AttractionPheromone_Level1
@@ -1556,6 +1558,7 @@ ControllerLayoutXBoxOptionsPane_2
 ControllerLayoutXBoxOptionsPane_3
 ControllerLayoutXBoxOptionsPane_4
 ControllerOptionsPane
+Cooldown
 Corrupted
 CountdownStartedEvent
 Crack
@@ -1708,6 +1711,7 @@ Difficulty
 DividedWeFall
 DownBoy
 DownInTheLabs
+Duration
 Dynamic caster
 EDIT_OPTIONS_SCREEN_SHOW
 ESCAPE_GRAPPLE
@@ -1739,6 +1743,7 @@ FadeInBlackScreen
 FallenIdols
 FarProp
 FeelingStrongerEveryDay
+Female
 FieldMedic_Level1
 FieldMedic_Level2
 FieldMedic_Level3
@@ -1782,6 +1787,7 @@ GameMsg
 GameOptionsPane
 GameSelectScreen
 GameTime
+Generic
 GenericBlankDialog
 GenericBlankDialogNoInheritance
 GenericCancelDialog
@@ -1817,6 +1823,7 @@ Harmless Unlimited
 HasInitialXPBoost
 HatTrick
 HeadshotKills
+Health
 Hello
 Hero_AdaWong
 Hero_AdaWong_AI
@@ -1862,6 +1869,7 @@ Hunk_NIS
 Hunter
 Hunter_Elite
 INVENTORY_CYCLE_ITEM_SELECTION
+Icon
 Idle
 IncendiaryGrenade
 IncendiaryRounds_Level1
@@ -1877,6 +1885,7 @@ InduceInfection_SpecOps_Level3
 InduceInfection_USS_Level1
 InduceInfection_USS_Level2
 InduceInfection_USS_Level3
+Infected
 InfectedAlly
 InfectedAlly1
 InfectionResistance
@@ -1893,6 +1902,7 @@ InvitationAcceptedScreen
 ItemDetection_Level1
 ItemDetection_Level2
 ItemDetection_Level3
+Items
 ItemsCollected
 Jill
 Jill_Valentine
@@ -1900,6 +1910,7 @@ JumpAttack
 KICK
 KeyCardsCollected
 KillsWhileBloodSensed
+Knife
 LURCH
 LadiesNight
 Large
@@ -1975,6 +1986,7 @@ MeleePlayerKillsInVersus
 Mimicry_Level1
 Mimicry_Level2
 Mimicry_Level3
+Model
 MorphineShot_Level1
 MorphineShot_Level2
 MorphineShot_Level3
@@ -2115,6 +2127,7 @@ ProgramBOW_SpecOps_Level3
 ProgramBOW_USS_Level1
 ProgramBOW_USS_Level2
 ProgramBOW_USS_Level3
+Project
 ProximityDetector_Level1
 ProximityDetector_Level2
 ProximityDetector_Level3
@@ -2127,6 +2140,7 @@ RELOAD_BIT
 RaccoonCityMascot
 RaccoonsCollected
 RacoonCityCleanser
+Radius
 Rank
 Rank Icons
 ReadyToDominate
@@ -2188,6 +2202,7 @@ Shona_Zombie
 ShotgunKills
 SimpleDraw 2D
 SimpleDraw 3D
+Skeleton
 SkillOrLuck
 Small
 SniperRifleKills
@@ -2239,6 +2254,7 @@ Spec_Ops_Gen3
 Spec_Ops_Gen4
 Spec_Ops_Gen5
 SpecialWeaponKills
+Species
 Spectre
 Spectre_AI
 Spectre_AI_Costume1
@@ -2295,6 +2311,7 @@ SurvivorsOnTeamInSingleMatch
 SwitchTeamEvent
 TAP_ABILITY
 TOGGLE_SECONDARY_ABILITY
+Team
 TeamEvent
 TeamMateKilledWhileInfected
 TeamNPCDeaths
@@ -2341,6 +2358,7 @@ TurretsSyndrome
 Tweed
 Tweed_AI
 Tweed_Zombie
+Type
 TypeWritersCollected
 Tyranical
 Tyrant
@@ -2407,6 +2425,7 @@ USS_heavy
 USS_hi
 USS_lo
 USS_miniboss
+Unknown
 UnpauseEvent
 UpCloseandPersonal
 UpperBar
@@ -2444,6 +2463,7 @@ Willow
 Willow_AI
 Willow_Zombie
 Witness
+World
 WorldMatrix
 XPToNextRank
 YouLoveToHateMy98
@@ -2546,6 +2566,7 @@ blingColour
 blue_herb
 blurAmount
 body
+bone
 browning_hp_ammo
 browning_hp_ammo_enemy_ai
 browning_hp_fire
@@ -3643,6 +3664,7 @@ objID
 observer
 occ_scale
 open
+orientation
 origionatorId
 outputMask
 packedParams
@@ -3657,6 +3679,7 @@ player_landing
 player_low_health
 player_low_health2
 player_male
+position
 presentcontrol
 priority
 program_bow_dart
@@ -4199,6 +4222,7 @@ weapon_ammobox_large
 weapon_ammobox_medium
 weapon_pos_l
 weapon_pos_r
+weight
 wep_beltway_knife
 wep_bertha_knife
 wep_combat_knife
