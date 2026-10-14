@@ -151,7 +151,7 @@
     <value>Ключ</value>
   </data>
   <data name="FormSWB2DatabaseEditorEntryTableIdentifierDescription" xml:space="preserve">
-    <value>Ключ, который игра использует,чтобы идентифицировать (или найти) эту таблицу записей. Вероятнее всего, является CRC32-хэшем строки.</value>
+    <value>Ключ, который игра использует для идентификации этой таблицы записей. Является CRC32-хэшем строки.</value>
   </data>
   <data name="FormSWB2DatabaseEditorEntryTableIdentifierName" xml:space="preserve">
     <value>Идентификатор</value>

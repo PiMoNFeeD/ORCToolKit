@@ -151,7 +151,7 @@
     <value>Key</value>
   </data>
   <data name="FormSWB2DatabaseEditorEntryTableIdentifierDescription" xml:space="preserve">
-    <value>A key which the game uses to identify (or find) this entry table. This is most likely a CRC32 hash of a string.</value>
+    <value>A key which is used by the game to identify this entry table. This is a CRC32 hash of a string.</value>
   </data>
   <data name="FormSWB2DatabaseEditorEntryTableIdentifierName" xml:space="preserve">
     <value>Identifier</value>
