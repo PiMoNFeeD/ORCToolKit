@@ -1,11 +1,11 @@
-﻿using ORCToolKit.Extensions;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace ORCToolKit
 {
-	[TypeConverter( typeof( CRC32Converter ) )]
+	[TypeConverter( typeof( CRC32Converter ) ), StructLayout( LayoutKind.Sequential )]
 	public class CRC32: IComparable, IComparable<CRC32>, IEquatable<CRC32>, IConvertible
 	{
 		private UInt32 _value;

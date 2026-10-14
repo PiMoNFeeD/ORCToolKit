@@ -92,7 +92,7 @@ namespace ORCToolKit.FileTypes
 							Value = new EntryTable();
 							break;
 						case EntryValueType.TYPE_STRING_HASH:
-							Value = new UInt32[1] { 0 };
+							Value = new CRC32[1] { 0 };
 							break;
 						case EntryValueType.TYPE_INT32_ZERO:
 						case EntryValueType.TYPE_INT32_ONE:
@@ -266,7 +266,7 @@ namespace ORCToolKit.FileTypes
 						case EntryValueType.TYPE_STRING_HASH:
 						{
 							Debug.Assert( Value != null );
-							return Marshal.SizeOf<UInt32>() * (Value as UInt32[]).Length;
+							return Marshal.SizeOf<CRC32>() * (Value as CRC32[]).Length;
 						}
 						case EntryValueType.TYPE_INT32_ZERO:
 						case EntryValueType.TYPE_INT32_ONE:
@@ -356,10 +356,10 @@ namespace ORCToolKit.FileTypes
 							}
 							case EntryValueType.TYPE_STRING_HASH:
 							{
-								if ( (EntryHeader.ValueSize % Marshal.SizeOf<UInt32>()) != 0 )
+								if ( (EntryHeader.ValueSize % Marshal.SizeOf<CRC32>()) != 0 )
 									throw new FileFormatException();
 
-								this.Value = Reader.ReadUInt32Array( EntryHeader.ValueSize / Marshal.SizeOf<UInt32>(), Endian );
+								this.Value = Reader.ReadTypeArray<CRC32>( EntryHeader.ValueSize / Marshal.SizeOf<CRC32>(), Endian );
 								break;
 							}
 							default:
@@ -447,7 +447,7 @@ namespace ORCToolKit.FileTypes
 						}
 						case EntryValueType.TYPE_STRING_HASH:
 						{
-							foreach ( UInt32 Value in (this.Value as UInt32[]) )
+							foreach ( CRC32 Value in (this.Value as CRC32[]) )
 								Writer.Write( Value, Endian );
 							break;
 						}
