@@ -22,6 +22,8 @@ namespace ORCToolKit
 
 		private void FormSWB2DatabaseEditor_Shown( Object? sender, EventArgs e )
 		{
+			// keep in sync with FormSWB2DatabaseEditor_OnEntriesUpdated
+			MenuStripItemFileSave.Enabled = false;
 			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.EntryTables.Count );
 		}
 
@@ -38,6 +40,7 @@ namespace ORCToolKit
 
 		private void FormSWB2DatabaseEditor_OnEntriesUpdated( Object? sender, EntriesUpdatedEventArgs e )
 		{
+			// keep in sync with FormSWB2DatabaseEditor_Shown
 			MenuStripItemFileSave.Enabled = e.HasUnsavedEdits;
 			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.EntryTables.Count );
 		}

@@ -20,11 +20,19 @@ namespace ORCToolKit
 
 		private void FormLocalizationEditor_Shown( Object? sender, EventArgs e )
 		{
+			// keep in sync with FormLocalizationEditor_OnEntriesUpdated
+			MenuStripItemFileSave.Enabled = false;
+			MenuStripItemEditInsertEntryBefore.Enabled = (_file.TextEntries.Count > 0);
+			MenuStripItemEditRemoveEntry.Enabled = (_file.TextEntries.Count > 0);
+			MenuStripItemEditSearch.Enabled = (_file.TextEntries.Count > 0);
+			MenuStripItemEditSearchForward.Enabled = (_file.TextEntries.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
+			MenuStripItemEditSearchBackward.Enabled = (_file.TextEntries.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
 			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.TextEntries.Count );
 		}
 
 		private void FormLocalizationEditor_OnEntriesUpdated( Object? sender, EntriesUpdatedEventArgs e )
 		{
+			// keep in sync with FormLocalizationEditor_Shown
 			MenuStripItemFileSave.Enabled = e.HasUnsavedEdits;
 			MenuStripItemEditInsertEntryBefore.Enabled = (_file.TextEntries.Count > 0);
 			MenuStripItemEditRemoveEntry.Enabled = (_file.TextEntries.Count > 0);

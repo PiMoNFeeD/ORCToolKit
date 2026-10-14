@@ -24,6 +24,11 @@ namespace ORCToolKit
 
 		private void FormSSGArchiveEditor_Shown( Object? sender, EventArgs e )
 		{
+			// keep in sync with FormSSGArchiveEditor_OnEntriesUpdated
+			MenuStripItemFileSave.Enabled = false;
+			MenuStripItemEditSearch.Enabled = (_file.DataSections.Count > 0);
+			MenuStripItemEditSearchForward.Enabled = (_file.DataSections.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
+			MenuStripItemEditSearchBackward.Enabled = (_file.DataSections.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
 			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.DataSections.Count );
 		}
 
@@ -51,6 +56,7 @@ namespace ORCToolKit
 
 		private void FormSSGArchiveEditor_OnEntriesUpdated( object? sender, EntriesUpdatedEventArgs e )
 		{
+			// keep in sync with FormSSGArchiveEditor_Shown
 			MenuStripItemFileSave.Enabled = e.HasUnsavedEdits;
 			MenuStripItemEditSearch.Enabled = (_file.DataSections.Count > 0);
 			MenuStripItemEditSearchForward.Enabled = (_file.DataSections.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
