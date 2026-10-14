@@ -35,11 +35,14 @@
 			MenuStripItemFileSave = new ToolStripMenuItem();
 			MenuStripItemFileSeparator1 = new ToolStripSeparator();
 			MenuStripItemFileExit = new ToolStripMenuItem();
+			StatusStrip = new StatusStrip();
+			StatusStripEntriesLabel = new ToolStripStatusLabel();
 			MenuStrip = new MenuStrip();
 			EntryTreeView = new TreeViewSWB2EntryExplorer();
 			EntryPropertyGrid = new PropertyGrid();
 			SplitContainer = new SplitContainer();
 			MenuStripItemFile = new ToolStripMenuItem();
+			StatusStrip.SuspendLayout();
 			MenuStrip.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)SplitContainer).BeginInit();
 			SplitContainer.Panel1.SuspendLayout();
@@ -90,6 +93,20 @@
 			MenuStripItemFileExit.Size = new Size( 146, 22 );
 			MenuStripItemFileExit.Text = "Exit";
 			MenuStripItemFileExit.Click += MenuStripItemFileExit_Click;
+			// 
+			// StatusStrip
+			// 
+			StatusStrip.Items.AddRange( new ToolStripItem[] { StatusStripEntriesLabel } );
+			StatusStrip.Location = new Point( 0, 539 );
+			StatusStrip.Name = "StatusStrip";
+			StatusStrip.Size = new Size( 784, 22 );
+			StatusStrip.TabIndex = 1;
+			// 
+			// StatusStripEntriesLabel
+			// 
+			StatusStripEntriesLabel.Name = "StatusStripEntriesLabel";
+			StatusStripEntriesLabel.Size = new Size( 115, 17 );
+			StatusStripEntriesLabel.Text = "Number of tables: 0";
 			// 
 			// MenuStrip
 			// 
@@ -143,6 +160,7 @@
 			BackColor = SystemColors.Control;
 			ClientSize = new Size( 784, 561 );
 			Controls.Add( SplitContainer );
+			Controls.Add( StatusStrip );
 			Controls.Add( MenuStrip );
 			Icon = (Icon)resources.GetObject( "$this.Icon" );
 			MainMenuStrip = MenuStrip;
@@ -150,6 +168,8 @@
 			Name = "FormSWB2DatabaseEditor";
 			StartPosition = FormStartPosition.CenterScreen;
 			Text = "ORC ToolKit";
+			StatusStrip.ResumeLayout( false );
+			StatusStrip.PerformLayout();
 			MenuStrip.ResumeLayout( false );
 			MenuStrip.PerformLayout();
 			SplitContainer.Panel1.ResumeLayout( false );
@@ -162,6 +182,8 @@
 
 		#endregion
 
+		private StatusStrip StatusStrip;
+		private ToolStripStatusLabel StatusStripEntriesLabel;
 		private ToolStripMenuItem MenuStripItemFileNew;
 		private ToolStripMenuItem MenuStripItemFileOpen;
 		private ToolStripMenuItem MenuStripItemFileSave;

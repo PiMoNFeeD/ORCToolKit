@@ -14,9 +14,15 @@ namespace ORCToolKit
 			InitializeComponent();
 			Program.ReloadFormResources( this );
 
+			Shown += FormSWB2DatabaseEditor_Shown;
 			OnNewFile += FormSWB2DatabaseEditor_OnNewFile;
 			OnOpenFile += FormSWB2DatabaseEditor_OnOpenFile;
 			OnEntriesUpdated += FormSWB2DatabaseEditor_OnEntriesUpdated;
+		}
+
+		private void FormSWB2DatabaseEditor_Shown( Object? sender, EventArgs e )
+		{
+			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.EntryTables.Count );
 		}
 
 		private void FormSWB2DatabaseEditor_OnNewFile( Object? sender, EventArgs e )
@@ -33,6 +39,7 @@ namespace ORCToolKit
 		private void FormSWB2DatabaseEditor_OnEntriesUpdated( Object? sender, EntriesUpdatedEventArgs e )
 		{
 			MenuStripItemFileSave.Enabled = e.HasUnsavedEdits;
+			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.EntryTables.Count );
 		}
 
 		private void MenuStripItemFileNew_Click( object sender, EventArgs e )
