@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using ORCToolKit.Extensions;
+using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Runtime.InteropServices;
@@ -6,7 +7,9 @@ using System.Runtime.InteropServices;
 namespace ORCToolKit
 {
 	[TypeConverter( typeof( CRC32Converter ) ), StructLayout( LayoutKind.Sequential )]
-	public class CRC32: IComparable, IComparable<CRC32>, IEquatable<CRC32>, IConvertible
+	public class CRC32: IComparable, IComparable<CRC32>, IComparable<UInt32>, IComparable<string>,
+						IEquatable<CRC32>, IEquatable<UInt32>, IEquatable<string>,
+						IConvertible
 	{
 		private UInt32 _value;
 		
@@ -16,6 +19,10 @@ namespace ORCToolKit
 
 		static public implicit operator UInt32( CRC32 Value ) { return Value._value; }
 		static public implicit operator CRC32( UInt32 Value ) { return new CRC32( Value ); }
+		static public bool operator ==( CRC32 Value1, CRC32 Value2 ) { return Value1.Equals( Value2 ); }
+		static public bool operator ==( CRC32 ValueNum, string ValueString ) { return ValueNum == ValueString.GetCRC32(); }
+		static public bool operator !=( CRC32 Value1, CRC32 Value2 ) { return !Value1.Equals( Value2 ); }
+		static public bool operator !=( CRC32 ValueNum, string ValueString ) { return ValueNum != ValueString.GetCRC32(); }
 
 		public override string ToString()
 		{
@@ -28,9 +35,13 @@ namespace ORCToolKit
 		// IComparable
 		public Int32 CompareTo( object? other ) { return _value.CompareTo( other ); }
 		public Int32 CompareTo( CRC32? other ) { return _value.CompareTo( other?._value ); }
+		public Int32 CompareTo( UInt32 other ) { return _value.CompareTo( other ); }
+		public Int32 CompareTo( string? other ) { return _value.CompareTo( other ); }
 
 		// IEquatable
 		public Boolean Equals( CRC32? other ) { return _value.Equals( other?._value ); }
+		public Boolean Equals( UInt32 other ) { return _value.Equals( other ); }
+		public Boolean Equals( string? other ) { return Equals( other?.GetCRC32() ); }
 
 		// IConvertible
 		public TypeCode GetTypeCode() { return _value.GetTypeCode(); }
