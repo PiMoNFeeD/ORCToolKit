@@ -9,6 +9,7 @@ namespace ORCToolKit.FileTypes
 {
 	public class SWB2DatabaseFile: IFileType
 	{
+		[TypeConverter( typeof( OutOfBoundsEnumConverter ) )]
 		public enum EntryValueType: Byte
 		{
 			TYPE_INT32_STORED = 1,  // (u?)int32 that is stored in the file
@@ -102,6 +103,9 @@ namespace ORCToolKit.FileTypes
 						case EntryValueType.TYPE_BYTE_ONE:
 							Value = null;
 							return;
+						default:
+							Value = new Byte[1] { 0 };
+							break;
 					}
 				}
 			}
@@ -214,6 +218,12 @@ namespace ORCToolKit.FileTypes
 							Debug.Assert( false );
 							break;
 						}
+						default:
+						{
+							if ( Value != null )
+								goto case EntryValueType.TYPE_STRING_HASH; // don't copy paste code
+							break;
+						}
 					}
 
 					return Result;
@@ -280,8 +290,9 @@ namespace ORCToolKit.FileTypes
 						}
 						default:
 						{
-							Debug.Assert( Value != null );
-							return (Value as Byte[]).Length;
+							if ( Value != null )
+								return (Value as Byte[]).Length;
+							return 0;
 						}
 					}
 				}
@@ -399,13 +410,24 @@ namespace ORCToolKit.FileTypes
 			{
 				using ( BinaryWriter Writer = new BinaryWriter( BufferStream, Encoding.UTF8, true ) )
 				{
-					SWB2EntryHeader EntryHeader = new SWB2EntryHeader();
-
-					EntryHeader.Key = this.Key;
-					EntryHeader.ValueType = this.ValueType;
-					EntryHeader.Unknown = this.Flags;
-					EntryHeader.ValueSize = Convert.ToUInt16( this.ValueSize );
-					Writer.WriteType( EntryHeader, Endian );
+					UInt16 ValueSize = Convert.ToUInt16( this.ValueSize );
+					if ( this.Key == 2952159793 )
+					{
+						// HACK: for some reason, entries with this key store a different layout?!?!?
+						// according to the disassembly of the game, it doesn't even parse this entry, it just skips it!
+						// possibly some debug info of the file?
+						Writer.Write( this.Key );
+						Writer.Write( Convert.ToUInt32( ValueSize ), Endian );
+					}
+					else
+					{
+						SWB2EntryHeader EntryHeader = new SWB2EntryHeader();
+						EntryHeader.Key = this.Key;
+						EntryHeader.ValueType = this.ValueType;
+						EntryHeader.Unknown = this.Flags;
+						EntryHeader.ValueSize = ValueSize;
+						Writer.WriteType( EntryHeader, Endian );
+					}
 
 					switch ( this.ValueType )
 					{
@@ -435,7 +457,7 @@ namespace ORCToolKit.FileTypes
 							byte[] Value = Encoding.UTF8.GetBytes( FinalString );
 							Writer.Write( Value );
 							Writer.Write( (Byte)0 ); // null terminator
-							Int32 AlignmentCount = MathExtensions.AlignValue( EntryHeader.ValueSize, StringAlignment ) - (Value.Length + 1);
+							Int32 AlignmentCount = MathExtensions.AlignValue( ValueSize, StringAlignment ) - (Value.Length + 1);
 							for ( Int32 i = 0; i < AlignmentCount; i++ )
 								Writer.Write( (Byte)0 ); // alignment
 							break;
@@ -463,7 +485,8 @@ namespace ORCToolKit.FileTypes
 						}
 						default:
 						{
-							Writer.Write( this.Value as Byte[] );
+							if ( this.Value != null )
+								Writer.Write( this.Value as Byte[] );
 							break;
 						}
 					}
