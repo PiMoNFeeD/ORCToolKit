@@ -138,37 +138,37 @@
   <data name="FormFileExplorerInvalidGameFolderTitle" xml:space="preserve">
     <value>Неправильная папка игры</value>
   </data>
-  <data name="FormSWB2DatabaseEditorEntryFlagsDescription" xml:space="preserve">
+  <data name="SWB2DatabaseFile.Entry.Flags.Description" xml:space="preserve">
     <value>Значение на данный момент неизвестно.</value>
   </data>
-  <data name="FormSWB2DatabaseEditorEntryFlagsName" xml:space="preserve">
+  <data name="SWB2DatabaseFile.Entry.Flags.Name" xml:space="preserve">
     <value>Флаги</value>
   </data>
-  <data name="FormSWB2DatabaseEditorEntryKeyDescription" xml:space="preserve">
+  <data name="SWB2DatabaseFile.Entry.Key.Description" xml:space="preserve">
     <value>Идентификатор, который игра использует для поиска этой записи и получения её значения. Является CRC32-хэшем строки.</value>
   </data>
-  <data name="FormSWB2DatabaseEditorEntryKeyName" xml:space="preserve">
+  <data name="SWB2DatabaseFile.Entry.Key.Name" xml:space="preserve">
     <value>Ключ</value>
   </data>
-  <data name="FormSWB2DatabaseEditorEntryTableIdentifierDescription" xml:space="preserve">
+  <data name="SWB2DatabaseFile.EntryTable.Identifier.Description" xml:space="preserve">
     <value>Ключ, который игра использует для идентификации этой таблицы записей. Является CRC32-хэшем строки.</value>
   </data>
-  <data name="FormSWB2DatabaseEditorEntryTableIdentifierName" xml:space="preserve">
+  <data name="SWB2DatabaseFile.EntryTable.Identifier.Name" xml:space="preserve">
     <value>Идентификатор</value>
   </data>
-  <data name="FormSWB2DatabaseEditorEntryTableNumEntriesName" xml:space="preserve">
+  <data name="SWB2DatabaseFile.EntryTable.NumEntries.Name" xml:space="preserve">
     <value>Количество записей</value>
   </data>
-  <data name="FormSWB2DatabaseEditorEntryValueLengthName" xml:space="preserve">
+  <data name="SWB2DatabaseFile.Entry.ValueLength.Name" xml:space="preserve">
     <value>Количество значений</value>
   </data>
-  <data name="FormSWB2DatabaseEditorEntryValueName" xml:space="preserve">
+  <data name="SWB2DatabaseFile.Entry.Value.Name" xml:space="preserve">
     <value>Значения</value>
   </data>
-  <data name="FormSWB2DatabaseEditorEntryValueTypeDescription" xml:space="preserve">
+  <data name="SWB2DatabaseFile.Entry.ValueType.Description" xml:space="preserve">
     <value>Задаёт, какое значение хранит данная запись. Не все типы хранят значение.</value>
   </data>
-  <data name="FormSWB2DatabaseEditorEntryValueTypeName" xml:space="preserve">
+  <data name="SWB2DatabaseFile.Entry.ValueType.Name" xml:space="preserve">
     <value>Тип значения</value>
   </data>
   <data name="No" xml:space="preserve">

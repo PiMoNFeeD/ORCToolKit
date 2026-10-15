@@ -71,10 +71,10 @@ namespace ORCToolKit.FileTypes
 			[Browsable( false )]
 			public EntryTable? ParentTable { get; private set; }
 
-			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryKeyName" ), LocalizedDescription( "FormSWB2DatabaseEditorEntryKeyDescription" )]
+			[LocalizedDisplayName( "SWB2DatabaseFile.Entry.Key.Name" ), LocalizedDescription( "SWB2DatabaseFile.Entry.Key.Description" )]
 			public CRC32 Key { get; set; } = 0;
 
-			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryValueTypeName" ), LocalizedDescription( "FormSWB2DatabaseEditorEntryValueTypeDescription" )]
+			[LocalizedDisplayName( "SWB2DatabaseFile.Entry.ValueType.Name" ), LocalizedDescription( "SWB2DatabaseFile.Entry.ValueType.Description" )]
 			public EntryValueType ValueType
 			{
 				get { return _valueType; }
@@ -114,11 +114,11 @@ namespace ORCToolKit.FileTypes
 				}
 			}
 
-			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryFlagsName" ), LocalizedDescription( "FormSWB2DatabaseEditorEntryFlagsDescription" ), ReadOnly( true )]
+			[LocalizedDisplayName( "SWB2DatabaseFile.Entry.Flags.Name" ), LocalizedDescription( "SWB2DatabaseFile.Entry.Flags.Description" ), ReadOnly( true )]
 			public Byte Flags { get; set; } = 0;
 
 			// hack for UI... couldn't get ArrayEditor to work properly with type 'object' for Value
-			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryValueLengthName" )]
+			[LocalizedDisplayName( "SWB2DatabaseFile.Entry.ValueLength.Name" )]
 			public Int32 ValueLength
 			{
 				get
@@ -146,7 +146,7 @@ namespace ORCToolKit.FileTypes
 
 			// this will always be an array for UI; if type is TYPE_ENTRY_TABLE, it will be class EntryTable instead of Entry!
 			[TypeConverter( typeof( ArrayConverter ) )]
-			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryValueName" )]
+			[LocalizedDisplayName( "SWB2DatabaseFile.Entry.Value.Name" )]
 			public object? Value { get; set; } = null;
 
 #if !DEBUG
@@ -512,10 +512,10 @@ namespace ORCToolKit.FileTypes
 
 			public List<Entry> Entries = new List<Entry>();
 
-			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryTableIdentifierName" ), LocalizedDescription( "FormSWB2DatabaseEditorEntryTableIdentifierDescription" )]
+			[LocalizedDisplayName( "SWB2DatabaseFile.EntryTable.Identifier.Name" ), LocalizedDescription( "SWB2DatabaseFile.EntryTable.Identifier.Description" )]
 			public CRC32 Identifier { get; set; } = 0;
 
-			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryTableNumEntriesName" )]
+			[LocalizedDisplayName( "SWB2DatabaseFile.EntryTable.NumEntries.Name" )]
 			public Int32 NumEntries { get { return Entries.Count; } }
 
 			public void LoadFromBuffer( Stream BufferStream, Endianness Endian )

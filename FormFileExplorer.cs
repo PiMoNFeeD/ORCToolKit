@@ -31,7 +31,6 @@ namespace ORCToolKit
 			get
 			{
 				return [
-					new LocalizedControl { Object = this, ObjectName = this.Name, FieldName = "Text" },
 					new LocalizedControl { Object = GamePathLabel, ObjectName = GamePathLabel.Name, FieldName = "Text" },
 					new LocalizedControl { Object = GamePathBrowseButton, ObjectName = GamePathBrowseButton.Name, FieldName = "Text" },
 					new LocalizedControl { Object = MenuStripItemFile, ObjectName = MenuStripItemFile.Name, FieldName = "Text" },

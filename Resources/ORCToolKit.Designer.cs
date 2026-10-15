@@ -126,105 +126,6 @@ namespace ORCToolKit.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string FormSWB2DatabaseEditorEntryFlagsDescription {
-            get {
-                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryFlagsDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string FormSWB2DatabaseEditorEntryFlagsName {
-            get {
-                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryFlagsName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string FormSWB2DatabaseEditorEntryKeyDescription {
-            get {
-                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryKeyDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string FormSWB2DatabaseEditorEntryKeyName {
-            get {
-                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryKeyName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string FormSWB2DatabaseEditorEntryTableIdentifierDescription {
-            get {
-                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryTableIdentifierDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string FormSWB2DatabaseEditorEntryTableIdentifierName {
-            get {
-                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryTableIdentifierName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string FormSWB2DatabaseEditorEntryTableNumEntriesName {
-            get {
-                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryTableNumEntriesName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string FormSWB2DatabaseEditorEntryValueLengthName {
-            get {
-                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryValueLengthName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string FormSWB2DatabaseEditorEntryValueName {
-            get {
-                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryValueName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string FormSWB2DatabaseEditorEntryValueTypeDescription {
-            get {
-                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryValueTypeDescription", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string FormSWB2DatabaseEditorEntryValueTypeName {
-            get {
-                return ResourceManager.GetString("FormSWB2DatabaseEditorEntryValueTypeName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
         internal static string No {
             get {
                 return ResourceManager.GetString("No", resourceCulture);
@@ -291,6 +192,105 @@ namespace ORCToolKit.Resources {
         internal static string SizeInMegabytes {
             get {
                 return ResourceManager.GetString("SizeInMegabytes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SWB2DatabaseFile_Entry_Flags_Description {
+            get {
+                return ResourceManager.GetString("SWB2DatabaseFile.Entry.Flags.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SWB2DatabaseFile_Entry_Flags_Name {
+            get {
+                return ResourceManager.GetString("SWB2DatabaseFile.Entry.Flags.Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SWB2DatabaseFile_Entry_Key_Description {
+            get {
+                return ResourceManager.GetString("SWB2DatabaseFile.Entry.Key.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SWB2DatabaseFile_Entry_Key_Name {
+            get {
+                return ResourceManager.GetString("SWB2DatabaseFile.Entry.Key.Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SWB2DatabaseFile_Entry_Value_Name {
+            get {
+                return ResourceManager.GetString("SWB2DatabaseFile.Entry.Value.Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SWB2DatabaseFile_Entry_ValueLength_Name {
+            get {
+                return ResourceManager.GetString("SWB2DatabaseFile.Entry.ValueLength.Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SWB2DatabaseFile_Entry_ValueType_Description {
+            get {
+                return ResourceManager.GetString("SWB2DatabaseFile.Entry.ValueType.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SWB2DatabaseFile_Entry_ValueType_Name {
+            get {
+                return ResourceManager.GetString("SWB2DatabaseFile.Entry.ValueType.Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SWB2DatabaseFile_EntryTable_Identifier_Description {
+            get {
+                return ResourceManager.GetString("SWB2DatabaseFile.EntryTable.Identifier.Description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SWB2DatabaseFile_EntryTable_Identifier_Name {
+            get {
+                return ResourceManager.GetString("SWB2DatabaseFile.EntryTable.Identifier.Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        internal static string SWB2DatabaseFile_EntryTable_NumEntries_Name {
+            get {
+                return ResourceManager.GetString("SWB2DatabaseFile.EntryTable.NumEntries.Name", resourceCulture);
             }
         }
         
