@@ -20,9 +20,9 @@ namespace ORCToolKit
 		static public implicit operator UInt32( CRC32 Value ) { return Value._value; }
 		static public implicit operator CRC32( UInt32 Value ) { return new CRC32( Value ); }
 		static public bool operator ==( CRC32 Value1, CRC32 Value2 ) { return Value1.Equals( Value2 ); }
-		static public bool operator ==( CRC32 ValueNum, string ValueString ) { return ValueNum == ValueString.GetCRC32(); }
+		static public bool operator ==( CRC32 ValueNum, string ValueString ) { return ValueNum.ToString() == ValueString; }
 		static public bool operator !=( CRC32 Value1, CRC32 Value2 ) { return !Value1.Equals( Value2 ); }
-		static public bool operator !=( CRC32 ValueNum, string ValueString ) { return ValueNum != ValueString.GetCRC32(); }
+		static public bool operator !=( CRC32 ValueNum, string ValueString ) { return ValueNum.ToString() != ValueString; }
 
 		public override string ToString()
 		{
