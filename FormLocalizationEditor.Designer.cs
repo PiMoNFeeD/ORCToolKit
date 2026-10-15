@@ -141,6 +141,7 @@
 			MenuStripItemEdit.Name = "MenuStripItemEdit";
 			MenuStripItemEdit.Size = new Size( 39, 20 );
 			MenuStripItemEdit.Text = "Edit";
+			MenuStripItemEdit.DropDownOpening += MenuStripItemEdit_DropDownOpening;
 			// 
 			// MenuStripItemEditInsertEntryAfter
 			// 

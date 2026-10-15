@@ -46,8 +46,6 @@ namespace ORCToolKit
 		{
 			// keep in sync with FormLocalizationEditor_OnEntriesUpdated
 			MenuStripItemFileSave.Enabled = false;
-			MenuStripItemEditInsertEntryBefore.Enabled = (_file.TextEntries.Count > 0);
-			MenuStripItemEditRemoveEntry.Enabled = (_file.TextEntries.Count > 0);
 			MenuStripItemEditSearch.Enabled = (_file.TextEntries.Count > 0);
 			MenuStripItemEditSearchForward.Enabled = (_file.TextEntries.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
 			MenuStripItemEditSearchBackward.Enabled = (_file.TextEntries.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
@@ -58,8 +56,6 @@ namespace ORCToolKit
 		{
 			// keep in sync with FormLocalizationEditor_Shown
 			MenuStripItemFileSave.Enabled = e.HasUnsavedEdits;
-			MenuStripItemEditInsertEntryBefore.Enabled = (_file.TextEntries.Count > 0);
-			MenuStripItemEditRemoveEntry.Enabled = (_file.TextEntries.Count > 0);
 			MenuStripItemEditSearch.Enabled = (_file.TextEntries.Count > 0);
 			MenuStripItemEditSearchForward.Enabled = (_file.TextEntries.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
 			MenuStripItemEditSearchBackward.Enabled = (_file.TextEntries.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
@@ -193,6 +189,12 @@ namespace ORCToolKit
 		private void MenuStripItemEditSearchBackward_Click( object sender, EventArgs e )
 		{
 			InvokeSearch( SearchDirection.Backward, LastSearchString, LastSearchWholeWord, LastSearchCaseSensitive );
+		}
+
+		private void MenuStripItemEdit_DropDownOpening( object sender, EventArgs e )
+		{
+			MenuStripItemEditInsertEntryBefore.Enabled = (TextEntriesGridView.SelectedCells.Count > 0);
+			MenuStripItemEditRemoveEntry.Enabled = (TextEntriesGridView.SelectedCells.Count > 0);
 		}
 	}
 }
