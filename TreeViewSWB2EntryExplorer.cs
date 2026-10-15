@@ -61,7 +61,7 @@ namespace ORCToolKit
 			EndUpdate();
 		}
 
-		private TreeNode CreateEntryTableNode( SWB2DatabaseFile.EntryTable EntryTable )
+		public TreeNode CreateEntryTableNode( SWB2DatabaseFile.EntryTable EntryTable, TreeNodeCollection? InsertTo = null )
 		{
 			TreeNode EntryTableNode = new TreeNode()
 			{
@@ -72,6 +72,23 @@ namespace ORCToolKit
 			// if this entry table has any entries, add a dummy node to be able to expand it
 			if ( EntryTable.Entries.Count > 0 )
 				EntryTableNode.Nodes.Add( new TreeNode() );
+
+			if ( InsertTo != null )
+				InsertTo.Add( EntryTableNode );
+
+			return EntryTableNode;
+		}
+
+		public TreeNode CreateEntryNode( SWB2DatabaseFile.Entry Entry, TreeNodeCollection? InsertTo = null )
+		{
+			TreeNode EntryTableNode = new TreeNode()
+			{
+				Text = Entry.ToString(),
+				Tag = Entry
+			};
+
+			if ( InsertTo != null )
+				InsertTo.Add( EntryTableNode );
 
 			return EntryTableNode;
 		}
@@ -100,11 +117,7 @@ namespace ORCToolKit
 				}
 				else
 				{
-					EntryNodes[i] = new TreeNode()
-					{
-						Text = ParentEntryTable.Entries[i].ToString(),
-						Tag = ParentEntryTable.Entries[i]
-					};
+					EntryNodes[i] = CreateEntryNode( ParentEntryTable.Entries[i] );
 				}
 			}
 			e.Node.Nodes.AddRange( EntryNodes );

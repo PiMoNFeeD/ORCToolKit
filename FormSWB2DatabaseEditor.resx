@@ -4401,4 +4401,10 @@
   <data name="EntryTreeViewContextMenuItemDelete.Text" xml:space="preserve">
     <value />
   </data>
+  <data name="MenuStripItemEditInsertEntryTable.Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EntryTreeViewContextMenuItemInsertEntry.Text" xml:space="preserve">
+    <value />
+  </data>
 </root>

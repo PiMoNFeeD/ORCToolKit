@@ -121,6 +121,12 @@
   <data name="$this.Icon" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
   </data>
+  <data name="EntryTreeViewContextMenuItemDelete.Text" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="MenuStripItemEditInsertEntryTable.Text" xml:space="preserve">
+    <value>Insert table</value>
+  </data>
   <data name="MenuStripItemFile.Text" xml:space="preserve">
     <value>File</value>
   </data>
@@ -151,7 +157,7 @@
   <data name="MenuStripItemEditSearchBackward.Text" xml:space="preserve">
     <value>Search back</value>
   </data>
-  <data name="EntryTreeViewContextMenuItemDelete.Text" xml:space="preserve">
-    <value>Delete</value>
+  <data name="EntryTreeViewContextMenuItemInsertEntry.Text" xml:space="preserve">
+    <value>Insert entry</value>
   </data>
 </root>

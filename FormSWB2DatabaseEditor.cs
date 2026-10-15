@@ -2,6 +2,7 @@
 using ORCToolKit.Search;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Xml.Linq;
 
 namespace ORCToolKit
 {
@@ -33,10 +34,12 @@ namespace ORCToolKit
 					new LocalizedControl { Object = MenuStripItemFileOpen, ObjectName = MenuStripItemFileOpen.Name, FieldName = "Text" },
 					new LocalizedControl { Object = MenuStripItemFileSave, ObjectName = MenuStripItemFileSave.Name, FieldName = "Text" },
 					new LocalizedControl { Object = MenuStripItemEdit, ObjectName = MenuStripItemEdit.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEditInsertEntryTable, ObjectName = MenuStripItemEditInsertEntryTable.Name, FieldName = "Text" },
 					new LocalizedControl { Object = MenuStripItemFileExit, ObjectName = MenuStripItemFileExit.Name, FieldName = "Text" },
 					new LocalizedControl { Object = MenuStripItemEditSearch, ObjectName = MenuStripItemEditSearch.Name, FieldName = "Text" },
 					new LocalizedControl { Object = MenuStripItemEditSearchForward, ObjectName = MenuStripItemEditSearchForward.Name, FieldName = "Text" },
 					new LocalizedControl { Object = MenuStripItemEditSearchBackward, ObjectName = MenuStripItemEditSearchBackward.Name, FieldName = "Text" },
+					new LocalizedControl { Object = EntryTreeViewContextMenuItemInsertEntry, ObjectName = EntryTreeViewContextMenuItemInsertEntry.Name, FieldName = "Text" },
 					new LocalizedControl { Object = EntryTreeViewContextMenuItemDelete, ObjectName = EntryTreeViewContextMenuItemDelete.Name, FieldName = "Text" },
 				];
 			}
@@ -65,6 +68,17 @@ namespace ORCToolKit
 
 		private void FormSWB2DatabaseEditor_OnEntriesUpdated( Object? sender, EntriesUpdatedEventArgs e )
 		{
+			// in case the number of entries has changed, update the text of the select node hierarchy
+			if ( EntryTreeView.SelectedNode != null )
+			{
+				TreeNode ParentNode = EntryTreeView.SelectedNode;
+				while ( ParentNode != null )
+				{
+					ParentNode.Text = ParentNode.Tag.ToString();
+					ParentNode = ParentNode.Parent;
+				}
+			}
+
 			// keep in sync with FormSWB2DatabaseEditor_Shown
 			MenuStripItemFileSave.Enabled = e.HasUnsavedEdits;
 			MenuStripItemEditSearch.Enabled = (_file.EntryTables.Count > 0);
@@ -120,6 +134,13 @@ namespace ORCToolKit
 			Close();
 		}
 
+		private void MenuStripItemEditInsertEntryTable_Click( object sender, EventArgs e )
+		{
+			SWB2DatabaseFile.EntryTable NewEntry = new SWB2DatabaseFile.EntryTable( null );
+			_file.EntryTables.Add( NewEntry );
+			EntryTreeView.CreateEntryTableNode( NewEntry, EntryTreeView.Nodes );
+		}
+
 		private void MenuStripItemEditSearch_Click( object sender, EventArgs e )
 		{
 			InvokeSearchDialog();
@@ -151,12 +172,47 @@ namespace ORCToolKit
 					EntryView.SelectedNode = e.Node;
 
 					// open context menu
+					EntryTreeViewContextMenuItemInsertEntry.Visible = (e.Node.Tag is SWB2DatabaseFile.EntryTable);
 					EntryTreeViewContextMenu.Tag = e.Node;
 					EntryTreeViewContextMenu.Show( EntryView, e.Location );
 
 					break;
 				}
 			}
+		}
+
+		private void EntryTreeViewContextMenuItemInsertEntry_Click( object sender, EventArgs e )
+		{
+			EntryTreeView.BeginUpdate();
+
+			TreeNode SelectedNode = (TreeNode)EntryTreeViewContextMenu.Tag;
+			SWB2DatabaseFile.EntryTable SelectedTable = (SWB2DatabaseFile.EntryTable)SelectedNode.Tag;
+
+			SWB2DatabaseFile.Entry NewEntry = new SWB2DatabaseFile.Entry( SelectedTable );
+			SelectedTable.Entries.Add( NewEntry );
+
+			if ( SelectedNode.Nodes.Count > 0 && SelectedNode.Nodes[0].Tag != null )
+			{
+				// if the child list has already been populated, then manually add a new node
+				TreeNode NewNode = EntryTreeView.CreateEntryNode( NewEntry, SelectedNode.Nodes );
+				EntryTreeView.SelectedNode = NewNode;
+			}
+			else
+			{
+				// otherwise, just expand it and let it make a node manually
+				if ( SelectedNode.Nodes.Count == 0 ) // make sure it can actually expand!
+					SelectedNode.Nodes.Add( new TreeNode() );
+				SelectedNode.Expand();
+
+				TreeNode? NewNode = FindTreeNodeForEntry( EntryTreeView.Nodes, NewEntry );
+				Debug.Assert( NewNode != null );
+				EntryTreeView.SelectedNode = NewNode;
+			}
+			// TODO: it doesn't scroll to the new node?!?!?
+
+			EntryTreeView.EndUpdate();
+
+			EntriesUpdated();
 		}
 
 		private void EntryTreeViewContextMenuItemDelete_Click( object sender, EventArgs e )
@@ -196,8 +252,6 @@ namespace ORCToolKit
 				}
 			}
 
-			if ( SelectedNode.Parent != null )
-				SelectedNode.Parent.Text = SelectedNode.Parent.Tag.ToString(); // update the count of entries in our parent
 			SelectedNode.Remove();
 
 			EntriesUpdated();
@@ -211,7 +265,6 @@ namespace ORCToolKit
 			PropertyGrid EntryPropertyGrid = (PropertyGrid)s;
 			TreeNode? TreeNode = FindTreeNodeForEntry( EntryTreeView.Nodes, EntryPropertyGrid.SelectedObject );
 			Debug.Assert( TreeNode != null );
-			TreeNode.Text = EntryPropertyGrid.SelectedObject.ToString(); // update name of this entry
 			EntryPropertyGrid.Refresh();
 
 			EntriesUpdated();

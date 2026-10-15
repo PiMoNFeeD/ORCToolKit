@@ -39,11 +39,14 @@
 			StatusStripEntriesLabel = new ToolStripStatusLabel();
 			MenuStrip = new MenuStrip();
 			MenuStripItemEdit = new ToolStripMenuItem();
+			MenuStripItemEditInsertEntryTable = new ToolStripMenuItem();
+			MenuStripItemEditSeparator1 = new ToolStripSeparator();
 			MenuStripItemEditSearch = new ToolStripMenuItem();
 			MenuStripItemEditSearchForward = new ToolStripMenuItem();
 			MenuStripItemEditSearchBackward = new ToolStripMenuItem();
 			EntryTreeView = new TreeViewSWB2EntryExplorer();
 			EntryTreeViewContextMenu = new ContextMenuStrip( components );
+			EntryTreeViewContextMenuItemInsertEntry = new ToolStripMenuItem();
 			EntryTreeViewContextMenuItemDelete = new ToolStripMenuItem();
 			EntryPropertyGrid = new PropertyGrid();
 			SplitContainer = new SplitContainer();
@@ -125,10 +128,23 @@
 			// 
 			// MenuStripItemEdit
 			// 
-			MenuStripItemEdit.DropDownItems.AddRange( new ToolStripItem[] { MenuStripItemEditSearch, MenuStripItemEditSearchForward, MenuStripItemEditSearchBackward } );
+			MenuStripItemEdit.DropDownItems.AddRange( new ToolStripItem[] { MenuStripItemEditInsertEntryTable, MenuStripItemEditSeparator1, MenuStripItemEditSearch, MenuStripItemEditSearchForward, MenuStripItemEditSearchBackward } );
 			MenuStripItemEdit.Name = "MenuStripItemEdit";
 			MenuStripItemEdit.Size = new Size( 39, 20 );
 			MenuStripItemEdit.Text = "Edit";
+			// 
+			// MenuStripItemEditInsertEntryTable
+			// 
+			MenuStripItemEditInsertEntryTable.Name = "MenuStripItemEditInsertEntryTable";
+			MenuStripItemEditInsertEntryTable.ShortcutKeys = Keys.Insert;
+			MenuStripItemEditInsertEntryTable.Size = new Size( 233, 22 );
+			MenuStripItemEditInsertEntryTable.Text = "Insert entry";
+			MenuStripItemEditInsertEntryTable.Click += MenuStripItemEditInsertEntryTable_Click;
+			// 
+			// MenuStripItemEditSeparator1
+			// 
+			MenuStripItemEditSeparator1.Name = "MenuStripItemEditSeparator1";
+			MenuStripItemEditSeparator1.Size = new Size( 230, 6 );
 			// 
 			// MenuStripItemEditSearch
 			// 
@@ -167,9 +183,16 @@
 			// 
 			// EntryTreeViewContextMenu
 			// 
-			EntryTreeViewContextMenu.Items.AddRange( new ToolStripItem[] { EntryTreeViewContextMenuItemDelete } );
+			EntryTreeViewContextMenu.Items.AddRange( new ToolStripItem[] { EntryTreeViewContextMenuItemInsertEntry, EntryTreeViewContextMenuItemDelete } );
 			EntryTreeViewContextMenu.Name = "EntryTreeViewContextMenu";
 			EntryTreeViewContextMenu.Size = new Size( 118, 114 );
+			// 
+			// EntryTreeViewContextMenuItemInsertEntry
+			// 
+			EntryTreeViewContextMenuItemInsertEntry.Name = "EntryTreeViewContextMenuItemInsertEntry";
+			EntryTreeViewContextMenuItemInsertEntry.Size = new Size( 117, 22 );
+			EntryTreeViewContextMenuItemInsertEntry.Text = "Insert entry";
+			EntryTreeViewContextMenuItemInsertEntry.Click += EntryTreeViewContextMenuItemInsertEntry_Click;
 			// 
 			// EntryTreeViewContextMenuItemDelete
 			// 
@@ -245,12 +268,15 @@
 		private ToolStripMenuItem MenuStripItemEdit;
 		private ToolStripSeparator MenuStripItemFileSeparator1;
 		private ToolStripMenuItem MenuStripItemFileExit;
+		private ToolStripMenuItem MenuStripItemEditInsertEntryTable;
+		private ToolStripSeparator MenuStripItemEditSeparator1;
 		private ToolStripMenuItem MenuStripItemEditSearch;
 		private ToolStripMenuItem MenuStripItemEditSearchForward;
 		private ToolStripMenuItem MenuStripItemEditSearchBackward;
 		private MenuStrip MenuStrip;
 		private TreeViewSWB2EntryExplorer EntryTreeView;
 		private ContextMenuStrip EntryTreeViewContextMenu;
+		private ToolStripMenuItem EntryTreeViewContextMenuItemInsertEntry;
 		private ToolStripMenuItem EntryTreeViewContextMenuItemDelete;
 		private PropertyGrid EntryPropertyGrid;
 		private SplitContainer SplitContainer;
