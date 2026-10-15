@@ -90,24 +90,6 @@ namespace ORCToolKit.Resources {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        internal static string FileTypeDeducerOpenUnknownText {
-            get {
-                return ResourceManager.GetString("FileTypeDeducerOpenUnknownText", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        internal static string FileTypeDeducerOpenUnknownTitle {
-            get {
-                return ResourceManager.GetString("FileTypeDeducerOpenUnknownTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
         internal static string FormFileExplorerInvalidGameFolderText {
             get {
                 return ResourceManager.GetString("FormFileExplorerInvalidGameFolderText", resourceCulture);

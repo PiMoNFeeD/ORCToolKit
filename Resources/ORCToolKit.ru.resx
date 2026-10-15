@@ -126,12 +126,6 @@
   <data name="FileSSGArchiveFileCompressedConsoleNotSupported" xml:space="preserve">
     <value>Сжатые консольные архивы в данный момент не поддерживаются.</value>
   </data>
-  <data name="FileTypeDeducerOpenUnknownText" xml:space="preserve">
-    <value>Это неизвестный тип файла. Он будет открыт с помощью оболочки Windows. Продолжить?</value>
-  </data>
-  <data name="FileTypeDeducerOpenUnknownTitle" xml:space="preserve">
-    <value>Неизвестный тип файла</value>
-  </data>
   <data name="FormFileExplorerInvalidGameFolderText" xml:space="preserve">
     <value>{0} не является правильной папкой с игрой.</value>
   </data>

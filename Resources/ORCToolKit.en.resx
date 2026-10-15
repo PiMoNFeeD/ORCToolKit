@@ -126,12 +126,6 @@
   <data name="FileSSGArchiveFileCompressedConsoleNotSupported" xml:space="preserve">
     <value>Compressed console archives are currently not supported.</value>
   </data>
-  <data name="FileTypeDeducerOpenUnknownText" xml:space="preserve">
-    <value>This is an unknown file type. It will be opened by Windows Shell. Continue?</value>
-  </data>
-  <data name="FileTypeDeducerOpenUnknownTitle" xml:space="preserve">
-    <value>Unknown file type</value>
-  </data>
   <data name="FormFileExplorerInvalidGameFolderText" xml:space="preserve">
     <value>{0} is not a valid game folder.</value>
   </data>

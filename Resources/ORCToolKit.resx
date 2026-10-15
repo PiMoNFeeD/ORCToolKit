@@ -126,12 +126,6 @@
   <data name="FileSSGArchiveFileCompressedConsoleNotSupported" xml:space="preserve">
     <value />
   </data>
-  <data name="FileTypeDeducerOpenUnknownText" xml:space="preserve">
-    <value />
-  </data>
-  <data name="FileTypeDeducerOpenUnknownTitle" xml:space="preserve">
-    <value />
-  </data>
   <data name="FormFileExplorerInvalidGameFolderText" xml:space="preserve">
     <value />
   </data>

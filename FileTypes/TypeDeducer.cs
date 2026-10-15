@@ -114,15 +114,11 @@ namespace ORCToolKit.FileTypes
 				{
 					if ( !Silent )
 					{
-						if ( MessageBox.Show( Resources.ORCToolKit.FileTypeDeducerOpenUnknownText, Resources.ORCToolKit.FileTypeDeducerOpenUnknownTitle,
-							MessageBoxButtons.YesNo, MessageBoxIcon.Warning ) == DialogResult.Yes )
-						{
-							// HACK: pass the file onto explorer to deal with it for us...
-							Process FileProcess = new Process();
-							FileProcess.StartInfo.FileName = "explorer";
-							FileProcess.StartInfo.Arguments = "\"" + FileName + "\"";
-							FileProcess.Start();
-						}
+						// HACK: pass the file onto explorer to deal with it for us...
+						Process FileProcess = new Process();
+						FileProcess.StartInfo.FileName = "explorer";
+						FileProcess.StartInfo.Arguments = "\"" + FileName + "\"";
+						FileProcess.Start();
 					}
 					break;
 				}
