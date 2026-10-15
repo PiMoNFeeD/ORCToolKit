@@ -12,7 +12,7 @@ namespace ORCToolKit
 
 	public delegate void EntriesUpdatedEventHandler( Object? sender, EntriesUpdatedEventArgs args );
 
-	public class FormEditor: Form
+	public class FormEditor: LocalizedForm
 	{
 		private bool HasUnsavedEdits = false;
 

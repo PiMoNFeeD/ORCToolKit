@@ -14,12 +14,40 @@ namespace ORCToolKit
 		public FormSSGArchiveEditor()
 		{
 			InitializeComponent();
-			Program.ReloadFormResources( this );
+			LocalizeComponent();
 
 			Shown += FormSSGArchiveEditor_Shown;
 			OnNewFile += FormSSGArchiveEditor_OnNewFile;
 			OnOpenFile += FormSSGArchiveEditor_OnOpenFile;
 			OnEntriesUpdated += FormSSGArchiveEditor_OnEntriesUpdated;
+		}
+
+		public override LocalizedControl[] LocalizedControls
+		{
+			get
+			{
+				return [
+					new LocalizedControl { Object = this, ObjectName = this.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFile, ObjectName = MenuStripItemFile.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFileNew, ObjectName = MenuStripItemFileNew.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFileOpen, ObjectName = MenuStripItemFileOpen.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFileSave, ObjectName = MenuStripItemFileSave.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEdit, ObjectName = MenuStripItemEdit.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFileExit, ObjectName = MenuStripItemFileExit.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEditSearch, ObjectName = MenuStripItemEditSearch.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEditSearchForward, ObjectName = MenuStripItemEditSearchForward.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEditSearchBackward, ObjectName = MenuStripItemEditSearchBackward.Name, FieldName = "Text" },
+					new LocalizedControl { Object = FilesListViewHeaderName, ObjectName = FilesListViewHeaderName.Name, FieldName = "Text" },
+					new LocalizedControl { Object = FilesListViewHeaderType, ObjectName = FilesListViewHeaderType.Name, FieldName = "Text" },
+					new LocalizedControl { Object = FilesListViewContextMenuItemOpen, ObjectName = FilesListViewContextMenuItemOpen.Name, FieldName = "Text" },
+					new LocalizedControl { Object = FilesListViewContextMenuItemExtract, ObjectName = FilesListViewContextMenuItemExtract.Name, FieldName = "Text" },
+					new LocalizedControl { Object = FilesListViewContextMenuItemReplace, ObjectName = FilesListViewContextMenuItemReplace.Name, FieldName = "Text" },
+					new LocalizedControl { Object = FilesListViewContextMenuItemRename, ObjectName = FilesListViewContextMenuItemRename.Name, FieldName = "Text" },
+					new LocalizedControl { Object = FilesListViewContextMenuItemDelete, ObjectName = FilesListViewContextMenuItemDelete.Name, FieldName = "Text" },
+					new LocalizedControl { Object = FilesListViewHeaderUncompressedSize, ObjectName = FilesListViewHeaderUncompressedSize.Name, FieldName = "Text" },
+					new LocalizedControl { Object = FilesListViewHeaderIsCompressed, ObjectName = FilesListViewHeaderIsCompressed.Name, FieldName = "Text" },
+				];
+			}
 		}
 
 		private void FormSSGArchiveEditor_Shown( Object? sender, EventArgs e )

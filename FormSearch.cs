@@ -1,15 +1,31 @@
 ﻿using ORCToolKit.Search;
+using System.Resources;
 
 namespace ORCToolKit
 {
-	public partial class FormSearch: Form
+	public partial class FormSearch: LocalizedForm
 	{
 		public event SearchEventHandler? OnSearch;
 
 		public FormSearch()
 		{
 			InitializeComponent();
-			Program.ReloadFormResources( this );
+			LocalizeComponent();
+		}
+
+		public override LocalizedControl[] LocalizedControls
+		{
+			get
+			{
+				return [
+					new LocalizedControl { Object = this, ObjectName = this.Name, FieldName = "Text" },
+					new LocalizedControl { Object = SearchLabel, ObjectName = SearchLabel.Name, FieldName = "Text" },
+					new LocalizedControl { Object = SearchBackwardButton, ObjectName = SearchBackwardButton.Name, FieldName = "Text" },
+					new LocalizedControl { Object = SearchForwardButton, ObjectName = SearchForwardButton.Name, FieldName = "Text" },
+					new LocalizedControl { Object = WholeWordCheckBox, ObjectName = WholeWordCheckBox.Name, FieldName = "Text" },
+					new LocalizedControl { Object = CaseSensitiveCheckBox, ObjectName = CaseSensitiveCheckBox.Name, FieldName = "Text" },
+				];
+			}
 		}
 
 		private void InvokeSearch( SearchDirection Direction )

@@ -266,6 +266,7 @@
 		private StatusStrip StatusStrip;
 		private ToolStripStatusLabel StatusStripEntriesLabel;
 		private MenuStrip MenuStrip;
+		private ToolStripMenuItem MenuStripItemFile;
 		private ToolStripMenuItem MenuStripItemFileNew;
 		private ToolStripMenuItem MenuStripItemFileOpen;
 		private ToolStripMenuItem MenuStripItemFileSave;
@@ -275,7 +276,6 @@
 		private ToolStripMenuItem MenuStripItemEditSearch;
 		private ToolStripMenuItem MenuStripItemEditSearchForward;
 		private ToolStripMenuItem MenuStripItemEditSearchBackward;
-		private ToolStripMenuItem MenuStripItemFile;
 		private ListView FilesListView;
 		private ColumnHeader FilesListViewHeaderName;
 		private ColumnHeader FilesListViewHeaderType;

@@ -28,8 +28,8 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			ToolStripMenuItem MenuStripItemFile;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager( typeof( FormLocalizationEditor ) );
+			MenuStripItemFile = new ToolStripMenuItem();
 			MenuStripItemFileNew = new ToolStripMenuItem();
 			MenuStripItemFileOpen = new ToolStripMenuItem();
 			MenuStripItemFileSave = new ToolStripMenuItem();
@@ -49,7 +49,6 @@
 			MenuStripItemEditSearchBackward = new ToolStripMenuItem();
 			TextEntriesGridViewNameColumn = new DataGridViewTextBoxColumn();
 			TextEntriesGridViewTextColumn = new DataGridViewTextBoxColumn();
-			MenuStripItemFile = new ToolStripMenuItem();
 			((System.ComponentModel.ISupportInitialize)TextEntriesGridView).BeginInit();
 			StatusStrip.SuspendLayout();
 			MenuStrip.SuspendLayout();
@@ -243,6 +242,7 @@
 		private StatusStrip StatusStrip;
 		private ToolStripStatusLabel StatusStripEntriesLabel;
 		private MenuStrip MenuStrip;
+		private ToolStripMenuItem MenuStripItemFile;
 		private ToolStripMenuItem MenuStripItemFileNew;
 		private ToolStripMenuItem MenuStripItemFileOpen;
 		private ToolStripMenuItem MenuStripItemFileSave;

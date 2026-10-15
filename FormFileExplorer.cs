@@ -3,12 +3,12 @@ using System.Globalization;
 
 namespace ORCToolKit
 {
-	public partial class FormFileExplorer: Form
+	public partial class FormFileExplorer: LocalizedForm
 	{
 		public FormFileExplorer()
 		{
 			InitializeComponent();
-			Program.ReloadFormResources( this );
+			LocalizeComponent();
 
 			LoadGameFolder( Properties.Settings.Default.GamePath );
 
@@ -23,6 +23,27 @@ namespace ORCToolKit
 				};
 
 				MenuStripItemSettingsLanguage.DropDownItems.Add( LanguageItem );
+			}
+		}
+
+		public override LocalizedControl[] LocalizedControls
+		{
+			get
+			{
+				return [
+					new LocalizedControl { Object = this, ObjectName = this.Name, FieldName = "Text" },
+					new LocalizedControl { Object = GamePathLabel, ObjectName = GamePathLabel.Name, FieldName = "Text" },
+					new LocalizedControl { Object = GamePathBrowseButton, ObjectName = GamePathBrowseButton.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFile, ObjectName = MenuStripItemFile.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFileExit, ObjectName = MenuStripItemFileExit.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemSettings, ObjectName = MenuStripItemSettings.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemSettingsLanguage, ObjectName = MenuStripItemSettingsLanguage.Name, FieldName = "Text" },
+					new LocalizedControl { Object = GameFileExplorerContextMenuItemOpen, ObjectName = GameFileExplorerContextMenuItemOpen.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemTools, ObjectName = MenuStripItemTools.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemToolsLocalizationEditor, ObjectName = MenuStripItemToolsLocalizationEditor.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemToolsSSGArchiveEditor, ObjectName = MenuStripItemToolsSSGArchiveEditor.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemToolsSWB2DatabaseEditor, ObjectName = MenuStripItemToolsSWB2DatabaseEditor.Name, FieldName = "Text" },
+				];
 			}
 		}
 

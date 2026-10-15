@@ -14,12 +14,32 @@ namespace ORCToolKit
 		public FormSWB2DatabaseEditor()
 		{
 			InitializeComponent();
-			Program.ReloadFormResources( this );
+			LocalizeComponent();
 
 			Shown += FormSWB2DatabaseEditor_Shown;
 			OnNewFile += FormSWB2DatabaseEditor_OnNewFile;
 			OnOpenFile += FormSWB2DatabaseEditor_OnOpenFile;
 			OnEntriesUpdated += FormSWB2DatabaseEditor_OnEntriesUpdated;
+		}
+
+		public override LocalizedControl[] LocalizedControls
+		{
+			get
+			{
+				return [
+					new LocalizedControl { Object = this, ObjectName = this.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFile, ObjectName = MenuStripItemFile.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFileNew, ObjectName = MenuStripItemFileNew.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFileOpen, ObjectName = MenuStripItemFileOpen.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFileSave, ObjectName = MenuStripItemFileSave.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEdit, ObjectName = MenuStripItemEdit.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFileExit, ObjectName = MenuStripItemFileExit.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEditSearch, ObjectName = MenuStripItemEditSearch.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEditSearchForward, ObjectName = MenuStripItemEditSearchForward.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEditSearchBackward, ObjectName = MenuStripItemEditSearchBackward.Name, FieldName = "Text" },
+					new LocalizedControl { Object = EntryTreeViewContextMenuItemDelete, ObjectName = EntryTreeViewContextMenuItemDelete.Name, FieldName = "Text" },
+				];
+			}
 		}
 
 		private void FormSWB2DatabaseEditor_Shown( Object? sender, EventArgs e )

@@ -11,11 +11,35 @@ namespace ORCToolKit
 		public FormLocalizationEditor()
 		{
 			InitializeComponent();
-			Program.ReloadFormResources( this );
+			LocalizeComponent();
 
 			Shown += FormLocalizationEditor_Shown;
 			OnEntriesUpdated += FormLocalizationEditor_OnEntriesUpdated;
 			TextEntriesGridView.DataSource = _file.TextEntries;
+		}
+
+		public override LocalizedControl[] LocalizedControls
+		{
+			get
+			{
+				return [
+					new LocalizedControl { Object = this, ObjectName = this.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFile, ObjectName = MenuStripItemFile.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFileNew, ObjectName = MenuStripItemFileNew.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFileOpen, ObjectName = MenuStripItemFileOpen.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFileSave, ObjectName = MenuStripItemFileSave.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEdit, ObjectName = MenuStripItemEdit.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEditInsertEntryAfter, ObjectName = MenuStripItemEditInsertEntryAfter.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEditInsertEntryBefore, ObjectName = MenuStripItemEditInsertEntryBefore.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEditRemoveEntry, ObjectName = MenuStripItemEditRemoveEntry.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemFileExit, ObjectName = MenuStripItemFileExit.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEditSearch, ObjectName = MenuStripItemEditSearch.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEditSearchForward, ObjectName = MenuStripItemEditSearchForward.Name, FieldName = "Text" },
+					new LocalizedControl { Object = MenuStripItemEditSearchBackward, ObjectName = MenuStripItemEditSearchBackward.Name, FieldName = "Text" },
+					new LocalizedControl { Object = TextEntriesGridViewNameColumn, ObjectName = TextEntriesGridViewNameColumn.Name, FieldName = "HeaderText" },
+					new LocalizedControl { Object = TextEntriesGridViewTextColumn, ObjectName = TextEntriesGridViewTextColumn.Name, FieldName = "HeaderText" },
+				];
+			}
 		}
 
 		private void FormLocalizationEditor_Shown( Object? sender, EventArgs e )
