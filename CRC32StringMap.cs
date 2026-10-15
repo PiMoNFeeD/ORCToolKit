@@ -23,7 +23,7 @@ namespace ORCToolKit
 			return Result;
 		}
 
-		static public string? FindString( UInt32 CRC32 )
+		static public string? FindString( CRC32 CRC32 )
 		{
 			if ( _dict.TryGetValue( CRC32, out string? String ) )
 				return String;
