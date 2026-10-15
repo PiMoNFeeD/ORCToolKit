@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Windows.Forms;
 
 namespace ORCToolKit.FileTypes
 {
@@ -67,6 +66,11 @@ namespace ORCToolKit.FileTypes
 		{
 			private EntryValueType _valueType = EntryValueType.TYPE_BYTE_ZERO;
 
+			public Entry( EntryTable? Parent ) { ParentTable = Parent; }
+
+			[Browsable( false )]
+			public EntryTable? ParentTable { get; private set; }
+
 			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryKeyName" ), LocalizedDescription( "FormSWB2DatabaseEditorEntryKeyDescription" )]
 			public CRC32 Key { get; set; } = 0;
 
@@ -90,7 +94,7 @@ namespace ORCToolKit.FileTypes
 							Value = new string[1] { string.Empty };
 							break;
 						case EntryValueType.TYPE_ENTRY_TABLE:
-							Value = new EntryTable();
+							Value = new EntryTable( ParentTable );
 							break;
 						case EntryValueType.TYPE_STRING_HASH:
 							Value = new CRC32[1] { 0 };
@@ -357,7 +361,7 @@ namespace ORCToolKit.FileTypes
 							case EntryValueType.TYPE_ENTRY_TABLE:
 							{
 								Int64 OldPosition = Reader.BaseStream.Position;
-								EntryTable Value = new EntryTable();
+								EntryTable Value = new EntryTable( ParentTable );
 								Value.LoadFromBuffer( BufferStream, Endian );
 								this.Value = Value;
 
@@ -501,6 +505,11 @@ namespace ORCToolKit.FileTypes
 
 		public class EntryTable
 		{
+			public EntryTable( EntryTable? Parent ) { ParentTable = Parent; }
+			
+			[Browsable( false )]
+			public EntryTable? ParentTable { get; private set; }
+
 			public List<Entry> Entries = new List<Entry>();
 
 			[LocalizedDisplayName( "FormSWB2DatabaseEditorEntryTableIdentifierName" ), LocalizedDescription( "FormSWB2DatabaseEditorEntryTableIdentifierDescription" )]
@@ -519,7 +528,7 @@ namespace ORCToolKit.FileTypes
 					this.Entries.Capacity = EntryTableHeader.NumEntries;
 					for ( UInt32 j = 0; j < EntryTableHeader.NumEntries; j++ )
 					{
-						Entry Entry = new Entry();
+						Entry Entry = new Entry( this );
 						Entry.LoadFromBuffer( BufferStream, Endian );
 						this.Entries.Add( Entry );
 					}
@@ -595,7 +604,7 @@ namespace ORCToolKit.FileTypes
 					EntryTables.Capacity = Header.NumTables;
 					for ( UInt32 i = 0; i < Header.NumTables; i++ )
 					{
-						EntryTable EntryTable = new EntryTable();
+						EntryTable EntryTable = new EntryTable( null );
 						EntryTable.LoadFromBuffer( BufferStream, FileEndianness );
 						EntryTables.Add( EntryTable );
 					}
