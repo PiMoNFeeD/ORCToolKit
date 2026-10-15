@@ -37,8 +37,8 @@ namespace ORCToolKit
 			GamePathTextBox = new TextBox();
 			GamePathBrowseButton = new Button();
 			GameFilesExplorer = new TreeViewFileExplorer();
-			GameFileExplorerContextMenu = new ContextMenuStrip( components );
-			GameFileExplorerContextMenuItemOpen = new ToolStripMenuItem();
+			GameFilesExplorerContextMenu = new ContextMenuStrip( components );
+			GameFilesExplorerContextMenuItemOpen = new ToolStripMenuItem();
 			MenuStrip = new MenuStrip();
 			MenuStripItemFile = new ToolStripMenuItem();
 			MenuStripItemFileExit = new ToolStripMenuItem();
@@ -48,7 +48,7 @@ namespace ORCToolKit
 			MenuStripItemToolsSWB2DatabaseEditor = new ToolStripMenuItem();
 			MenuStripItemSettings = new ToolStripMenuItem();
 			MenuStripItemSettingsLanguage = new ToolStripMenuItem();
-			GameFileExplorerContextMenu.SuspendLayout();
+			GameFilesExplorerContextMenu.SuspendLayout();
 			MenuStrip.SuspendLayout();
 			SuspendLayout();
 			// 
@@ -85,7 +85,7 @@ namespace ORCToolKit
 			// GameFilesExplorer
 			// 
 			GameFilesExplorer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-			GameFilesExplorer.ContextMenuStrip = GameFileExplorerContextMenu;
+			GameFilesExplorer.ContextMenuStrip = GameFilesExplorerContextMenu;
 			GameFilesExplorer.HideSelection = false;
 			GameFilesExplorer.ImageIndex = 0;
 			GameFilesExplorer.Location = new Point( 12, 71 );
@@ -96,18 +96,18 @@ namespace ORCToolKit
 			GameFilesExplorer.NodeMouseClick += GameFilesExplorer_NodeMouseClick;
 			GameFilesExplorer.NodeMouseDoubleClick += GameFilesExplorer_NodeMouseDoubleClick;
 			// 
-			// GameFileExplorerContextMenu
+			// GameFilesExplorerContextMenu
 			// 
-			GameFileExplorerContextMenu.Items.AddRange( new ToolStripItem[] { GameFileExplorerContextMenuItemOpen } );
-			GameFileExplorerContextMenu.Name = "GameFileExplorerContextMenu";
-			GameFileExplorerContextMenu.Size = new Size( 104, 26 );
+			GameFilesExplorerContextMenu.Items.AddRange( new ToolStripItem[] { GameFilesExplorerContextMenuItemOpen } );
+			GameFilesExplorerContextMenu.Name = "GameFilesExplorerContextMenu";
+			GameFilesExplorerContextMenu.Size = new Size( 104, 26 );
 			// 
-			// GameFileExplorerContextMenuItemOpen
+			// GameFilesExplorerContextMenuItemOpen
 			// 
-			GameFileExplorerContextMenuItemOpen.Name = "GameFileExplorerContextMenuItemOpen";
-			GameFileExplorerContextMenuItemOpen.Size = new Size( 103, 22 );
-			GameFileExplorerContextMenuItemOpen.Text = "Open";
-			GameFileExplorerContextMenuItemOpen.Click += GameFileExplorerContextMenuItemOpen_Click;
+			GameFilesExplorerContextMenuItemOpen.Name = "GameFilesExplorerContextMenuItemOpen";
+			GameFilesExplorerContextMenuItemOpen.Size = new Size( 103, 22 );
+			GameFilesExplorerContextMenuItemOpen.Text = "Open";
+			GameFilesExplorerContextMenuItemOpen.Click += GameFilesExplorerContextMenuItemOpen_Click;
 			// 
 			// MenuStrip
 			// 
@@ -192,7 +192,7 @@ namespace ORCToolKit
 			StartPosition = FormStartPosition.CenterScreen;
 			Text = "ORC ToolKit";
 			WindowState = FormWindowState.Maximized;
-			GameFileExplorerContextMenu.ResumeLayout( false );
+			GameFilesExplorerContextMenu.ResumeLayout( false );
 			MenuStrip.ResumeLayout( false );
 			MenuStrip.PerformLayout();
 			ResumeLayout( false );
@@ -210,8 +210,8 @@ namespace ORCToolKit
 		private ToolStripMenuItem MenuStripItemFileExit;
 		private ToolStripMenuItem MenuStripItemSettings;
 		private ToolStripMenuItem MenuStripItemSettingsLanguage;
-		private ContextMenuStrip GameFileExplorerContextMenu;
-		private ToolStripMenuItem GameFileExplorerContextMenuItemOpen;
+		private ContextMenuStrip GameFilesExplorerContextMenu;
+		private ToolStripMenuItem GameFilesExplorerContextMenuItemOpen;
 		private ToolStripMenuItem MenuStripItemTools;
 		private ToolStripMenuItem MenuStripItemToolsLocalizationEditor;
 		private ToolStripMenuItem MenuStripItemToolsSSGArchiveEditor;

@@ -37,7 +37,7 @@ namespace ORCToolKit
 					new LocalizedControl { Object = MenuStripItemFileExit, ObjectName = MenuStripItemFileExit.Name, FieldName = "Text" },
 					new LocalizedControl { Object = MenuStripItemSettings, ObjectName = MenuStripItemSettings.Name, FieldName = "Text" },
 					new LocalizedControl { Object = MenuStripItemSettingsLanguage, ObjectName = MenuStripItemSettingsLanguage.Name, FieldName = "Text" },
-					new LocalizedControl { Object = GameFileExplorerContextMenuItemOpen, ObjectName = GameFileExplorerContextMenuItemOpen.Name, FieldName = "Text" },
+					new LocalizedControl { Object = GameFilesExplorerContextMenuItemOpen, ObjectName = GameFilesExplorerContextMenuItemOpen.Name, FieldName = "Text" },
 					new LocalizedControl { Object = MenuStripItemTools, ObjectName = MenuStripItemTools.Name, FieldName = "Text" },
 					new LocalizedControl { Object = MenuStripItemToolsLocalizationEditor, ObjectName = MenuStripItemToolsLocalizationEditor.Name, FieldName = "Text" },
 					new LocalizedControl { Object = MenuStripItemToolsSSGArchiveEditor, ObjectName = MenuStripItemToolsSSGArchiveEditor.Name, FieldName = "Text" },
@@ -110,15 +110,15 @@ namespace ORCToolKit
 					FileExplorer.SelectedNode = e.Node; // HACK: Windows Forms doesn't keep selected node when right clicking...
 
 					// open context menu
-					GameFileExplorerContextMenu.Tag = FileExplorer.SelectedNode; // remember what node we are going to open
-					GameFileExplorerContextMenu.Show( FileExplorer, e.Location );
+					GameFilesExplorerContextMenu.Tag = FileExplorer.SelectedNode; // remember what node we are going to open
+					GameFilesExplorerContextMenu.Show( FileExplorer, e.Location );
 
 					break;
 				}
 			}
 		}
 
-		private void GameFileExplorerContextMenuItemOpen_Click( object sender, EventArgs e )
+		private void GameFilesExplorerContextMenuItemOpen_Click( object sender, EventArgs e )
 		{
 			ToolStripMenuItem MenuItem = (ToolStripMenuItem)sender;
 			TreeNode? SelectedNode = (TreeNode?)MenuItem.GetCurrentParent()?.Tag;

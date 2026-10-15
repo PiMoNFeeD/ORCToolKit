@@ -4416,7 +4416,7 @@
   <data name="MenuStripItemSettingsLanguage.Text" xml:space="preserve">
     <value>Язык</value>
   </data>
-  <data name="GameFileExplorerContextMenuItemOpen.Text" xml:space="preserve">
+  <data name="GameFilesExplorerContextMenuItemOpen.Text" xml:space="preserve">
     <value>Открыть</value>
   </data>
   <data name="MenuStripItemTools.Text" xml:space="preserve">
