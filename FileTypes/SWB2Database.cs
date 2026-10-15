@@ -194,6 +194,11 @@ namespace ORCToolKit.FileTypes
 							}
 							break;
 						}
+						case EntryValueType.TYPE_ENTRY_TABLE:
+						{
+							Result += Value.ToString();
+							break;
+						}
 						// this weird logic allows me to automatically propogate default values without having to worry about manually typing them out
 						case EntryValueType.TYPE_INT32_ZERO:
 						case EntryValueType.TYPE_INT32_ONE:
@@ -214,12 +219,6 @@ namespace ORCToolKit.FileTypes
 						{
 							Debug.Assert( Value == null );
 							Result += Convert.ToBoolean( ValueType - EntryValueType.TYPE_BYTE_ZERO );
-							break;
-						}
-						// unsupported, should never reach here
-						case EntryValueType.TYPE_ENTRY_TABLE:
-						{
-							Debug.Assert( false );
 							break;
 						}
 						default:

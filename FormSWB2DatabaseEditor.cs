@@ -68,10 +68,21 @@ namespace ORCToolKit
 
 		private void FormSWB2DatabaseEditor_OnEntriesUpdated( Object? sender, EntriesUpdatedEventArgs e )
 		{
-			// in case the number of entries has changed, update the text of the select node hierarchy
-			if ( EntryTreeView.SelectedNode != null )
+			TreeNode SelectedNode = EntryTreeView.SelectedNode;
+			if ( SelectedNode != null )
 			{
-				TreeNode ParentNode = EntryTreeView.SelectedNode;
+				// check if currently selected node is not the type it should be, in case the user changed to TYPE_ENTRY_TABLE
+				if ( SelectedNode.Tag is SWB2DatabaseFile.Entry Entry )
+				{
+					if ( Entry.ValueType == SWB2DatabaseFile.EntryValueType.TYPE_ENTRY_TABLE )
+					{
+						SelectedNode.Tag = Entry.Value;
+						EntryPropertyGrid.SelectedObject = Entry.Value;
+					}
+				}
+
+				// in case the number of entries has changed, update the text of the select node hierarchy
+				TreeNode ParentNode = SelectedNode;
 				while ( ParentNode != null )
 				{
 					ParentNode.Text = ParentNode.Tag.ToString();
