@@ -154,6 +154,7 @@
 			// EntryTreeView
 			// 
 			EntryTreeView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+			EntryTreeView.HideSelection = false;
 			EntryTreeView.Location = new Point( 0, 0 );
 			EntryTreeView.Name = "EntryTreeView";
 			EntryTreeView.Size = new Size( 580, 512 );

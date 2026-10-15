@@ -86,6 +86,7 @@ namespace ORCToolKit
 			// 
 			GameFilesExplorer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 			GameFilesExplorer.ContextMenuStrip = GameFileExplorerContextMenu;
+			GameFilesExplorer.HideSelection = false;
 			GameFilesExplorer.ImageIndex = 0;
 			GameFilesExplorer.Location = new Point( 12, 71 );
 			GameFilesExplorer.Name = "GameFilesExplorer";
