@@ -139,7 +139,7 @@
     <value>Сохранить</value>
   </data>
   <data name="MenuStripItemEdit.Text" xml:space="preserve">
-    <value>Редактирование</value>
+    <value>Правка</value>
   </data>
   <data name="MenuStripItemEditInsertEntryAfter.Text" xml:space="preserve">
     <value>Добавить строку</value>

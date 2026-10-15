@@ -130,7 +130,7 @@
     <value>Сохранить</value>
   </data>
   <data name="MenuStripItemEdit.Text" xml:space="preserve">
-    <value>Редактирование</value>
+    <value>Правка</value>
   </data>
   <data name="MenuStripItemFileExit.Text" xml:space="preserve">
     <value>Выход</value>
