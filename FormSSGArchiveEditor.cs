@@ -76,7 +76,7 @@ namespace ORCToolKit
 					for ( int i = FilesListView.SelectedIndices.Count != 0 ? FilesListView.SelectedIndices[FilesListView.SelectedItems.Count - 1] + 1 : 0;
 						i < _file.DataSections.Count; i++ )
 					{
-						if ( SearchCompareString( _file.DataSections[i].Name, SearchString, WholeWord, CaseSensitive ) )
+						if ( StringSearch.Compare( _file.DataSections[i].Name, SearchString, WholeWord, CaseSensitive ) )
 						{
 							foreach ( ListViewItem Item in FilesListView.Items )
 							{
@@ -94,7 +94,7 @@ namespace ORCToolKit
 					for ( int i = FilesListView.SelectedIndices.Count != 0 ? FilesListView.SelectedIndices[0] - 1 : _file.DataSections.Count - 1;
 						i >= 0; i-- )
 					{
-						if ( SearchCompareString( _file.DataSections[i].Name, SearchString, WholeWord, CaseSensitive ) )
+						if ( StringSearch.Compare( _file.DataSections[i].Name, SearchString, WholeWord, CaseSensitive ) )
 						{
 							foreach ( ListViewItem Item in FilesListView.Items )
 							{

@@ -158,22 +158,6 @@ namespace ORCToolKit
 			}
 		}
 
-		virtual protected bool SearchCompareString( string CompareTo, string SearchString, bool WholeWord, bool CaseSensitive )
-		{
-			if ( WholeWord )
-			{
-				// use regex for whole word matching
-				RegexOptions Options = RegexOptions.Compiled;
-				if ( !CaseSensitive )
-					Options |= RegexOptions.IgnoreCase;
-				return Regex.IsMatch( CompareTo, $@"\b{SearchString}\b", Options );
-			}
-			else
-			{
-				return CompareTo.Contains( SearchString, CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase );
-			}
-		}
-
 		protected bool CheckUnsavedChanges()
 		{
 			if ( !HasUnsavedEdits )

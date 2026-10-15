@@ -62,7 +62,7 @@ namespace ORCToolKit
 									continue;
 							}
 
-							if ( SearchCompareString( (string)Cell.Value, SearchString, WholeWord, CaseSensitive ) )
+							if ( StringSearch.Compare( (string)Cell.Value, SearchString, WholeWord, CaseSensitive ) )
 							{
 								TextEntriesGridView.CurrentCell = Cell;
 								return true;
@@ -85,7 +85,7 @@ namespace ORCToolKit
 									continue;
 							}
 
-							if ( SearchCompareString( (string)Cell.Value, SearchString, WholeWord, CaseSensitive ) )
+							if ( StringSearch.Compare( (string)Cell.Value, SearchString, WholeWord, CaseSensitive ) )
 							{
 								TextEntriesGridView.CurrentCell = Cell;
 								return true;
