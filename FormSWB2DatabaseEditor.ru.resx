@@ -117,25 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="MenuStripItemFile.GenerateMember" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="StatusStrip.TrayLocation" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="MenuStrip.TrayLocation" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="MenuStripItemEditInsertEntryBefore.Text" xml:space="preserve">
-    <value>Добавить строку до</value>
-  </data>
-  <data name="TextEntriesGridViewNameColumn.HeaderText" xml:space="preserve">
-    <value>Название строки</value>
-  </data>
-  <data name="TextEntriesGridViewTextColumn.HeaderText" xml:space="preserve">
-    <value>Текст строки</value>
-  </data>
   <data name="MenuStripItemFile.Text" xml:space="preserve">
     <value>Файл</value>
   </data>
@@ -151,12 +132,6 @@
   <data name="MenuStripItemEdit.Text" xml:space="preserve">
     <value>Редактирование</value>
   </data>
-  <data name="MenuStripItemEditInsertEntryAfter.Text" xml:space="preserve">
-    <value>Добавить строку</value>
-  </data>
-  <data name="MenuStripItemEditRemoveEntry.Text" xml:space="preserve">
-    <value>Удалить строку</value>
-  </data>
   <data name="MenuStripItemFileExit.Text" xml:space="preserve">
     <value>Выход</value>
   </data>
@@ -171,5 +146,8 @@
   </data>
   <data name="MenuStripItemEditSearchBackward.Text" xml:space="preserve">
     <value>Искать назад</value>
+  </data>
+  <data name="EntryTreeViewContextMenuItemDelete.Text" xml:space="preserve">
+    <value>Удалить</value>
   </data>
 </root>

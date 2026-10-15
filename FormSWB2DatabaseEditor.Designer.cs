@@ -28,7 +28,7 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			ToolStripMenuItem MenuStripItemFile;
+			components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager( typeof( FormSWB2DatabaseEditor ) );
 			MenuStripItemFileNew = new ToolStripMenuItem();
 			MenuStripItemFileOpen = new ToolStripMenuItem();
@@ -43,11 +43,14 @@
 			MenuStripItemEditSearchForward = new ToolStripMenuItem();
 			MenuStripItemEditSearchBackward = new ToolStripMenuItem();
 			EntryTreeView = new TreeViewSWB2EntryExplorer();
+			EntryTreeViewContextMenu = new ContextMenuStrip( components );
+			EntryTreeViewContextMenuItemDelete = new ToolStripMenuItem();
 			EntryPropertyGrid = new PropertyGrid();
 			SplitContainer = new SplitContainer();
 			MenuStripItemFile = new ToolStripMenuItem();
 			StatusStrip.SuspendLayout();
 			MenuStrip.SuspendLayout();
+			EntryTreeViewContextMenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)SplitContainer).BeginInit();
 			SplitContainer.Panel1.SuspendLayout();
 			SplitContainer.Panel2.SuspendLayout();
@@ -160,6 +163,20 @@
 			EntryTreeView.Size = new Size( 580, 512 );
 			EntryTreeView.TabIndex = 3;
 			EntryTreeView.AfterSelect += EntryTreeView_AfterSelect;
+			EntryTreeView.NodeMouseClick += EntryTreeView_NodeMouseClick;
+			// 
+			// EntryTreeViewContextMenu
+			// 
+			EntryTreeViewContextMenu.Items.AddRange( new ToolStripItem[] { EntryTreeViewContextMenuItemDelete } );
+			EntryTreeViewContextMenu.Name = "EntryTreeViewContextMenu";
+			EntryTreeViewContextMenu.Size = new Size( 118, 114 );
+			// 
+			// EntryTreeViewContextMenuItemDelete
+			// 
+			EntryTreeViewContextMenuItemDelete.Name = "EntryTreeViewContextMenuItemDelete";
+			EntryTreeViewContextMenuItemDelete.Size = new Size( 117, 22 );
+			EntryTreeViewContextMenuItemDelete.Text = "Delete";
+			EntryTreeViewContextMenuItemDelete.Click += EntryTreeViewContextMenuItemDelete_Click;
 			// 
 			// EntryPropertyGrid
 			// 
@@ -208,6 +225,7 @@
 			StatusStrip.PerformLayout();
 			MenuStrip.ResumeLayout( false );
 			MenuStrip.PerformLayout();
+			EntryTreeViewContextMenu.ResumeLayout( false );
 			SplitContainer.Panel1.ResumeLayout( false );
 			SplitContainer.Panel2.ResumeLayout( false );
 			((System.ComponentModel.ISupportInitialize)SplitContainer).EndInit();
@@ -220,6 +238,7 @@
 
 		private StatusStrip StatusStrip;
 		private ToolStripStatusLabel StatusStripEntriesLabel;
+		private ToolStripMenuItem MenuStripItemFile;
 		private ToolStripMenuItem MenuStripItemFileNew;
 		private ToolStripMenuItem MenuStripItemFileOpen;
 		private ToolStripMenuItem MenuStripItemFileSave;
@@ -231,6 +250,8 @@
 		private ToolStripMenuItem MenuStripItemEditSearchBackward;
 		private MenuStrip MenuStrip;
 		private TreeViewSWB2EntryExplorer EntryTreeView;
+		private ContextMenuStrip EntryTreeViewContextMenu;
+		private ToolStripMenuItem EntryTreeViewContextMenuItemDelete;
 		private PropertyGrid EntryPropertyGrid;
 		private SplitContainer SplitContainer;
 	}

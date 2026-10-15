@@ -118,29 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="MenuStripItemFile.GenerateMember" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="TextEntriesGridViewNameColumn.UserAddedColumn" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="StatusStrip.TrayLocation" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="MenuStrip.TrayLocation" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
   <data name="$this.Icon" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
-  </data>
-  <data name="MenuStripItemEditInsertEntryBefore.Text" xml:space="preserve">
-    <value>Insert entry before</value>
-  </data>
-  <data name="TextEntriesGridViewNameColumn.HeaderText" xml:space="preserve">
-    <value>Entry name</value>
-  </data>
-  <data name="TextEntriesGridViewTextColumn.HeaderText" xml:space="preserve">
-    <value>Entry text</value>
   </data>
   <data name="MenuStripItemFile.Text" xml:space="preserve">
     <value>File</value>
@@ -157,12 +136,6 @@
   <data name="MenuStripItemEdit.Text" xml:space="preserve">
     <value>Edit</value>
   </data>
-  <data name="MenuStripItemEditInsertEntryAfter.Text" xml:space="preserve">
-    <value>Insert entry</value>
-  </data>
-  <data name="MenuStripItemEditRemoveEntry.Text" xml:space="preserve">
-    <value>Remove entry</value>
-  </data>
   <data name="MenuStripItemFileExit.Text" xml:space="preserve">
     <value>Exit</value>
   </data>
@@ -177,5 +150,8 @@
   </data>
   <data name="MenuStripItemEditSearchBackward.Text" xml:space="preserve">
     <value>Search back</value>
+  </data>
+  <data name="EntryTreeViewContextMenuItemDelete.Text" xml:space="preserve">
+    <value>Delete</value>
   </data>
 </root>

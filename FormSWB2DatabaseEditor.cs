@@ -66,8 +66,10 @@ namespace ORCToolKit
 				object? SearchResult = RecursiveFindSWB2Entry( _file.EntryTables[i], ref SelectedEntry, Direction, SearchString, WholeWord, CaseSensitive );
 				if ( SearchResult != null )
 				{
+					EntryTreeView.BeginUpdate();
 					TreeNode TreeNode = FindAndExpandTreeNodeForEntry( EntryTreeView.Nodes, SearchResult );
 					EntryTreeView.SelectedNode = TreeNode;
+					EntryTreeView.EndUpdate();
 					return true;
 				}
 			}
@@ -116,6 +118,69 @@ namespace ORCToolKit
 		private void EntryTreeView_AfterSelect( object sender, TreeViewEventArgs e )
 		{
 			EntryPropertyGrid.SelectedObject = e.Node.Tag;
+		}
+
+		private void EntryTreeView_NodeMouseClick( Object sender, TreeNodeMouseClickEventArgs e )
+		{
+			TreeView EntryView = (TreeView)sender;
+
+			switch ( e.Button )
+			{
+				case MouseButtons.Right:
+				{
+					EntryView.SelectedNode = e.Node;
+
+					// open context menu
+					EntryTreeViewContextMenu.Tag = e.Node;
+					EntryTreeViewContextMenu.Show( EntryView, e.Location );
+
+					break;
+				}
+			}
+		}
+
+		private void EntryTreeViewContextMenuItemDelete_Click( object sender, EventArgs e )
+		{
+			TreeNode SelectedNode = (TreeNode)EntryTreeViewContextMenu.Tag;
+			object SelectedEntry = SelectedNode.Tag;
+			if ( SelectedEntry is SWB2DatabaseFile.EntryTable EntryTable )
+			{
+				if ( EntryTable.ParentTable != null )
+				{
+					foreach ( SWB2DatabaseFile.Entry Entry in EntryTable.Entries )
+					{
+						if ( Entry.Value == SelectedEntry )
+						{
+							EntryTable.Entries.Remove( Entry );
+							break;
+						}
+					}
+				}
+				else
+				{
+					_file.EntryTables.Remove( EntryTable );
+				}
+			}
+			else
+			{
+				SWB2DatabaseFile.Entry Entry = (SWB2DatabaseFile.Entry)SelectedEntry;
+				Debug.Assert( Entry.ParentTable != null );
+
+				foreach ( SWB2DatabaseFile.Entry SubEntry in Entry.ParentTable.Entries )
+				{
+					if ( SubEntry == Entry )
+					{
+						Entry.ParentTable.Entries.Remove( SubEntry );
+						break;
+					}
+				}
+			}
+
+			if ( SelectedNode.Parent != null )
+				SelectedNode.Parent.Text = SelectedNode.Parent.Tag.ToString(); // update the count of entries in our parent
+			SelectedNode.Remove();
+
+			EntriesUpdated();
 		}
 
 		private void EntryPropertyGrid_PropertyValueChanged( object s, PropertyValueChangedEventArgs e )
