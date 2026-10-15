@@ -190,9 +190,8 @@ namespace ORCToolKit
 				{
 					if ( FilesList.SelectedIndices.Count > 0 )
 					{
-						Int32 FileIndex = FilesList.SelectedIndices[0];
-
 						// open context menu
+						FilesListViewContextMenu.Tag = FilesList.SelectedItems;
 						FilesListViewContextMenu.Show( FilesList, e.Location );
 					}
 
@@ -241,9 +240,13 @@ namespace ORCToolKit
 
 		private void FilesListViewContextMenuItemOpen_Click( object sender, EventArgs e )
 		{
-			if ( FilesListView.SelectedItems.Count > 0 )
+			ListView.SelectedListViewItemCollection? SelectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
+			if ( SelectedItems == null )
+				return;
+
+			if ( SelectedItems.Count > 0 )
 			{
-				LastOpenedSection = FilesListView.SelectedItems[0].Index;
+				LastOpenedSection = SelectedItems[0].Index;
 				using ( MemoryStream FileStream = new MemoryStream( _file.DataSections[LastOpenedSection].RawData, false ) )
 				{
 					FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[LastOpenedSection].Name, FileStream, this );
@@ -253,28 +256,32 @@ namespace ORCToolKit
 
 		private void FilesListViewContextMenuItemExtract_Click( object sender, EventArgs e )
 		{
-			if ( FilesListView.SelectedItems.Count == 1 )
+			ListView.SelectedListViewItemCollection? SelectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
+			if ( SelectedItems == null )
+				return;
+
+			if ( SelectedItems.Count == 1 )
 			{
 				using ( SaveFileDialog FileDialog = new SaveFileDialog() )
 				{
-					FileDialog.FileName = Path.GetFileName( _file.DataSections[FilesListView.SelectedItems[0].Index].Name );
+					FileDialog.FileName = Path.GetFileName( _file.DataSections[SelectedItems[0].Index].Name );
 					FileDialog.RestoreDirectory = true;
 					if ( FileDialog.ShowDialog() == DialogResult.OK )
 					{
 						using ( FileStream File = new FileStream( FileDialog.FileName, FileMode.Create, FileAccess.Write ) )
 						{
-							File.Write( _file.DataSections[FilesListView.SelectedItems[0].Index].RawData );
+							File.Write( _file.DataSections[SelectedItems[0].Index].RawData );
 						}
 					}
 				}
 			}
-			else if ( FilesListView.SelectedItems.Count > 1 )
+			else if ( SelectedItems.Count > 1 )
 			{
 				using ( FolderBrowserDialog FolderDialog = new FolderBrowserDialog() )
 				{
 					if ( FolderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace( FolderDialog.SelectedPath ) )
 					{
-						foreach ( ListViewItem SelectedItem in FilesListView.SelectedItems )
+						foreach ( ListViewItem SelectedItem in SelectedItems )
 						{
 							string FilePath = FolderDialog.SelectedPath + "\\" + _file.DataSections[SelectedItem.Index].Name;
 							DirectoryInfo FileDirectory = new DirectoryInfo( Path.GetDirectoryName( FilePath ) );
@@ -293,7 +300,11 @@ namespace ORCToolKit
 
 		private void FilesListViewContextMenuItemReplace_Click( object sender, EventArgs e )
 		{
-			if ( FilesListView.SelectedItems.Count > 0 )
+			ListView.SelectedListViewItemCollection? SelectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
+			if ( SelectedItems == null )
+				return;
+
+			if ( SelectedItems.Count > 0 )
 			{
 				using ( OpenFileDialog FileDialog = new OpenFileDialog() )
 				{
@@ -310,7 +321,7 @@ namespace ORCToolKit
 							}
 						}
 
-						foreach ( ListViewItem SelectedItem in FilesListView.SelectedItems )
+						foreach ( ListViewItem SelectedItem in SelectedItems )
 						{
 							_file.DataSections[SelectedItem.Index].RawData = FileData;
 							SelectedItem.SubItems[2].Text = FileData.Length.ToString(); // cursed
@@ -322,13 +333,21 @@ namespace ORCToolKit
 
 		private void FilesListViewContextMenuItemRename_Click( object sender, EventArgs e )
 		{
-			if ( FilesListView.SelectedItems.Count > 0 )
-				FilesListView.Items[FilesListView.SelectedItems[0].Index].BeginEdit();
+			ListView.SelectedListViewItemCollection? SelectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
+			if ( SelectedItems == null )
+				return;
+
+			if ( SelectedItems.Count > 0 )
+				FilesListView.Items[SelectedItems[0].Index].BeginEdit();
 		}
 
 		private void FilesListViewContextMenuItemDelete_Click( object sender, EventArgs e )
 		{
-			foreach ( ListViewItem SelectedItem in FilesListView.SelectedItems )
+			ListView.SelectedListViewItemCollection? SelectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
+			if ( SelectedItems == null )
+				return;
+
+			foreach ( ListViewItem SelectedItem in SelectedItems )
 			{
 				_file.DataSections.RemoveAt( SelectedItem.Index );
 				FilesListView.Items.RemoveAt( SelectedItem.Index );

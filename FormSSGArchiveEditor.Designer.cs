@@ -160,7 +160,6 @@
 			// 
 			FilesListView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
 			FilesListView.Columns.AddRange( new ColumnHeader[] { FilesListViewHeaderName, FilesListViewHeaderType, FilesListViewHeaderUncompressedSize, FilesListViewHeaderIsCompressed } );
-			FilesListView.ContextMenuStrip = FilesListViewContextMenu;
 			FilesListView.FullRowSelect = true;
 			FilesListView.LabelEdit = true;
 			FilesListView.Location = new Point( 0, 27 );
