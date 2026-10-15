@@ -16,7 +16,7 @@ namespace ORCToolKit
 	{
 		private bool HasUnsavedEdits = false;
 
-		private FormSearch FormSearch = new FormSearch();
+		protected FormSearch FormSearch = new FormSearch();
 		protected string LastSearchString = string.Empty;
 		protected bool LastSearchWholeWord = false;
 		protected bool LastSearchCaseSensitive = false;

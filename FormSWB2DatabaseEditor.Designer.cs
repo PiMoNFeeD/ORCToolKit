@@ -38,6 +38,10 @@
 			StatusStrip = new StatusStrip();
 			StatusStripEntriesLabel = new ToolStripStatusLabel();
 			MenuStrip = new MenuStrip();
+			MenuStripItemEdit = new ToolStripMenuItem();
+			MenuStripItemEditSearch = new ToolStripMenuItem();
+			MenuStripItemEditSearchForward = new ToolStripMenuItem();
+			MenuStripItemEditSearchBackward = new ToolStripMenuItem();
 			EntryTreeView = new TreeViewSWB2EntryExplorer();
 			EntryPropertyGrid = new PropertyGrid();
 			SplitContainer = new SplitContainer();
@@ -110,11 +114,42 @@
 			// 
 			// MenuStrip
 			// 
-			MenuStrip.Items.AddRange( new ToolStripItem[] { MenuStripItemFile } );
+			MenuStrip.Items.AddRange( new ToolStripItem[] { MenuStripItemFile, MenuStripItemEdit } );
 			MenuStrip.Location = new Point( 0, 0 );
 			MenuStrip.Name = "MenuStrip";
 			MenuStrip.Size = new Size( 784, 24 );
 			MenuStrip.TabIndex = 2;
+			// 
+			// MenuStripItemEdit
+			// 
+			MenuStripItemEdit.DropDownItems.AddRange( new ToolStripItem[] { MenuStripItemEditSearch, MenuStripItemEditSearchForward, MenuStripItemEditSearchBackward } );
+			MenuStripItemEdit.Name = "MenuStripItemEdit";
+			MenuStripItemEdit.Size = new Size( 39, 20 );
+			MenuStripItemEdit.Text = "Edit";
+			// 
+			// MenuStripItemEditSearch
+			// 
+			MenuStripItemEditSearch.Name = "MenuStripItemEditSearch";
+			MenuStripItemEditSearch.ShortcutKeys = Keys.Control | Keys.F;
+			MenuStripItemEditSearch.Size = new Size( 188, 22 );
+			MenuStripItemEditSearch.Text = "Search";
+			MenuStripItemEditSearch.Click += MenuStripItemEditSearch_Click;
+			// 
+			// MenuStripItemEditSearchForward
+			// 
+			MenuStripItemEditSearchForward.Name = "MenuStripItemEditSearchForward";
+			MenuStripItemEditSearchForward.ShortcutKeys = Keys.F3;
+			MenuStripItemEditSearchForward.Size = new Size( 188, 22 );
+			MenuStripItemEditSearchForward.Text = "Search forward";
+			MenuStripItemEditSearchForward.Click += MenuStripItemEditSearchForward_Click;
+			// 
+			// MenuStripItemEditSearchBackward
+			// 
+			MenuStripItemEditSearchBackward.Name = "MenuStripItemEditSearchBackward";
+			MenuStripItemEditSearchBackward.ShortcutKeys = Keys.Shift | Keys.F3;
+			MenuStripItemEditSearchBackward.Size = new Size( 188, 22 );
+			MenuStripItemEditSearchBackward.Text = "Search back";
+			MenuStripItemEditSearchBackward.Click += MenuStripItemEditSearchBackward_Click;
 			// 
 			// EntryTreeView
 			// 
@@ -187,8 +222,12 @@
 		private ToolStripMenuItem MenuStripItemFileNew;
 		private ToolStripMenuItem MenuStripItemFileOpen;
 		private ToolStripMenuItem MenuStripItemFileSave;
+		private ToolStripMenuItem MenuStripItemEdit;
 		private ToolStripSeparator MenuStripItemFileSeparator1;
 		private ToolStripMenuItem MenuStripItemFileExit;
+		private ToolStripMenuItem MenuStripItemEditSearch;
+		private ToolStripMenuItem MenuStripItemEditSearchForward;
+		private ToolStripMenuItem MenuStripItemEditSearchBackward;
 		private MenuStrip MenuStrip;
 		private TreeViewSWB2EntryExplorer EntryTreeView;
 		private PropertyGrid EntryPropertyGrid;
