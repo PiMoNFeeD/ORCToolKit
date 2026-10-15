@@ -497,7 +497,7 @@ namespace ORCToolKit.FileTypes
 				}
 			}
 
-			public override string? ToString()
+			public override string ToString()
 			{
 				return $"{Key.ToString()} ({ValueType.ToString()}): {ValueAsString}";
 			}
@@ -549,7 +549,7 @@ namespace ORCToolKit.FileTypes
 				}
 			}
 
-			public override string? ToString()
+			public override string ToString()
 			{
 				return $"{Identifier.ToString()} ({Entries.Count})";
 			}
