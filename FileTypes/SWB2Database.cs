@@ -305,7 +305,7 @@ namespace ORCToolKit.FileTypes
 			{
 				using ( BinaryReader Reader = new BinaryReader( BufferStream, Encoding.UTF8, true ) )
 				{
-					SWB2EntryHeader EntryHeader;
+					Int32 ValueSize = 0;
 					{
 						UInt32 Key = Reader.ReadUInt32( Endian );
 						if ( Key == 2952159793 )
@@ -313,45 +313,46 @@ namespace ORCToolKit.FileTypes
 							// HACK: for some reason, entries with this key store a different layout?!?!?
 							// according to the disassembly of the game, it doesn't even parse this entry, it just skips it!
 							// possibly some debug info of the file?
-							EntryHeader = new SWB2EntryHeader();
-							EntryHeader.Key = Key;
-							EntryHeader.ValueType = EntryValueType.TYPE_INT32_STORED; // all values appear to be a mix of ints and floats, always byteswaped in batches of 4 bytes... slamming to int32 just so byteswapping is correct
-							EntryHeader.Unknown = 0;
-							EntryHeader.ValueSize = Convert.ToUInt16( Reader.ReadUInt32( Endian ) );
+							this.Key = Key;
+							this.ValueType = EntryValueType.TYPE_INT32_STORED; // all values appear to be a mix of ints and floats, always byteswaped in batches of 4 bytes... slamming to int32 just so byteswapping is correct
+							this.Flags = 0;
+							ValueSize = Reader.ReadInt32( Endian );
 						}
 						else
 						{
 							Reader.BaseStream.Position -= Marshal.SizeOf<UInt32>();
-							EntryHeader = Reader.ReadType<SWB2EntryHeader>( Endian );
+
+							SWB2EntryHeader EntryHeader = Reader.ReadType<SWB2EntryHeader>( Endian );
+							this.Key = EntryHeader.Key;
+							this.ValueType = EntryHeader.ValueType;
+							this.Flags = EntryHeader.Unknown;
+							ValueSize = EntryHeader.ValueSize;
 						}
 					}
 
-					this.Key = EntryHeader.Key;
-					this.ValueType = EntryHeader.ValueType;
-					this.Flags = EntryHeader.Unknown;
-					if ( EntryHeader.ValueSize > 0 )
+					if ( ValueSize > 0 )
 					{
 						switch ( this.ValueType )
 						{
 							case EntryValueType.TYPE_INT32_STORED:
 							{
-								if ( (EntryHeader.ValueSize % Marshal.SizeOf<Int32>()) != 0 )
+								if ( (ValueSize % Marshal.SizeOf<Int32>()) != 0 )
 									throw new FileFormatException();
 
-								this.Value = Reader.ReadInt32Array( EntryHeader.ValueSize / Marshal.SizeOf<Int32>(), Endian );
+								this.Value = Reader.ReadInt32Array( ValueSize / Marshal.SizeOf<Int32>(), Endian );
 								break;
 							}
 							case EntryValueType.TYPE_FLOAT_STORED:
 							{
-								if ( (EntryHeader.ValueSize % Marshal.SizeOf<Single>()) != 0 )
+								if ( (ValueSize % Marshal.SizeOf<Single>()) != 0 )
 									throw new FileFormatException();
 
-								this.Value = Reader.ReadSingleArray( EntryHeader.ValueSize / Marshal.SizeOf<Single>(), Endian );
+								this.Value = Reader.ReadSingleArray( ValueSize / Marshal.SizeOf<Single>(), Endian );
 								break;
 							}
 							case EntryValueType.TYPE_STRING:
 							{
-								string Value = Reader.ReadFixedLengthString( Encoding.UTF8, EntryHeader.ValueSize );
+								string Value = Reader.ReadFixedLengthString( Encoding.UTF8, ValueSize );
 								if ( Value.Contains( ';' ) )
 									StringValueSeparator = ';';
 								this.Value = Value.Split( StringValueSeparator );
@@ -364,21 +365,21 @@ namespace ORCToolKit.FileTypes
 								Value.LoadFromBuffer( BufferStream, Endian );
 								this.Value = Value;
 
-								if ( (Reader.BaseStream.Position - OldPosition) != EntryHeader.ValueSize )
+								if ( (Reader.BaseStream.Position - OldPosition) != ValueSize )
 									throw new FileFormatException();
 								break;
 							}
 							case EntryValueType.TYPE_STRING_HASH:
 							{
-								if ( (EntryHeader.ValueSize % Marshal.SizeOf<CRC32>()) != 0 )
+								if ( (ValueSize % Marshal.SizeOf<CRC32>()) != 0 )
 									throw new FileFormatException();
 
-								this.Value = Reader.ReadTypeArray<CRC32>( EntryHeader.ValueSize / Marshal.SizeOf<CRC32>(), Endian );
+								this.Value = Reader.ReadTypeArray<CRC32>( ValueSize / Marshal.SizeOf<CRC32>(), Endian );
 								break;
 							}
 							default:
 							{
-								this.Value = Reader.ReadBytes( EntryHeader.ValueSize );
+								this.Value = Reader.ReadBytes( ValueSize );
 								break;
 							}
 						}
