@@ -12,15 +12,14 @@ namespace ORCToolKit
 			{
 				string? Line;
 				while ( (Line = Reader.ReadLine()) != null )
-					_dict.Add( Line.GetCRC32(), Line );
+					_dict.TryAdd( Line.GetCRC32(), Line );
 			}
 		}
 
 		static public CRC32 StoreString( string String )
 		{
 			CRC32 Result = String.GetCRC32();
-			if ( !_dict.ContainsKey( Result ) )
-				_dict.Add( Result, String );
+			_dict.TryAdd( Result, String );
 			return Result;
 		}
 

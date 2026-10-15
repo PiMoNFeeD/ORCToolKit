@@ -12975,6 +12975,7 @@ AbilityCanAffectSelf
 AbilityCanAffectTarget
 AbilityTarget
 AcceptableLosses
+Accuracy
 AccuracyScale
 AchievementAwarded
 AchievementErrorDialog
@@ -13034,6 +13035,8 @@ AlternateAbility
 Ambush
 AmbushFX
 Ammo
+AmmoData
+Anatomy
 AnimPropOwnerObjectId
 AnimatedCameraCollisionEvent
 AnimatedTransformEndpoint
@@ -13193,6 +13196,7 @@ Blend
 BlendWeightTex
 BloodDebris
 BloodPool
+BloodSense
 BloodSenseEnd
 BloodSenseStart
 BloodSense_1
@@ -13213,6 +13217,7 @@ Boss
 Boss Character
 BossDamage
 BottomElevatorHunkMoveto
+BoundingBox
 BoysClub
 BrakeTimeLR
 BrakeTimeUD
@@ -13619,6 +13624,7 @@ DamageReductionRange
 DamageScale
 DamageSustained
 DamageTeam
+DamageTransform
 DamageType
 DamageWeaponType
 DamageableStaticObject
@@ -13673,6 +13679,7 @@ DesiredVelocity_z
 DestroyDamageVolume
 DestroyWeaponEvent
 Destroyed
+Destructible
 DetachCamera
 DetachCameraFromObjectEvent
 DetachObject
@@ -13682,6 +13689,7 @@ DetectionAvoidance_Level3
 Detonate
 DetonateAllBombsEvent
 Dfire
+Dialog
 DiedTrying
 Difficulty
 DisableBloodSense
@@ -13763,6 +13771,7 @@ EXIT_GHOST_SPECTATOR
 EXPLOSION
 EdgeTexLinear
 EdgeTexPoint
+Effect
 EffectObject
 EleWarp1
 EleWarp11
@@ -13832,6 +13841,8 @@ FULLSCREEN_SPECTATING
 FValve1
 FValve2
 FValve3
+FacialAnimation
+Faction
 FadeIn
 FadeInBlackScreen
 FadeOut
@@ -13866,7 +13877,10 @@ FirstHunkSpawn
 FlameThrowerStartEvent
 FlameThrowerStopEvent
 Flamethrower
+Flammable
 FlammableBurnOut
+FlammableChain
+FlammableCharacter
 FlammableFireEnd
 FlammableIgnite
 FlareEnteredEvent
@@ -14102,6 +14116,7 @@ HighestTotalCampaignXP_USS06
 HighestTotalCampaignXP_USS07
 Hips
 HitAbsorption
+HitDetection
 HitIndicator
 Hologram
 Hologram1
@@ -14216,11 +14231,13 @@ Initial
 InitialiseScriptsEvent
 InitiateAbility
 Injured
+Instance
 Integer
 Interact
 InteractiveObje
 InteractiveObject
 InteractiveObjectSpawner
+Interference
 InterruptAI
 IntroNIS
 InvViewMat0
@@ -14229,6 +14246,7 @@ InvViewMat2
 InvViewMat3
 InvalidObjectId
 Inventory
+InventoryItem
 InvertLookX
 InvertLookY
 Investigate
@@ -14566,6 +14584,7 @@ NPCSetup
 NPCSpawn
 NPCSpawnZone
 Name
+NaniRig
 NearProp
 Neck
 Neck1
@@ -14696,6 +14715,7 @@ PenetratingRounds
 PenetratingRounds1
 PenetrationEvent
 Percentage
+Physics
 PhysicsGroup
 PickUpItem
 PickUpTarget
@@ -14880,6 +14900,7 @@ PreviousLinkChain3
 Print
 ProceduralMove
 ProceduralTargeting
+ProceduralTargetting
 ProceduralVoteNisEvent
 ProgramBOW_Level1
 ProgramBOW_Level2
@@ -15017,6 +15038,7 @@ RespawnCharacter
 RespawnPenaltyRule
 RespawnSmokeScreen
 RestoreCheckpoint
+ReticleHover
 ReticleHoverEnd
 ReticleHoverStart
 ReticuleCorrectionEvent
@@ -15030,6 +15052,7 @@ ReviveCostXP
 RevivePercentage
 RevivedTeammate
 RevivedTeammateStatEvent
+Rig
 Right
 RightArm
 RightBall
@@ -15066,6 +15089,7 @@ RocketCreate
 RocketExpireObjectEvent
 RocketSocket
 RoguesGallery
+Rope
 Rotation
 RotationType
 RumbleGenerator
@@ -15111,6 +15135,7 @@ Scorecards
 Scoring
 ScreenTex
 ScriptCancelWaitEvent
+ScriptData
 ScriptEndWaitEvent
 ScriptEvent
 ScriptSignalEvent
@@ -15399,12 +15424,14 @@ StatsCategoryGlobal
 StatsCategoryVersus
 StatsCategoryWeapons
 StatsUpdate
+StatusEffect
 StealthRun_Level1
 StealthRun_Level2
 StealthRun_Level3
 Steam1
 Steam2
 Steam3
+Steer
 SteerDeadZone
 SteerJump
 SteerJumpDistance
@@ -15544,6 +15571,7 @@ TargetLockHRotationVelocity
 TargetLockLerp
 TargetLockVRotationVelocity
 TargetOrientationRads
+Targetting
 TargettingPriority
 Team
 TeamEvent
@@ -15658,6 +15686,7 @@ TotalTimePlayedAsCharacter
 TotalTimeVersus
 TotalXP
 TrainElevator
+Transform
 Transition
 TransitionGameMusic
 TransitionMusic
@@ -15815,6 +15844,7 @@ VIEW INVITES
 VOICE_COMMS_START
 VRotationVelocity
 VariableModifiers
+Variants
 Vector
 Vector's file remains largely confidential, his true identity hidden.  Training at Rockfort Island he developed his lethal martial art ability and elite skill for reconnaissance.  As a covert operative, his achievements in-the-field are only matched by his former master, HUNK.
 Vector_AI
@@ -15843,6 +15873,7 @@ VersusWinningPercentage
 VideoOptionsPCPane
 VideoOptionsPane
 ViewProjMatrix
+Visbility
 VolumeEntered
 VolumeExited
 VolumeQuerySucceeded
@@ -15881,7 +15912,9 @@ Waypoint3
 Weapon
 Weapon Name
 WeaponCanFire
+WeaponData
 WeaponHash
+WeaponModifiers
 WeaponOffset
 WeaponOffsetEnabled
 WeaponOffset_x
@@ -20149,6 +20182,7 @@ maskTexScaleBias
 maxBulletRange
 maxEnemies
 maxRadius
+maxSimInstances
 maxTurnRate
 medic
 medium
