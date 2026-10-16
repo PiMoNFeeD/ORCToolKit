@@ -112,6 +112,7 @@
 			TextEntriesGridView.ScrollBars = ScrollBars.Vertical;
 			TextEntriesGridView.Size = new Size( 784, 512 );
 			TextEntriesGridView.TabIndex = 0;
+			TextEntriesGridView.CellValueChanged += TextEntriesGridView_CellValueChanged;
 			// 
 			// StatusStrip
 			// 

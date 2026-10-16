@@ -63,6 +63,11 @@ namespace ORCToolKit
 			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.TextEntries.Count );
 		}
 
+		private void TextEntriesGridView_CellValueChanged( Object? sender, DataGridViewCellEventArgs e )
+		{
+			EntriesUpdated();
+		}
+
 		override protected bool TrySearch( SearchDirection direction, string searchString, bool wholeWord, bool caseSensitive )
 		{
 			MenuStripItemEditSearchForward.Enabled = true;
