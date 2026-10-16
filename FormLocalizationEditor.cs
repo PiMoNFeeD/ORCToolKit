@@ -5,6 +5,7 @@ namespace ORCToolKit
 	public partial class FormLocalizationEditor: FormEditor
 	{
 		private FileTypes.LocalizationFile _file = new FileTypes.LocalizationFile();
+
 		override protected FileTypes.IFileType? CurrentFile { get { return _file; } }
 		override protected string FileDialogFilter { get { return "All files (*.*)|*.*"; } }
 
@@ -42,7 +43,7 @@ namespace ORCToolKit
 			}
 		}
 
-		private void FormLocalizationEditor_Shown( Object? sender, EventArgs e )
+		private void FormLocalizationEditor_Shown( object? sender, EventArgs e )
 		{
 			// keep in sync with FormLocalizationEditor_OnEntriesUpdated
 			MenuStripItemFileSave.Enabled = false;
@@ -52,7 +53,7 @@ namespace ORCToolKit
 			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.TextEntries.Count );
 		}
 
-		private void FormLocalizationEditor_OnEntriesUpdated( Object? sender, EntriesUpdatedEventArgs e )
+		private void FormLocalizationEditor_OnEntriesUpdated( object? sender, EntriesUpdatedEventArgs e )
 		{
 			// keep in sync with FormLocalizationEditor_Shown
 			MenuStripItemFileSave.Enabled = e.HasUnsavedEdits;
@@ -62,29 +63,29 @@ namespace ORCToolKit
 			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.TextEntries.Count );
 		}
 
-		override protected bool TrySearch( SearchDirection Direction, string SearchString, bool WholeWord, bool CaseSensitive )
+		override protected bool TrySearch( SearchDirection direction, string searchString, bool wholeWord, bool caseSensitive )
 		{
 			MenuStripItemEditSearchForward.Enabled = true;
 			MenuStripItemEditSearchBackward.Enabled = true;
 
-			switch ( Direction )
+			switch ( direction )
 			{
 				case SearchDirection.Forward:
 				{
 					for ( int i = TextEntriesGridView.CurrentRow != null ? TextEntriesGridView.CurrentRow.Index : 0; i < TextEntriesGridView.Rows.Count; i++ )
 					{
-						foreach ( DataGridViewCell Cell in TextEntriesGridView.Rows[i].Cells )
+						foreach ( DataGridViewCell cell in TextEntriesGridView.Rows[i].Cells )
 						{
 							if ( TextEntriesGridView.CurrentCell != null )
 							{
 								// if this is a cell on the same row, skip it if it's behind of currently selected one
-								if ( TextEntriesGridView.CurrentCell.RowIndex == Cell.RowIndex && Cell.ColumnIndex <= TextEntriesGridView.CurrentCell.ColumnIndex )
+								if ( TextEntriesGridView.CurrentCell.RowIndex == cell.RowIndex && cell.ColumnIndex <= TextEntriesGridView.CurrentCell.ColumnIndex )
 									continue;
 							}
 
-							if ( StringSearch.Compare( (string)Cell.Value, SearchString, WholeWord, CaseSensitive ) )
+							if ( StringSearch.Compare( (string)cell.Value, searchString, wholeWord, caseSensitive ) )
 							{
-								TextEntriesGridView.CurrentCell = Cell;
+								TextEntriesGridView.CurrentCell = cell;
 								return true;
 							}
 						}
@@ -96,18 +97,18 @@ namespace ORCToolKit
 				{
 					for ( int i = TextEntriesGridView.CurrentRow != null ? TextEntriesGridView.CurrentRow.Index : TextEntriesGridView.Rows.Count - 1; i >= 0; i-- )
 					{
-						foreach ( DataGridViewCell Cell in TextEntriesGridView.Rows[i].Cells )
+						foreach ( DataGridViewCell cell in TextEntriesGridView.Rows[i].Cells )
 						{
 							if ( TextEntriesGridView.CurrentCell != null )
 							{
 								// if this is a cell on the same row, skip it if it's ahead of currently selected one
-								if ( TextEntriesGridView.CurrentCell.RowIndex == Cell.RowIndex && Cell.ColumnIndex >= TextEntriesGridView.CurrentCell.ColumnIndex )
+								if ( TextEntriesGridView.CurrentCell.RowIndex == cell.RowIndex && cell.ColumnIndex >= TextEntriesGridView.CurrentCell.ColumnIndex )
 									continue;
 							}
 
-							if ( StringSearch.Compare( (string)Cell.Value, SearchString, WholeWord, CaseSensitive ) )
+							if ( StringSearch.Compare( (string)cell.Value, searchString, wholeWord, caseSensitive ) )
 							{
-								TextEntriesGridView.CurrentCell = Cell;
+								TextEntriesGridView.CurrentCell = cell;
 								return true;
 							}
 						}
@@ -137,32 +138,32 @@ namespace ORCToolKit
 
 		private void MenuStripItemEditInsertEntryAfter_Click( object sender, EventArgs e )
 		{
-			Int32 HighestSelectedRow = Int32.MinValue;
-			foreach ( DataGridViewCell SelectedCell in TextEntriesGridView.SelectedCells )
-				HighestSelectedRow = Int32.Max( HighestSelectedRow, SelectedCell.RowIndex );
+			Int32 highestSelectedRow = Int32.MinValue;
+			foreach ( DataGridViewCell selectedCell in TextEntriesGridView.SelectedCells )
+				highestSelectedRow = Int32.Max( highestSelectedRow, selectedCell.RowIndex );
 
 			// clamp to valid range
-			HighestSelectedRow = Int32.Clamp( HighestSelectedRow + 1, 0, TextEntriesGridView.Rows.Count );
+			highestSelectedRow = Int32.Clamp( highestSelectedRow + 1, 0, TextEntriesGridView.Rows.Count );
 
-			_file.TextEntries.Insert( HighestSelectedRow, new FileTypes.LocalizationFile.TextEntry() { Name = string.Empty, Text = string.Empty } );
+			_file.TextEntries.Insert( highestSelectedRow, new FileTypes.LocalizationFile.TextEntry() { Name = string.Empty, Text = string.Empty } );
 			EntriesUpdated();
 		}
 
 		private void MenuStripItemEditInsertEntryBefore_Click( object sender, EventArgs e )
 		{
-			Int32 LowestSelectedRow = Int32.MaxValue;
-			foreach ( DataGridViewCell SelectedCell in TextEntriesGridView.SelectedCells )
-				LowestSelectedRow = Int32.Min( LowestSelectedRow, SelectedCell.RowIndex );
-			LowestSelectedRow = Int32.Clamp( LowestSelectedRow, 0, TextEntriesGridView.Rows.Count );
+			Int32 lowestSelectedRow = Int32.MaxValue;
+			foreach ( DataGridViewCell selectedCell in TextEntriesGridView.SelectedCells )
+				lowestSelectedRow = Int32.Min( lowestSelectedRow, selectedCell.RowIndex );
+			lowestSelectedRow = Int32.Clamp( lowestSelectedRow, 0, TextEntriesGridView.Rows.Count );
 
-			_file.TextEntries.Insert( LowestSelectedRow, new FileTypes.LocalizationFile.TextEntry() { Name = string.Empty, Text = string.Empty } );
+			_file.TextEntries.Insert( lowestSelectedRow, new FileTypes.LocalizationFile.TextEntry() { Name = string.Empty, Text = string.Empty } );
 			EntriesUpdated();
 		}
 
 		private void MenuStripItemEditRemoveEntry_Click( object sender, EventArgs e )
 		{
-			foreach ( DataGridViewCell SelectedCell in TextEntriesGridView.SelectedCells )
-				_file.TextEntries.RemoveAt( SelectedCell.RowIndex );
+			foreach ( DataGridViewCell selectedCell in TextEntriesGridView.SelectedCells )
+				_file.TextEntries.RemoveAt( selectedCell.RowIndex );
 			EntriesUpdated( (TextEntriesGridView.Rows.Count > 0) );
 		}
 

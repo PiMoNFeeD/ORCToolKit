@@ -25,58 +25,58 @@ namespace ORCToolKit
 			return CompareNodes( x, y );
 		}
 
-		private Int32 CompareNodes( TreeNode Node1, TreeNode Node2 )
+		private Int32 CompareNodes( TreeNode node1, TreeNode node2 )
 		{
-			Debug.Assert( Node1.Tag != null && Node2.Tag != null );
+			Debug.Assert( node1.Tag != null && node2.Tag != null );
 
-			if ( Node1.Tag.GetType() != Node2.Tag.GetType() )
+			if ( node1.Tag.GetType() != node2.Tag.GetType() )
 			{
 				// put directories above everything
-				if ( Node1.Tag is DirectoryInfo )
+				if ( node1.Tag is DirectoryInfo )
 					return -1;
-				if ( Node2.Tag is DirectoryInfo )
+				if ( node2.Tag is DirectoryInfo )
 					return 1;
 			}
 
-			return StrCmpLogicalW( Node1.Text, Node2.Text );
+			return StrCmpLogicalW( node1.Text, node2.Text );
 		}
 	}
 
 	internal class TreeViewFileExplorer: TreeView
 	{
-		private ImageList FileImageList = new ImageList();
-		private List<TaggedFileSystemWatcher> FileSystemWatchers = new List<TaggedFileSystemWatcher>();
+		private ImageList _fileImageList = new ImageList();
+		private List<TaggedFileSystemWatcher> _fileSystemWatchers = new List<TaggedFileSystemWatcher>();
 
 		public TreeViewFileExplorer()
 		{
 			this.BeforeExpand += TreeViewFileExplorer_BeforeExpand;
 
-			FileImageList.Images.Add( SystemIcons.GetStockIcon( StockIconId.Folder, StockIconOptions.SmallIcon ) ); // make first icon a folder icon, to be used by directories by default
-			FileImageList.Images.Add( SystemIcons.GetStockIcon( StockIconId.DocumentNoAssociation, StockIconOptions.SmallIcon ) ); // used for unknown file types
-			this.ImageList = FileImageList;
+			_fileImageList.Images.Add( SystemIcons.GetStockIcon( StockIconId.Folder, StockIconOptions.SmallIcon ) ); // make first icon a folder icon, to be used by directories by default
+			_fileImageList.Images.Add( SystemIcons.GetStockIcon( StockIconId.DocumentNoAssociation, StockIconOptions.SmallIcon ) ); // used for unknown file types
+			this.ImageList = _fileImageList;
 			this.TreeViewNodeSorter = (IComparer)new ExplorerTreeNodeComparer();
 		}
 
-		public void LoadFolder( string FolderPath )
+		public void LoadFolder( string folderPath )
 		{
-			if ( string.IsNullOrEmpty( FolderPath ) )
+			if ( string.IsNullOrEmpty( folderPath ) )
 				return;
 
 			BeginUpdate();
 
 			Nodes.Clear();
-			FileSystemWatchers.Clear();
+			_fileSystemWatchers.Clear();
 
-			DirectoryInfo FolderInfo = new DirectoryInfo( FolderPath );
-			AddFolderWatcher( FolderInfo );
+			DirectoryInfo folderInfo = new DirectoryInfo( folderPath );
+			AddFolderWatcher( folderInfo );
 
 			// fill directories
-			foreach ( DirectoryInfo SubFolderInfo in FolderInfo.EnumerateDirectories() )
-				Nodes.Add( CreateFolderNode( SubFolderInfo ) );
+			foreach ( DirectoryInfo subFolderInfo in folderInfo.EnumerateDirectories() )
+				Nodes.Add( CreateFolderNode( subFolderInfo ) );
 
 			// fill paths
-			foreach ( FileInfo SubFileInfo in FolderInfo.EnumerateFiles() )
-				Nodes.Add( CreateFileNode( SubFileInfo ) );
+			foreach ( FileInfo subFileInfo in folderInfo.EnumerateFiles() )
+				Nodes.Add( CreateFileNode( subFileInfo ) );
 
 			Sort();
 
@@ -108,72 +108,72 @@ namespace ORCToolKit
 		private const uint SHGFI_SMALLICON = 0x000000001;  // Optional: Use SHGFI_LARGEICON for large icons
 		private const uint FILE_ATTRIBUTE_NORMAL = 0x00000080;
 
-		private void EnsureIconForExtensionExists( string FileExtension )
+		private void EnsureIconForExtensionExists( string fileExtension )
 		{
 			SHFILEINFO shinfo = new SHFILEINFO();
 			uint flags = SHGFI_ICON | SHGFI_USEFILEATTRIBUTES | SHGFI_SMALLICON;
 
-			SHGetFileInfo( FileExtension, FILE_ATTRIBUTE_NORMAL, ref shinfo, (uint)Marshal.SizeOf( shinfo ), flags );
+			SHGetFileInfo( fileExtension, FILE_ATTRIBUTE_NORMAL, ref shinfo, (uint)Marshal.SizeOf( shinfo ), flags );
 
 			if ( shinfo.hIcon != IntPtr.Zero )
-				FileImageList.Images.Add( FileExtension, (Icon)Icon.FromHandle( shinfo.hIcon ) );
+				_fileImageList.Images.Add( fileExtension, (Icon)Icon.FromHandle( shinfo.hIcon ) );
 		}
 
-		private TreeNode CreateFolderNode( DirectoryInfo FolderInfo )
+		private TreeNode CreateFolderNode( DirectoryInfo folderInfo )
 		{
-			TreeNode DirectoryNode = new TreeNode()
+			TreeNode directoryNode = new TreeNode()
 			{
-				Text = FolderInfo.Name,
-				Tag = FolderInfo
+				Text = folderInfo.Name,
+				Tag = folderInfo
 			};
 
 			// if this folder has any files or subfolders, add a dummy node to be able to expand it
-			if ( FolderInfo.EnumerateFiles().Any() || FolderInfo.EnumerateDirectories().Any() )
-				DirectoryNode.Nodes.Add( new TreeNode() );
+			if ( folderInfo.EnumerateFiles().Any() || folderInfo.EnumerateDirectories().Any() )
+				directoryNode.Nodes.Add( new TreeNode() );
 
-			return DirectoryNode;
+			return directoryNode;
 		}
 
-		private TreeNode CreateFileNode( FileInfo FileInfo )
+		private TreeNode CreateFileNode( FileInfo fileInfo )
 		{
-			TreeNode FileNode = new TreeNode()
+			TreeNode fileNode = new TreeNode()
 			{
-				Text = FileInfo.Name,
-				Tag = FileInfo,
+				Text = fileInfo.Name,
+				Tag = fileInfo,
 				ImageIndex = 1, // unknown file type
 				SelectedImageIndex = 1 // unknown file type
 			};
 
 			// load file icon
-			if ( !string.IsNullOrEmpty( FileInfo.Extension ) )
+			if ( !string.IsNullOrEmpty( fileInfo.Extension ) )
 			{
-				if ( FileInfo.Extension == ".exe" )
+				if ( fileInfo.Extension == ".exe" )
 				{
 					// load an icon from that executable
-					FileImageList.Images.Add( FileInfo.FullName, Icon.ExtractAssociatedIcon( FileInfo.FullName ) );
-					FileNode.ImageIndex = FileNode.SelectedImageIndex = FileImageList.Images.IndexOfKey( FileInfo.FullName );
+					_fileImageList.Images.Add( fileInfo.FullName, Icon.ExtractAssociatedIcon( fileInfo.FullName ) );
+					fileNode.ImageIndex = fileNode.SelectedImageIndex = _fileImageList.Images.IndexOfKey( fileInfo.FullName );
 				}
 				else
 				{
-					EnsureIconForExtensionExists( FileInfo.Extension );
-					FileNode.ImageIndex = FileNode.SelectedImageIndex = FileImageList.Images.IndexOfKey( FileInfo.Extension );
+					EnsureIconForExtensionExists( fileInfo.Extension );
+					fileNode.ImageIndex = fileNode.SelectedImageIndex = _fileImageList.Images.IndexOfKey( fileInfo.Extension );
 				}
 			}
 
-			return FileNode;
+			return fileNode;
 		}
 
-		private void AddFolderWatcher( DirectoryInfo FolderInfo, TreeNode? ParentNode = null )
+		private void AddFolderWatcher( DirectoryInfo folderInfo, TreeNode? parentNode = null )
 		{
-			TaggedFileSystemWatcher Watcher = new TaggedFileSystemWatcher( FolderInfo.FullName );
-			Watcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastWrite;
-			Watcher.EnableRaisingEvents = true;
-			Watcher.IncludeSubdirectories = false;
-			Watcher.Tag = ParentNode;
-			Watcher.Created += FileSystemWatcher_Created;
-			Watcher.Deleted += FileSystemWatcher_Deleted;
-			Watcher.Renamed += FileSystemWatcher_Renamed;
-			FileSystemWatchers.Add( Watcher );
+			TaggedFileSystemWatcher watcher = new TaggedFileSystemWatcher( folderInfo.FullName );
+			watcher.NotifyFilter = NotifyFilters.DirectoryName | NotifyFilters.FileName | NotifyFilters.LastWrite;
+			watcher.EnableRaisingEvents = true;
+			watcher.IncludeSubdirectories = false;
+			watcher.Tag = parentNode;
+			watcher.Created += FileSystemWatcher_Created;
+			watcher.Deleted += FileSystemWatcher_Deleted;
+			watcher.Renamed += FileSystemWatcher_Renamed;
+			_fileSystemWatchers.Add( watcher );
 		}
 
 		private void TreeViewFileExplorer_BeforeExpand( object? sender, TreeViewCancelEventArgs e )
@@ -187,33 +187,33 @@ namespace ORCToolKit
 
 			e.Node.Nodes.Clear();
 
-			DirectoryInfo ParentDirectoryInfo = (DirectoryInfo)e.Node.Tag;
-			AddFolderWatcher( ParentDirectoryInfo, e.Node ); // don't watch a folder until we open it for the first time
+			DirectoryInfo parentDirectoryInfo = (DirectoryInfo)e.Node.Tag;
+			AddFolderWatcher( parentDirectoryInfo, e.Node ); // don't watch a folder until we open it for the first time
 
 			// fill directories
-			List<TreeNode> NewNodes = new List<TreeNode>();
-			foreach ( DirectoryInfo DirectoryInfo in ParentDirectoryInfo.EnumerateDirectories() )
-				NewNodes.Add( CreateFolderNode( DirectoryInfo ) );
+			List<TreeNode> newNodes = new List<TreeNode>();
+			foreach ( DirectoryInfo directoryInfo in parentDirectoryInfo.EnumerateDirectories() )
+				newNodes.Add( CreateFolderNode( directoryInfo ) );
 
 			// fill paths
-			foreach ( FileInfo FileInfo in ParentDirectoryInfo.EnumerateFiles() )
-				NewNodes.Add( CreateFileNode( FileInfo ) );
+			foreach ( FileInfo fileInfo in parentDirectoryInfo.EnumerateFiles() )
+				newNodes.Add( CreateFileNode( fileInfo ) );
 
-			NewNodes.Sort( new ExplorerTreeNodeComparer() );
-			e.Node.Nodes.AddRange( NewNodes.ToArray() );
+			newNodes.Sort( new ExplorerTreeNodeComparer() );
+			e.Node.Nodes.AddRange( newNodes.ToArray() );
 		}
 
 		private void FileSystemWatcher_Created( object sender, FileSystemEventArgs e )
 		{
-			TaggedFileSystemWatcher Watcher = (TaggedFileSystemWatcher)sender;
+			TaggedFileSystemWatcher watcher = (TaggedFileSystemWatcher)sender;
 
 			// HACK: for some reason, when saving a file, this gets triggered BEFORE a file is actually created??
 			// causes a crash down below if I don't do it...
 			if ( !File.Exists( e.FullPath ) && !Directory.Exists( e.FullPath ) )
 				return;
 
-			TreeNode? ParentNode = (TreeNode?)Watcher.Tag;
-			if ( ParentNode != null )
+			TreeNode? parentNode = (TreeNode?)watcher.Tag;
+			if ( parentNode != null )
 			{
 				if ( File.GetAttributes( e.FullPath ).HasFlag( FileAttributes.Directory ) )
 				{
@@ -223,14 +223,14 @@ namespace ORCToolKit
 						// child nodes only, you can only sort the entire fucking tree at once!
 						BeginUpdate();
 
-						TreeNode[] NewNodes = new TreeNode[ParentNode.Nodes.Count + 1];
-						ParentNode.Nodes.CopyTo( NewNodes, 0 );
-						ParentNode.Nodes.Clear();
+						TreeNode[] newNodes = new TreeNode[parentNode.Nodes.Count + 1];
+						parentNode.Nodes.CopyTo( newNodes, 0 );
+						parentNode.Nodes.Clear();
 
-						NewNodes[NewNodes.Count() - 1] = CreateFolderNode( new DirectoryInfo( e.FullPath ) );
+						newNodes[newNodes.Count() - 1] = CreateFolderNode( new DirectoryInfo( e.FullPath ) );
 
-						Array.Sort( NewNodes, new ExplorerTreeNodeComparer() );
-						ParentNode.Nodes.AddRange( NewNodes );
+						Array.Sort( newNodes, new ExplorerTreeNodeComparer() );
+						parentNode.Nodes.AddRange( newNodes );
 
 						EndUpdate();
 					} );
@@ -241,14 +241,14 @@ namespace ORCToolKit
 					{
 						BeginUpdate();
 
-						TreeNode[] NewNodes = new TreeNode[ParentNode.Nodes.Count + 1];
-						ParentNode.Nodes.CopyTo( NewNodes, 0 );
-						ParentNode.Nodes.Clear();
+						TreeNode[] newNodes = new TreeNode[parentNode.Nodes.Count + 1];
+						parentNode.Nodes.CopyTo( newNodes, 0 );
+						parentNode.Nodes.Clear();
 
-						NewNodes[NewNodes.Count() - 1] = CreateFileNode( new FileInfo( e.FullPath ) );
+						newNodes[newNodes.Count() - 1] = CreateFileNode( new FileInfo( e.FullPath ) );
 
-						Array.Sort( NewNodes, new ExplorerTreeNodeComparer() );
-						ParentNode.Nodes.AddRange( NewNodes );
+						Array.Sort( newNodes, new ExplorerTreeNodeComparer() );
+						parentNode.Nodes.AddRange( newNodes );
 
 						EndUpdate();
 					} );
@@ -262,14 +262,14 @@ namespace ORCToolKit
 					{
 						BeginUpdate();
 
-						TreeNode[] NewNodes = new TreeNode[Nodes.Count + 1];
-						Nodes.CopyTo( NewNodes, 0 );
+						TreeNode[] newNodes = new TreeNode[Nodes.Count + 1];
+						Nodes.CopyTo( newNodes, 0 );
 						Nodes.Clear();
 
-						NewNodes[NewNodes.Count() - 1] = CreateFolderNode( new DirectoryInfo( e.FullPath ) );
+						newNodes[newNodes.Count() - 1] = CreateFolderNode( new DirectoryInfo( e.FullPath ) );
 
-						Array.Sort( NewNodes, new ExplorerTreeNodeComparer() );
-						Nodes.AddRange( NewNodes );
+						Array.Sort( newNodes, new ExplorerTreeNodeComparer() );
+						Nodes.AddRange( newNodes );
 
 						EndUpdate();
 					} );
@@ -280,14 +280,14 @@ namespace ORCToolKit
 					{
 						BeginUpdate();
 
-						TreeNode[] NewNodes = new TreeNode[Nodes.Count + 1];
-						Nodes.CopyTo( NewNodes, 0 );
+						TreeNode[] newNodes = new TreeNode[Nodes.Count + 1];
+						Nodes.CopyTo( newNodes, 0 );
 						Nodes.Clear();
 
-						NewNodes[NewNodes.Count() - 1] = CreateFileNode( new FileInfo( e.FullPath ) );
+						newNodes[newNodes.Count() - 1] = CreateFileNode( new FileInfo( e.FullPath ) );
 
-						Array.Sort( NewNodes, new ExplorerTreeNodeComparer() );
-						Nodes.AddRange( NewNodes );
+						Array.Sort( newNodes, new ExplorerTreeNodeComparer() );
+						Nodes.AddRange( newNodes );
 
 						EndUpdate();
 					} );
@@ -297,17 +297,17 @@ namespace ORCToolKit
 
 		private void FileSystemWatcher_Deleted( object sender, FileSystemEventArgs e )
 		{
-			TaggedFileSystemWatcher Watcher = (TaggedFileSystemWatcher)sender;
+			TaggedFileSystemWatcher watcher = (TaggedFileSystemWatcher)sender;
 
-			TreeNode? ParentNode = (TreeNode?)Watcher.Tag;
-			foreach ( TreeNode FileNode in (ParentNode != null) ? ParentNode.Nodes : Nodes )
+			TreeNode? parentNode = (TreeNode?)watcher.Tag;
+			foreach ( TreeNode fileNode in (parentNode != null) ? parentNode.Nodes : Nodes )
 			{
-				FileSystemInfo FileInfo = (FileSystemInfo)FileNode.Tag;
-				if ( FileInfo.FullName == e.FullPath )
+				FileSystemInfo fileInfo = (FileSystemInfo)fileNode.Tag;
+				if ( fileInfo.FullName == e.FullPath )
 				{
 					BeginInvoke( delegate
 					{
-						FileNode.Remove();
+						fileNode.Remove();
 					} );
 					break;
 				}
@@ -316,21 +316,21 @@ namespace ORCToolKit
 
 		private void FileSystemWatcher_Renamed( object sender, RenamedEventArgs e )
 		{
-			TaggedFileSystemWatcher Watcher = (TaggedFileSystemWatcher)sender;
+			TaggedFileSystemWatcher watcher = (TaggedFileSystemWatcher)sender;
 
-			TreeNode? ParentNode = (TreeNode?)Watcher.Tag;
-			foreach ( TreeNode FileNode in (ParentNode != null) ? ParentNode.Nodes : Nodes )
+			TreeNode? parentNode = (TreeNode?)watcher.Tag;
+			foreach ( TreeNode fileNode in (parentNode != null) ? parentNode.Nodes : Nodes )
 			{
-				FileSystemInfo FileInfo = (FileSystemInfo)FileNode.Tag;
-				if ( FileInfo.FullName == e.OldFullPath )
+				FileSystemInfo fileInfo = (FileSystemInfo)fileNode.Tag;
+				if ( fileInfo.FullName == e.OldFullPath )
 				{
 					BeginInvoke( delegate
 					{
 						BeginUpdate();
 
-						FileNode.Tag = FileInfo is FileInfo ? new FileInfo( e.FullPath ) : new DirectoryInfo( e.FullPath );
-						FileNode.Name = e.FullPath;
-						FileNode.Text = e.Name;
+						fileNode.Tag = fileInfo is FileInfo ? new FileInfo( e.FullPath ) : new DirectoryInfo( e.FullPath );
+						fileNode.Name = e.FullPath;
+						fileNode.Text = e.Name;
 						Sort();
 
 						EndUpdate();

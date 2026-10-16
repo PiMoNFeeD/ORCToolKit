@@ -4,7 +4,7 @@ namespace ORCToolKit
 {
 	public class LocalizedDisplayNameAttribute: DisplayNameAttribute
 	{
-		public LocalizedDisplayNameAttribute( string Name ) : base( Name )
+		public LocalizedDisplayNameAttribute( string displayName ) : base( displayName )
 		{
 		}
 

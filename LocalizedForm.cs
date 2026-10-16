@@ -22,27 +22,27 @@ namespace ORCToolKit
 			if ( _localizedControls == null )
 				_localizedControls = LocalizedControls;
 
-			ResourceManager ResourceManager = new ResourceManager( GetType() );
-			foreach ( LocalizedControl Entry in _localizedControls )
+			ResourceManager resourceManager = new ResourceManager( GetType() );
+			foreach ( LocalizedControl entry in _localizedControls )
 			{
-				Type ObjectType = Entry.Object.GetType();
-				string? LocalizedText = ResourceManager.GetString( $"{Entry.ObjectName}.{Entry.FieldName}" );
-				Debug.Assert( LocalizedText != null );
+				Type objectType = entry.Object.GetType();
+				string? localizedText = resourceManager.GetString( $"{entry.ObjectName}.{entry.FieldName}" );
+				Debug.Assert( localizedText != null );
 
-				if ( LocalizedText != null )
+				if ( localizedText != null )
 				{
 					// annoyingly!! members can be either fields or properties, so try both
-					PropertyInfo? Property = ObjectType.GetProperty( Entry.FieldName );
-					if ( Property != null )
+					PropertyInfo? property = objectType.GetProperty( entry.FieldName );
+					if ( property != null )
 					{
-						Property.SetValue( Entry.Object, LocalizedText );
+						property.SetValue( entry.Object, localizedText );
 						continue;
 					}
 
-					FieldInfo? Field = ObjectType.GetField( Entry.FieldName );
-					if ( Field != null )
+					FieldInfo? field = objectType.GetField( entry.FieldName );
+					if ( field != null )
 					{
-						Field.SetValue( Entry.Object, LocalizedText );
+						field.SetValue( entry.Object, localizedText );
 						continue;
 					}
 

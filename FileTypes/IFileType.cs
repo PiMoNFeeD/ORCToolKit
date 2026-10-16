@@ -9,7 +9,7 @@
 	public interface IFileType
 	{
 		public void Reset();
-		public void LoadFromBuffer( Stream BufferStream );
-		public void SaveToBuffer( Stream BufferStream );
+		public void LoadFromBuffer( Stream bufferStream );
+		public void SaveToBuffer( Stream bufferStream );
 	}
 }

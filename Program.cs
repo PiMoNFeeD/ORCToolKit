@@ -1,11 +1,7 @@
 using ORCToolKit.FileTypes;
 using ORCToolKit.Properties;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Globalization;
-using System.Reflection;
 using System.Resources;
-using System.Windows.Forms;
 
 namespace ORCToolKit
 {
@@ -18,19 +14,19 @@ namespace ORCToolKit
 			{
 				if ( _cultures.Count == 0 )
 				{
-					ResourceManager ResourceManager = new ResourceManager( typeof( Resources.ORCToolKit ) );
+					ResourceManager resourceManager = new ResourceManager( typeof( Resources.ORCToolKit ) );
 					try
 					{
-						foreach ( CultureInfo Culture in CultureInfo.GetCultures( CultureTypes.AllCultures ) )
+						foreach ( CultureInfo culture in CultureInfo.GetCultures( CultureTypes.AllCultures ) )
 						{
-							if ( Culture.Equals( CultureInfo.InvariantCulture ) )
+							if ( culture.Equals( CultureInfo.InvariantCulture ) )
 								continue;
 
-							if ( ResourceManager.GetResourceSet( Culture, true, false ) != null )
-								_cultures.Add( Culture );
+							if ( resourceManager.GetResourceSet( culture, true, false ) != null )
+								_cultures.Add( culture );
 						}
 					}
-					catch ( CultureNotFoundException ex )
+					catch ( CultureNotFoundException )
 					{
 						// ignore
 					}
@@ -40,17 +36,17 @@ namespace ORCToolKit
 			}
 		}
 
-		static public void SetCulture( CultureInfo Culture )
+		static public void SetCulture( CultureInfo culture )
 		{
-			CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = Culture;
-			CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = Culture;
-			Settings.Default.Language = Culture.Name;
+			CultureInfo.CurrentCulture = CultureInfo.CurrentUICulture = culture;
+			CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = culture;
+			Settings.Default.Language = culture.Name;
 
 			// reload localization in all forms
-			foreach ( Form OpenedForm in Application.OpenForms )
+			foreach ( Form openedForm in Application.OpenForms )
 			{
-				if ( OpenedForm is LocalizedForm OpenedLocalziedForm )
-					OpenedLocalziedForm.LocalizeComponent();
+				if ( openedForm is LocalizedForm openedLocalziedForm )
+					openedLocalziedForm.LocalizeComponent();
 			}
 		}
 
@@ -58,7 +54,7 @@ namespace ORCToolKit
 		///  The main entry point for the application.
 		/// </summary>
 		[STAThread]
-		static void Main( string[] Args )
+		static void Main( string[] args )
 		{
 			// make sure we don't get screwed over...
 			if ( string.IsNullOrWhiteSpace( Settings.Default.Language ) )
@@ -72,15 +68,15 @@ namespace ORCToolKit
 			CRC32StringMap.Initialize();
 
 			// try to open a file that was given to us by the windows explorer
-			Form? MainForm = null;
-			foreach( string Arg in Args)
+			Form? mainForm = null;
+			foreach ( string arg in args )
 			{
-				MainForm = TypeDeducer.GuessFromFileAndOpen( new FileInfo( Args[Args.Length - 1] ), Silent: true );
-				if ( MainForm != null )
+				mainForm = TypeDeducer.GuessFromFileAndOpen( new FileInfo( args[args.Length - 1] ), silent: true );
+				if ( mainForm != null )
 					break;
 			}
 
-			Application.Run( MainForm ?? new FormFileExplorer() );
+			Application.Run( mainForm ?? new FormFileExplorer() );
 			Settings.Default.Save();
 		}
 	}

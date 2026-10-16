@@ -1,191 +1,191 @@
-﻿using System.Buffers.Binary;
+﻿using ORCToolKit.FileTypes;
+using System.Buffers.Binary;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using ORCToolKit.FileTypes;
 
 namespace ORCToolKit.Extensions
 {
 	static public class BinaryWriterExtensions
 	{
-		static public void WriteType<T>( this BinaryWriter Writer, T Type, Endianness Endian = Endianness.Little )
+		static public void WriteType<T>( this BinaryWriter writer, T type, Endianness endian = Endianness.Little )
 		{
-			Int32 SizeOfType = Marshal.SizeOf( Type );
-			byte[] TypeBytes = new byte[SizeOfType];
+			Int32 sizeOfType = Marshal.SizeOf( type );
+			byte[] typeBytes = new byte[sizeOfType];
 
-			IntPtr Data = Marshal.AllocHGlobal( SizeOfType );
-			Marshal.StructureToPtr( Type, Data, true );
-			Marshal.Copy( Data, TypeBytes, 0, SizeOfType );
+			IntPtr data = Marshal.AllocHGlobal( sizeOfType );
+			Marshal.StructureToPtr( type, data, true );
+			Marshal.Copy( data, typeBytes, 0, sizeOfType );
 
-			if ( NeedToSwapBytes( Endian ) )
+			if ( NeedToSwapBytes( endian ) )
 			{
-				FieldInfo[] TypeFields = typeof( T ).GetFields( BindingFlags.Public | BindingFlags.Instance );
-				foreach ( FieldInfo TypeField in TypeFields )
+				FieldInfo[] typeFields = typeof( T ).GetFields( BindingFlags.Public | BindingFlags.Instance );
+				foreach ( FieldInfo typeField in typeFields )
 				{
-					MarshalAsAttribute? MarshalAs = (MarshalAsAttribute?)TypeField.GetCustomAttribute( typeof( MarshalAsAttribute ), false );
-					if ( MarshalAs != null && MarshalAs.Value == UnmanagedType.ByValArray )
+					MarshalAsAttribute? marshalAs = (MarshalAsAttribute?)typeField.GetCustomAttribute( typeof( MarshalAsAttribute ), false );
+					if ( marshalAs != null && marshalAs.Value == UnmanagedType.ByValArray )
 					{
-						Int32 SizeOfElement = Marshal.SizeOf( TypeField.FieldType.GetElementType() );
-						Int32 Offset = Convert.ToInt32( Marshal.OffsetOf( typeof( T ), TypeField.Name ) );
+						Int32 sizeOfElement = Marshal.SizeOf( typeField.FieldType.GetElementType() );
+						Int32 offset = Convert.ToInt32( Marshal.OffsetOf( typeof( T ), typeField.Name ) );
 
-						for ( Int32 i = 0; i < MarshalAs.SizeConst; i++ )
+						for ( Int32 i = 0; i < marshalAs.SizeConst; i++ )
 						{
-							Array.Reverse( TypeBytes, Offset, SizeOfElement );
-							Offset += SizeOfElement;
+							Array.Reverse( typeBytes, offset, sizeOfElement );
+							offset += sizeOfElement;
 						}
 					}
 					else
 					{
-						if ( TypeField.FieldType.IsEnum ) // hack... why is c# so fucking stupid?
-							Array.Reverse( TypeBytes, Convert.ToInt32( Marshal.OffsetOf( typeof( T ), TypeField.Name ) ), Marshal.SizeOf( TypeField.FieldType.GetEnumUnderlyingType() ) );
+						if ( typeField.FieldType.IsEnum ) // hack... why is c# so fucking stupid?
+							Array.Reverse( typeBytes, Convert.ToInt32( Marshal.OffsetOf( typeof( T ), typeField.Name ) ), Marshal.SizeOf( typeField.FieldType.GetEnumUnderlyingType() ) );
 						else
-							Array.Reverse( TypeBytes, Convert.ToInt32( Marshal.OffsetOf( typeof( T ), TypeField.Name ) ), Marshal.SizeOf( TypeField.FieldType ) );
+							Array.Reverse( typeBytes, Convert.ToInt32( Marshal.OffsetOf( typeof( T ), typeField.Name ) ), Marshal.SizeOf( typeField.FieldType ) );
 					}
 				}
 			}
 
-			Marshal.FreeHGlobal( Data );
+			Marshal.FreeHGlobal( data );
 
-			Writer.Write( TypeBytes );
+			writer.Write( typeBytes );
 		}
 
-		static public void Write( this BinaryWriter Writer, Int16 Value, Endianness Endian = Endianness.Little )
+		static public void Write( this BinaryWriter writer, Int16 value, Endianness endian = Endianness.Little )
 		{
-			Span<byte> TypeBytes = stackalloc byte[sizeof( Int16 )];
-			switch ( Endian )
+			Span<byte> typeBytes = stackalloc byte[sizeof( Int16 )];
+			switch ( endian )
 			{
 				case Endianness.Little:
-					BinaryPrimitives.WriteInt16LittleEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteInt16LittleEndian( typeBytes, value );
 					break;
 				case Endianness.Big:
-					BinaryPrimitives.WriteInt16BigEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteInt16BigEndian( typeBytes, value );
 					break;
 			}
-			Writer.Write( TypeBytes );
+			writer.Write( typeBytes );
 		}
 
-		static public void Write( this BinaryWriter Writer, UInt16 Value, Endianness Endian = Endianness.Little )
+		static public void Write( this BinaryWriter writer, UInt16 value, Endianness endian = Endianness.Little )
 		{
-			Span<byte> TypeBytes = stackalloc byte[sizeof( UInt16 )];
-			switch ( Endian )
+			Span<byte> typeBytes = stackalloc byte[sizeof( UInt16 )];
+			switch ( endian )
 			{
 				case Endianness.Little:
-					BinaryPrimitives.WriteUInt16LittleEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteUInt16LittleEndian( typeBytes, value );
 					break;
 				case Endianness.Big:
-					BinaryPrimitives.WriteUInt16BigEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteUInt16BigEndian( typeBytes, value );
 					break;
 			}
-			Writer.Write( TypeBytes );
+			writer.Write( typeBytes );
 		}
 
-		static public void Write( this BinaryWriter Writer, Int32 Value, Endianness Endian = Endianness.Little )
+		static public void Write( this BinaryWriter writer, Int32 value, Endianness endian = Endianness.Little )
 		{
-			Span<byte> TypeBytes = stackalloc byte[sizeof( Int32 )];
-			switch ( Endian )
+			Span<byte> typeBytes = stackalloc byte[sizeof( Int32 )];
+			switch ( endian )
 			{
 				case Endianness.Little:
-					BinaryPrimitives.WriteInt32LittleEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteInt32LittleEndian( typeBytes, value );
 					break;
 				case Endianness.Big:
-					BinaryPrimitives.WriteInt32BigEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteInt32BigEndian( typeBytes, value );
 					break;
 			}
-			Writer.Write( TypeBytes );
+			writer.Write( typeBytes );
 		}
 
-		static public void Write( this BinaryWriter Writer, UInt32 Value, Endianness Endian = Endianness.Little )
+		static public void Write( this BinaryWriter writer, UInt32 value, Endianness endian = Endianness.Little )
 		{
-			Span<byte> TypeBytes = stackalloc byte[sizeof( UInt32 )];
-			switch ( Endian )
+			Span<byte> typeBytes = stackalloc byte[sizeof( UInt32 )];
+			switch ( endian )
 			{
 				case Endianness.Little:
-					BinaryPrimitives.WriteUInt32LittleEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteUInt32LittleEndian( typeBytes, value );
 					break;
 				case Endianness.Big:
-					BinaryPrimitives.WriteUInt32BigEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteUInt32BigEndian( typeBytes, value );
 					break;
 			}
-			Writer.Write( TypeBytes );
+			writer.Write( typeBytes );
 		}
 
-		static public void Write( this BinaryWriter Writer, Int64 Value, Endianness Endian = Endianness.Little )
+		static public void Write( this BinaryWriter writer, Int64 value, Endianness endian = Endianness.Little )
 		{
-			Span<byte> TypeBytes = stackalloc byte[sizeof( Int64 )];
-			switch ( Endian )
+			Span<byte> typeBytes = stackalloc byte[sizeof( Int64 )];
+			switch ( endian )
 			{
 				case Endianness.Little:
-					BinaryPrimitives.WriteInt64LittleEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteInt64LittleEndian( typeBytes, value );
 					break;
 				case Endianness.Big:
-					BinaryPrimitives.WriteInt64BigEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteInt64BigEndian( typeBytes, value );
 					break;
 			}
-			Writer.Write( TypeBytes );
+			writer.Write( typeBytes );
 		}
 
-		static public void Write( this BinaryWriter Writer, UInt64 Value, Endianness Endian = Endianness.Little )
+		static public void Write( this BinaryWriter writer, UInt64 value, Endianness endian = Endianness.Little )
 		{
-			Span<byte> TypeBytes = stackalloc byte[sizeof( UInt64 )];
-			switch ( Endian )
+			Span<byte> typeBytes = stackalloc byte[sizeof( UInt64 )];
+			switch ( endian )
 			{
 				case Endianness.Little:
-					BinaryPrimitives.WriteUInt64LittleEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteUInt64LittleEndian( typeBytes, value );
 					break;
 				case Endianness.Big:
-					BinaryPrimitives.WriteUInt64BigEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteUInt64BigEndian( typeBytes, value );
 					break;
 			}
-			Writer.Write( TypeBytes );
+			writer.Write( typeBytes );
 		}
 
-		static public void Write( this BinaryWriter Writer, Half Value, Endianness Endian = Endianness.Little )
+		static public void Write( this BinaryWriter writer, Half value, Endianness endian = Endianness.Little )
 		{
-			Span<byte> TypeBytes = stackalloc byte[Marshal.SizeOf<Half>()];
-			switch ( Endian )
+			Span<byte> typeBytes = stackalloc byte[Marshal.SizeOf<Half>()];
+			switch ( endian )
 			{
 				case Endianness.Little:
-					BinaryPrimitives.WriteHalfLittleEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteHalfLittleEndian( typeBytes, value );
 					break;
 				case Endianness.Big:
-					BinaryPrimitives.WriteHalfBigEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteHalfBigEndian( typeBytes, value );
 					break;
 			}
-			Writer.Write( TypeBytes );
+			writer.Write( typeBytes );
 		}
 
-		static public void Write( this BinaryWriter Writer, Single Value, Endianness Endian = Endianness.Little )
+		static public void Write( this BinaryWriter writer, Single value, Endianness endian = Endianness.Little )
 		{
-			Span<byte> TypeBytes = stackalloc byte[sizeof( Single )];
-			switch ( Endian )
+			Span<byte> typeBytes = stackalloc byte[sizeof( Single )];
+			switch ( endian )
 			{
 				case Endianness.Little:
-					BinaryPrimitives.WriteSingleLittleEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteSingleLittleEndian( typeBytes, value );
 					break;
 				case Endianness.Big:
-					BinaryPrimitives.WriteSingleBigEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteSingleBigEndian( typeBytes, value );
 					break;
 			}
-			Writer.Write( TypeBytes );
+			writer.Write( typeBytes );
 		}
 
-		static public void Write( this BinaryWriter Writer, Double Value, Endianness Endian = Endianness.Little )
+		static public void Write( this BinaryWriter writer, Double value, Endianness endian = Endianness.Little )
 		{
-			Span<byte> TypeBytes = stackalloc byte[sizeof( Double )];
-			switch ( Endian )
+			Span<byte> typeBytes = stackalloc byte[sizeof( Double )];
+			switch ( endian )
 			{
 				case Endianness.Little:
-					BinaryPrimitives.WriteDoubleLittleEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteDoubleLittleEndian( typeBytes, value );
 					break;
 				case Endianness.Big:
-					BinaryPrimitives.WriteDoubleBigEndian( TypeBytes, Value );
+					BinaryPrimitives.WriteDoubleBigEndian( typeBytes, value );
 					break;
 			}
-			Writer.Write( TypeBytes );
+			writer.Write( typeBytes );
 		}
 
-		static private bool NeedToSwapBytes( Endianness Endian = Endianness.Little )
+		static private bool NeedToSwapBytes( Endianness endian = Endianness.Little )
 		{
-			switch ( Endian )
+			switch ( endian )
 			{
 				case Endianness.Little:
 					return !BitConverter.IsLittleEndian;

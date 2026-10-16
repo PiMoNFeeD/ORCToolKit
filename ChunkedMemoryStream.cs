@@ -10,10 +10,10 @@ namespace ORCToolKit
 		private Int32 _position = 0;
 		private Int32 _length = 0;
 
-		public ChunkedMemoryStream( Int32 ChunkSize, Int32 Capacity = 0 )
+		public ChunkedMemoryStream( Int32 chunkSize, Int32 capacity = 0 )
 		{
-			_chunkSize = ChunkSize;
-			EnsureChunksAllocated( Capacity );
+			_chunkSize = chunkSize;
+			EnsureChunksAllocated( capacity );
 		}
 
 		public override bool CanRead { get { return true; } }
@@ -27,29 +27,29 @@ namespace ORCToolKit
 			set { _position = Convert.ToInt32( value ); }
 		}
 
-		public override Int64 Seek( Int64 Offset, SeekOrigin Location )
+		public override Int64 Seek( Int64 offset, SeekOrigin location )
 		{
-			switch ( Location )
+			switch ( location )
 			{
 				case SeekOrigin.Begin:
 				{
-					if ( Offset < 0 )
+					if ( offset < 0 )
 						throw new IOException();
-					_position = Convert.ToInt32( Offset );
+					_position = Convert.ToInt32( offset );
 					break;
 				}
 				case SeekOrigin.Current:
 				{
-					if ( _position + Offset < 0 )
+					if ( _position + offset < 0 )
 						throw new IOException();
-					_position += Convert.ToInt32( Offset );
+					_position += Convert.ToInt32( offset );
 					break;
 				}
 				case SeekOrigin.End:
 				{
-					if ( _length + Offset < 0 )
+					if ( _length + offset < 0 )
 						throw new IOException();
-					_position = Convert.ToInt32( _length + Offset );
+					_position = Convert.ToInt32( _length + offset );
 					break;
 				}
 				default:
@@ -60,78 +60,78 @@ namespace ORCToolKit
 			return _position;
 		}
 
-		public override Int32 Read( byte[] ByteBuffer, Int32 Offset, Int32 Count )
+		public override Int32 Read( byte[] byteBuffer, Int32 offset, Int32 count )
 		{
 			EnsureChunksAllocated( _length );
 
-			Int32 BytesToRead = Convert.ToInt32( _length - _position );
-			if ( BytesToRead > Count )
-				BytesToRead = Count;
-			if ( BytesToRead <= 0 )
+			Int32 bytesToRead = Convert.ToInt32( _length - _position );
+			if ( bytesToRead > count )
+				bytesToRead = count;
+			if ( bytesToRead <= 0 )
 				return 0;
 
-			Debug.Assert( _position + BytesToRead >= 0, "_position + BytesToRead >= 0" );
+			Debug.Assert( _position + bytesToRead >= 0, "_position + bytesToRead >= 0" );
 
-			Int32 DataReadSoFar = 0;
-			while ( DataReadSoFar < BytesToRead )
+			Int32 dataReadSoFar = 0;
+			while ( dataReadSoFar < bytesToRead )
 			{
-				Int32 ChunkNum = _position / _chunkSize;
-				Int32 ChunkPosition = _position % _chunkSize;
-				Int32 ChunkCapacity = Int32.Min( _length - (ChunkNum * _chunkSize), _chunkSize );
-				Int32 ReadableDataThisChunk = Int32.Min( Count - DataReadSoFar, ChunkCapacity - ChunkPosition );
+				Int32 chunkNum = _position / _chunkSize;
+				Int32 chunkPosition = _position % _chunkSize;
+				Int32 chunkCapacity = Int32.Min( _length - (chunkNum * _chunkSize), _chunkSize );
+				Int32 readableDataThisChunk = Int32.Min( count - dataReadSoFar, chunkCapacity - chunkPosition );
 
-				Buffer.BlockCopy( _chunks[ChunkNum], ChunkPosition, ByteBuffer, DataReadSoFar, ReadableDataThisChunk );
+				Buffer.BlockCopy( _chunks[chunkNum], chunkPosition, byteBuffer, dataReadSoFar, readableDataThisChunk );
 
-				DataReadSoFar += ReadableDataThisChunk;
-				_position += ReadableDataThisChunk;
+				dataReadSoFar += readableDataThisChunk;
+				_position += readableDataThisChunk;
 			}
 
-			Debug.Assert( DataReadSoFar <= Count, "DataReadSoFar <= Count" );
+			Debug.Assert( dataReadSoFar <= count, "dataReadSoFar <= count" );
 
-			return DataReadSoFar;
+			return dataReadSoFar;
 		}
 
-		public override void Write( byte[] ByteBuffer, Int32 Offset, Int32 Count )
+		public override void Write( byte[] byteBuffer, Int32 offset, Int32 count )
 		{
 			if ( _length < _position )
 				_length = _position;
 
-			_length += Count;
+			_length += count;
 			EnsureChunksAllocated( _length );
 
-			Int32 DataWroteSoFar = 0;
-			while ( DataWroteSoFar < Count )
+			Int32 dataWrittenSoFar = 0;
+			while ( dataWrittenSoFar < count )
 			{
-				Int32 ChunkNum = _position / _chunkSize;
-				Int32 ChunkPosition = _position % _chunkSize;
-				Int32 WritableDataThisChunk = Int32.Min( Count - DataWroteSoFar, _chunkSize - ChunkPosition );
+				Int32 chunkNum = _position / _chunkSize;
+				Int32 chunkPosition = _position % _chunkSize;
+				Int32 writableDataThisChunk = Int32.Min( count - dataWrittenSoFar, _chunkSize - chunkPosition );
 
-				Buffer.BlockCopy( ByteBuffer, DataWroteSoFar, _chunks[ChunkNum], ChunkPosition, WritableDataThisChunk );
+				Buffer.BlockCopy( byteBuffer, dataWrittenSoFar, _chunks[chunkNum], chunkPosition, writableDataThisChunk );
 
-				DataWroteSoFar += WritableDataThisChunk;
-				_position += WritableDataThisChunk;
+				dataWrittenSoFar += writableDataThisChunk;
+				_position += writableDataThisChunk;
 			}
 
-			Debug.Assert( DataWroteSoFar <= Count, "DataWroteSoFar <= Count" );
+			Debug.Assert( dataWrittenSoFar <= count, "dataWrittenSoFar <= count" );
 		}
 
 		public override void Flush() { }
 
-		public override void SetLength( Int64 NewLength )
+		public override void SetLength( Int64 newLength )
 		{
-			if ( NewLength < 0 )
-				throw new ArgumentOutOfRangeException( nameof( NewLength ) );
+			if ( newLength < 0 )
+				throw new ArgumentOutOfRangeException( nameof( newLength ) );
 
-			_length = Convert.ToInt32( NewLength );
+			_length = Convert.ToInt32( newLength );
 			EnsureChunksAllocated( _length );
 		}
 
 		public Int32 GetChunksCount() => _chunks.Count;
 
-		private void EnsureChunksAllocated( Int32 Size )
+		private void EnsureChunksAllocated( Int32 size )
 		{
 			// NOTE: this does not remove redundant chunks!
-			while ( Size > _chunks.Count * _chunkSize )
+			while ( size > _chunks.Count * _chunkSize )
 				_chunks.Add( new byte[_chunkSize] );
 		}
 	}

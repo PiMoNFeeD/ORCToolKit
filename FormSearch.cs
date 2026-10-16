@@ -1,5 +1,4 @@
 ﻿using ORCToolKit.Search;
-using System.Resources;
 
 namespace ORCToolKit
 {
@@ -28,13 +27,13 @@ namespace ORCToolKit
 			}
 		}
 
-		private void InvokeSearch( SearchDirection Direction )
+		private void InvokeSearch( SearchDirection direction )
 		{
 			if ( string.IsNullOrEmpty( SearchTextBox.Text ) )
 				return;
 
 			if ( OnSearch != null )
-				OnSearch( this, new SearchEventArgs( Direction, SearchTextBox.Text, WholeWordCheckBox.Checked, CaseSensitiveCheckBox.Checked ) );
+				OnSearch( this, new SearchEventArgs( direction, SearchTextBox.Text, WholeWordCheckBox.Checked, CaseSensitiveCheckBox.Checked ) );
 		}
 
 		private void FormSearch_FormClosing( object sender, FormClosingEventArgs e )

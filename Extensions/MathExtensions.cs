@@ -9,19 +9,19 @@ namespace ORCToolKit.Extensions
 			return !T.IsZero( num ) && (num & num - T.One) == T.Zero;
 		}
 
-		static public T AlignValue<T>( T Value, T AlignTo ) where T : INumber<T>
+		static public T AlignValue<T>( T value, T alignTo ) where T : INumber<T>
 		{
-			if ( AlignTo < T.One )
-				return Value;
-			return Value + (AlignTo - Value % AlignTo) % AlignTo;
+			if ( alignTo < T.One )
+				return value;
+			return value + (alignTo - value % alignTo) % alignTo;
 		}
-		static public T RoundUpToPowerOf2<T>( T Value ) where T : INumber<T>
+		static public T RoundUpToPowerOf2<T>( T value ) where T : INumber<T>
 		{
 			// more portable than bit shifting... kinda sucks though!
-			T Number = T.One;
-			while ( Number < Value )
-				Number += Number;
-			return Number;
+			T number = T.One;
+			while ( number < value )
+				number += number;
+			return number;
 		}
 	}
 }

@@ -13,16 +13,16 @@ namespace ORCToolKit
 			LoadGameFolder( Properties.Settings.Default.GamePath );
 
 			// fill our languages
-			foreach ( CultureInfo Culture in Program.AvailableCultures )
+			foreach ( CultureInfo culture in Program.AvailableCultures )
 			{
-				ToolStripMenuItem LanguageItem = new ToolStripMenuItem()
+				ToolStripMenuItem languageItem = new ToolStripMenuItem()
 				{
-					Text = Culture.NativeName,
-					Tag = Culture,
-					Checked = CultureInfo.CurrentCulture.Equals( Culture )
+					Text = culture.NativeName,
+					Tag = culture,
+					Checked = CultureInfo.CurrentCulture.Equals( culture )
 				};
 
-				MenuStripItemSettingsLanguage.DropDownItems.Add( LanguageItem );
+				MenuStripItemSettingsLanguage.DropDownItems.Add( languageItem );
 			}
 		}
 
@@ -46,39 +46,39 @@ namespace ORCToolKit
 			}
 		}
 
-		private void LoadGameFolder( string GamePath )
+		private void LoadGameFolder( string gamePath )
 		{
-			if ( string.IsNullOrEmpty( GamePath ) )
+			if ( string.IsNullOrEmpty( gamePath ) )
 				return;
 
 			// check if the given path is actually a valid game folder
-			DirectoryInfo AssetsFolder = new DirectoryInfo( (GamePath + "\\dlc\\pack1") );
-			if ( !AssetsFolder.Exists )
+			DirectoryInfo assetsFolder = new DirectoryInfo( (gamePath + "\\dlc\\pack1") );
+			if ( !assetsFolder.Exists )
 			{
-				string ErrorMessage = string.Format( Resources.ORCToolKit.FormFileExplorerInvalidGameFolderText, GamePath );
-				MessageBox.Show( ErrorMessage, Resources.ORCToolKit.FormFileExplorerInvalidGameFolderTitle,
+				string errorMessage = string.Format( Resources.ORCToolKit.FormFileExplorerInvalidGameFolderText, gamePath );
+				MessageBox.Show( errorMessage, Resources.ORCToolKit.FormFileExplorerInvalidGameFolderTitle,
 					MessageBoxButtons.OK, MessageBoxIcon.Error );
 				return;
 			}
 
-			GameFilesExplorer.LoadFolder( GamePath );
-			GamePathTextBox.Text = GamePath;
-			Properties.Settings.Default.GamePath = GamePath;
+			GameFilesExplorer.LoadFolder( gamePath );
+			GamePathTextBox.Text = gamePath;
+			Properties.Settings.Default.GamePath = gamePath;
 		}
 
-		private void OpenExplorerFile( TreeNode SelectedNode )
+		private void OpenExplorerFile( TreeNode selectedNode )
 		{
-			FileInfo SelectedFileInfo = (FileInfo)SelectedNode.Tag;
-			TypeDeducer.GuessFromFileAndOpen( SelectedFileInfo );
+			FileInfo selectedFileInfo = (FileInfo)selectedNode.Tag;
+			TypeDeducer.GuessFromFileAndOpen( selectedFileInfo );
 		}
 
 		private void GamePathBrowseButton_Click( object sender, EventArgs e )
 		{
-			using ( FolderBrowserDialog FolderDialog = new FolderBrowserDialog() )
+			using ( FolderBrowserDialog folderDialog = new FolderBrowserDialog() )
 			{
-				FolderDialog.ShowNewFolderButton = false;
-				if ( FolderDialog.ShowDialog( this ) == DialogResult.OK && !string.IsNullOrWhiteSpace( FolderDialog.SelectedPath ) )
-					LoadGameFolder( FolderDialog.SelectedPath );
+				folderDialog.ShowNewFolderButton = false;
+				if ( folderDialog.ShowDialog( this ) == DialogResult.OK && !string.IsNullOrWhiteSpace( folderDialog.SelectedPath ) )
+					LoadGameFolder( folderDialog.SelectedPath );
 			}
 		}
 
@@ -89,29 +89,29 @@ namespace ORCToolKit
 
 		private void MenuStripItemSettingsLanguage_DropDownItemClicked( object sender, ToolStripItemClickedEventArgs e )
 		{
-			ToolStripMenuItem? SelectedLanguageItem = e.ClickedItem as ToolStripMenuItem;
-			if ( SelectedLanguageItem != null )
+			ToolStripMenuItem? selectedLanguageItem = e.ClickedItem as ToolStripMenuItem;
+			if ( selectedLanguageItem != null )
 			{
-				Program.SetCulture( (CultureInfo)SelectedLanguageItem.Tag );
+				Program.SetCulture( (CultureInfo)selectedLanguageItem.Tag );
 
-				foreach ( ToolStripMenuItem LanguageItem in MenuStripItemSettingsLanguage.DropDownItems )
-					LanguageItem.Checked = SelectedLanguageItem.Equals( LanguageItem );
+				foreach ( ToolStripMenuItem languageItem in MenuStripItemSettingsLanguage.DropDownItems )
+					languageItem.Checked = selectedLanguageItem.Equals( languageItem );
 			}
 		}
 
 		private void GameFilesExplorer_NodeMouseClick( object sender, TreeNodeMouseClickEventArgs e )
 		{
-			TreeView FileExplorer = (TreeView)sender;
+			TreeView fileExplorer = (TreeView)sender;
 
 			switch ( e.Button )
 			{
 				case MouseButtons.Right:
 				{
-					FileExplorer.SelectedNode = e.Node; // HACK: Windows Forms doesn't keep selected node when right clicking...
+					fileExplorer.SelectedNode = e.Node; // HACK: Windows Forms doesn't keep selected node when right clicking...
 
 					// open context menu
-					GameFilesExplorerContextMenu.Tag = FileExplorer.SelectedNode; // remember what node we are going to open
-					GameFilesExplorerContextMenu.Show( FileExplorer, e.Location );
+					GameFilesExplorerContextMenu.Tag = fileExplorer.SelectedNode; // remember what node we are going to open
+					GameFilesExplorerContextMenu.Show( fileExplorer, e.Location );
 
 					break;
 				}
@@ -120,21 +120,21 @@ namespace ORCToolKit
 
 		private void GameFilesExplorerContextMenuItemOpen_Click( object sender, EventArgs e )
 		{
-			ToolStripMenuItem MenuItem = (ToolStripMenuItem)sender;
-			TreeNode? SelectedNode = (TreeNode?)MenuItem.GetCurrentParent()?.Tag;
-			if ( SelectedNode != null )
+			ToolStripMenuItem menuItem = (ToolStripMenuItem)sender;
+			TreeNode? selectedNode = (TreeNode?)menuItem.GetCurrentParent()?.Tag;
+			if ( selectedNode != null )
 			{
-				if ( SelectedNode.Nodes.Count > 0 )
+				if ( selectedNode.Nodes.Count > 0 )
 				{
 					// folder
-					if ( SelectedNode.IsExpanded )
-						SelectedNode.Collapse();
+					if ( selectedNode.IsExpanded )
+						selectedNode.Collapse();
 					else
-						SelectedNode.Expand();
+						selectedNode.Expand();
 				}
 				else
 				{
-					OpenExplorerFile( SelectedNode );
+					OpenExplorerFile( selectedNode );
 				}
 			}
 		}
@@ -147,20 +147,20 @@ namespace ORCToolKit
 
 		private void MenuStripItemToolsLocalizationEditor_Click( object sender, EventArgs e )
 		{
-			FormLocalizationEditor LocalizationEditor = new FormLocalizationEditor();
-			LocalizationEditor.Show();
+			FormLocalizationEditor localizationEditor = new FormLocalizationEditor();
+			localizationEditor.Show();
 		}
 
 		private void MenuStripItemToolsSSGArchiveEditor_Click( object sender, EventArgs e )
 		{
-			FormSSGArchiveEditor SSGArchiveEditor = new FormSSGArchiveEditor();
-			SSGArchiveEditor.Show();
+			FormSSGArchiveEditor ssgArchiveEditor = new FormSSGArchiveEditor();
+			ssgArchiveEditor.Show();
 		}
 
 		private void MenuStripItemToolsSWB2DatabaseEditor_Click( object sender, EventArgs e )
 		{
-			FormSWB2DatabaseEditor SWB2DatabaseEditor = new FormSWB2DatabaseEditor();
-			SWB2DatabaseEditor.Show();
+			FormSWB2DatabaseEditor swb2DatabaseEditor = new FormSWB2DatabaseEditor();
+			swb2DatabaseEditor.Show();
 		}
 	}
 }

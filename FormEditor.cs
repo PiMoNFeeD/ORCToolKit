@@ -1,5 +1,4 @@
 ﻿using ORCToolKit.Search;
-using System.Text.RegularExpressions;
 
 namespace ORCToolKit
 {
@@ -7,14 +6,14 @@ namespace ORCToolKit
 	{
 		public readonly bool HasUnsavedEdits;
 
-		public EntriesUpdatedEventArgs( bool HasUnsavedEdits ) { this.HasUnsavedEdits = HasUnsavedEdits; }
+		public EntriesUpdatedEventArgs( bool hasUnsavedEdits ) { HasUnsavedEdits = hasUnsavedEdits; }
 	}
 
-	public delegate void EntriesUpdatedEventHandler( Object? sender, EntriesUpdatedEventArgs args );
+	public delegate void EntriesUpdatedEventHandler( object? sender, EntriesUpdatedEventArgs args );
 
 	public class FormEditor: LocalizedForm
 	{
-		private bool HasUnsavedEdits = false;
+		private bool _hasUnsavedEdits = false;
 
 		protected FormSearch FormSearch = new FormSearch();
 		protected string LastSearchString = string.Empty;
@@ -28,8 +27,8 @@ namespace ORCToolKit
 		protected event EventHandler? OnOpenFile;
 		protected event EventHandler? OnSaveFile;
 		protected event EntriesUpdatedEventHandler? OnEntriesUpdated;
-		virtual protected bool TrySearch( SearchDirection Direction, string SearchString, bool WholeWord, bool CaseSensitive ) { throw new NotImplementedException(); }
-		virtual protected void SaveChild( FileTypes.IFileType? File ) { HasUnsavedEdits = false; }
+		virtual protected bool TrySearch( SearchDirection direction, string searchString, bool wholeWord, bool caseSensitive ) { throw new NotImplementedException(); }
+		virtual protected void SaveChild( FileTypes.IFileType? file ) { _hasUnsavedEdits = false; }
 
 		protected bool OwnedByAnotherEditor = false;
 
@@ -55,9 +54,9 @@ namespace ORCToolKit
 			}
 		}
 
-		public void OpenFile( Stream FileBuffer )
+		public void OpenFile( Stream fileBuffer )
 		{
-			CurrentFile?.LoadFromBuffer( FileBuffer );
+			CurrentFile?.LoadFromBuffer( fileBuffer );
 
 			if ( OnOpenFile != null )
 				OnOpenFile( this, new EventArgs() );
@@ -65,29 +64,29 @@ namespace ORCToolKit
 			EntriesUpdated( false );
 		}
 
-		public void SaveFile( Stream FileBuffer )
+		public void SaveFile( Stream fileBuffer )
 		{
-			HasUnsavedEdits = false;
-			CurrentFile?.SaveToBuffer( FileBuffer );
+			_hasUnsavedEdits = false;
+			CurrentFile?.SaveToBuffer( fileBuffer );
 
 			if ( OnSaveFile != null )
 				OnSaveFile( this, new EventArgs() );
 		}
 
-		public void SaveFile( FormEditor Editor )
+		public void SaveFile( FormEditor editor )
 		{
-			HasUnsavedEdits = false;
-			Editor.SaveChild( CurrentFile );
+			_hasUnsavedEdits = false;
+			editor.SaveChild( CurrentFile );
 
 			if ( OnSaveFile != null )
 				OnSaveFile( this, new EventArgs() );
 		}
 
-		public void EntriesUpdated( bool UnsavedEdits = true )
+		public void EntriesUpdated( bool hasUnsavedEdits = true )
 		{
-			HasUnsavedEdits = UnsavedEdits;
+			_hasUnsavedEdits = hasUnsavedEdits;
 			if ( OnEntriesUpdated != null )
-				OnEntriesUpdated( this, new EntriesUpdatedEventArgs( HasUnsavedEdits ) );
+				OnEntriesUpdated( this, new EntriesUpdatedEventArgs( _hasUnsavedEdits ) );
 		}
 
 		protected bool InvokeOpenDialog()
@@ -97,16 +96,16 @@ namespace ORCToolKit
 
 			if ( CheckUnsavedChanges() )
 			{
-				using ( OpenFileDialog FileDialog = new OpenFileDialog() )
+				using ( OpenFileDialog fileDialog = new OpenFileDialog() )
 				{
-					FileDialog.Filter = FileDialogFilter;
-					FileDialog.RestoreDirectory = true;
-					FileDialog.Multiselect = false;
-					if ( FileDialog.ShowDialog() == DialogResult.OK )
+					fileDialog.Filter = FileDialogFilter;
+					fileDialog.RestoreDirectory = true;
+					fileDialog.Multiselect = false;
+					if ( fileDialog.ShowDialog() == DialogResult.OK )
 					{
-						using ( FileStream File = new FileStream( FileDialog.FileName, FileMode.Open, FileAccess.Read ) )
+						using ( FileStream file = new FileStream( fileDialog.FileName, FileMode.Open, FileAccess.Read ) )
 						{
-							OpenFile( File );
+							OpenFile( file );
 						}
 					}
 				}
@@ -120,20 +119,20 @@ namespace ORCToolKit
 			if ( OwnedByAnotherEditor )
 			{
 				// if we're owned by another editor, we should save into that one instead
-				FormEditor OwnerEditor = (FormEditor)Owner;
-				OwnerEditor.SaveChild( CurrentFile );
+				FormEditor ownerEditor = (FormEditor)Owner;
+				ownerEditor.SaveChild( CurrentFile );
 				return true; // save successful
 			}
 
-			using ( SaveFileDialog FileDialog = new SaveFileDialog() )
+			using ( SaveFileDialog fileDialog = new SaveFileDialog() )
 			{
-				FileDialog.Filter = FileDialogFilter;
-				FileDialog.RestoreDirectory = true;
-				if ( FileDialog.ShowDialog() == DialogResult.OK )
+				fileDialog.Filter = FileDialogFilter;
+				fileDialog.RestoreDirectory = true;
+				if ( fileDialog.ShowDialog() == DialogResult.OK )
 				{
-					using ( FileStream File = new FileStream( FileDialog.FileName, FileMode.Create, FileAccess.Write ) )
+					using ( FileStream file = new FileStream( fileDialog.FileName, FileMode.Create, FileAccess.Write ) )
 					{
-						SaveFile( File );
+						SaveFile( file );
 					}
 					return true;
 				}
@@ -147,20 +146,20 @@ namespace ORCToolKit
 			FormSearch.Show();
 		}
 
-		protected void InvokeSearch( SearchDirection Direction, string SearchString, bool WholeWord, bool CaseSensitive )
+		protected void InvokeSearch( SearchDirection direction, string searchString, bool wholeWord, bool caseSensitive )
 		{
-			LastSearchString = SearchString;
+			LastSearchString = searchString;
 
-			if ( !TrySearch( Direction, SearchString, WholeWord, CaseSensitive ) )
+			if ( !TrySearch( direction, searchString, wholeWord, caseSensitive ) )
 			{
-				MessageBox.Show( string.Format( Resources.ORCToolKit.SearchFailedText, SearchString ), Resources.ORCToolKit.SearchFailedTitle,
+				MessageBox.Show( string.Format( Resources.ORCToolKit.SearchFailedText, searchString ), Resources.ORCToolKit.SearchFailedTitle,
 					MessageBoxButtons.OK, MessageBoxIcon.Error );
 			}
 		}
 
 		protected bool CheckUnsavedChanges()
 		{
-			if ( !HasUnsavedEdits )
+			if ( !_hasUnsavedEdits )
 				return true;
 
 			switch ( MessageBox.Show( Resources.ORCToolKit.UnsavedChangesText, Resources.ORCToolKit.UnsavedChangesTitle,
@@ -186,7 +185,7 @@ namespace ORCToolKit
 		private void FormEditor_Shown( object? sender, EventArgs e )
 		{
 			OwnedByAnotherEditor = Owner is FormEditor;
-			HasUnsavedEdits = false;
+			_hasUnsavedEdits = false;
 		}
 
 		private void FormSearch_OnSearch( object sender, SearchEventArgs e )

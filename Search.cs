@@ -18,30 +18,30 @@ namespace ORCToolKit
 			public bool WholeWord;
 			public bool CaseSensitive;
 
-			public SearchEventArgs( SearchDirection Direction, string SearchString, bool WholeWord, bool CaseSensitive )
+			public SearchEventArgs( SearchDirection direction, string searchString, bool wholeWord, bool caseSensitive )
 			{
-				this.Direction = Direction;
-				this.SearchString = SearchString;
-				this.WholeWord = WholeWord;
-				this.CaseSensitive = CaseSensitive;
+				Direction = direction;
+				SearchString = searchString;
+				WholeWord = wholeWord;
+				CaseSensitive = caseSensitive;
 			}
 		};
 
 		public class StringSearch
 		{
-			static public bool Compare( string CompareTo, string SearchString, bool WholeWord, bool CaseSensitive )
+			static public bool Compare( string compareTo, string searchString, bool wholeWord, bool caseSensitive )
 			{
-				if ( WholeWord )
+				if ( wholeWord )
 				{
 					// use regex for whole word matching
-					RegexOptions Options = RegexOptions.Compiled;
-					if ( !CaseSensitive )
-						Options |= RegexOptions.IgnoreCase;
-					return Regex.IsMatch( CompareTo, $@"\b{SearchString}\b", Options );
+					RegexOptions options = RegexOptions.Compiled;
+					if ( !caseSensitive )
+						options |= RegexOptions.IgnoreCase;
+					return Regex.IsMatch( compareTo, $@"\b{searchString}\b", options );
 				}
 				else
 				{
-					return CompareTo.Contains( SearchString, CaseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase );
+					return compareTo.Contains( searchString, caseSensitive ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase );
 				}
 			}
 		}

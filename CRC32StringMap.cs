@@ -8,25 +8,25 @@ namespace ORCToolKit
 
 		static public void Initialize()
 		{
-			using ( StreamReader Reader = new StreamReader( "strings.txt" ) )
+			using ( StreamReader reader = new StreamReader( "strings.txt" ) )
 			{
-				string? Line;
-				while ( (Line = Reader.ReadLine()) != null )
-					_dict.TryAdd( Line.GetCRC32(), Line );
+				string? line;
+				while ( (line = reader.ReadLine()) != null )
+					_dict.TryAdd( line.GetCRC32(), line );
 			}
 		}
 
-		static public CRC32 StoreString( string String )
+		static public CRC32 StoreString( string str )
 		{
-			CRC32 Result = String.GetCRC32();
-			_dict.TryAdd( Result, String );
-			return Result;
+			CRC32 result = str.GetCRC32();
+			_dict.TryAdd( result, str );
+			return result;
 		}
 
-		static public string? FindString( CRC32 CRC32 )
+		static public string? FindString( CRC32 crc32 )
 		{
-			if ( _dict.TryGetValue( CRC32, out string? String ) )
-				return String;
+			if ( _dict.TryGetValue( crc32, out string? str ) )
+				return str;
 			return null;
 		}
 	}

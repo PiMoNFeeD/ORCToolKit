@@ -11,17 +11,17 @@ namespace ORCToolKit.FileTypes
 		[TypeConverter( typeof( OutOfBoundsEnumConverter ) )]
 		public enum EntryValueType: Byte
 		{
-			TYPE_INT32_STORED = 1,  // (u?)int32 that is stored in the file
-			TYPE_FLOAT_STORED = 2,  // float that is stored in the file
-			TYPE_STRING = 3,        // string that is stored in the file
+			TYPE_INT32_STORED = 1,	// (u?)int32 that is stored in the file
+			TYPE_FLOAT_STORED = 2,	// float that is stored in the file
+			TYPE_STRING = 3,		// string that is stored in the file
 									// I imagine a TYPE_BYTE_STORED would be somewhere here, but there isn't a single asset with a byte type in the game to check...
-			TYPE_ENTRY_TABLE = 6,   // a table that stores key-value entries
-			TYPE_INT32_ZERO = 7,    // (u?)int32 that is always zero, not stored in the file (0)
-			TYPE_INT32_ONE = 8,     // (u?)int32 that is always one, not stored in the file (1)
-			TYPE_FLOAT_ZERO = 9,    // float that is always zero, not stored in the file (0.0)
-			TYPE_FLOAT_ONE = 10,    // float that is always one, not stored in the file (1.0)
-			TYPE_BYTE_ZERO = 11,    // byte that is always zero, not stored in the file (false)
-			TYPE_BYTE_ONE = 12,     // byte that is always one, not stored in the file (true)
+			TYPE_ENTRY_TABLE = 6,	// a table that stores key-value entries
+			TYPE_INT32_ZERO = 7,	// (u?)int32 that is always zero, not stored in the file (0)
+			TYPE_INT32_ONE = 8,		// (u?)int32 that is always one, not stored in the file (1)
+			TYPE_FLOAT_ZERO = 9,	// float that is always zero, not stored in the file (0.0)
+			TYPE_FLOAT_ONE = 10,	// float that is always one, not stored in the file (1.0)
+			TYPE_BYTE_ZERO = 11,	// byte that is always zero, not stored in the file (false)
+			TYPE_BYTE_ONE = 12,		// byte that is always one, not stored in the file (true)
 			TYPE_STRING_HASH = 13,	// the code path that reads this type either reads TYPE_STRING and then extracts a CRC32 of that string,
 									// or reads a uint32 directly; this appears correct after inspecting assets with this type
 		};
@@ -66,7 +66,7 @@ namespace ORCToolKit.FileTypes
 		{
 			private EntryValueType _valueType = EntryValueType.TYPE_BYTE_ZERO;
 
-			public Entry( EntryTable? Parent ) { ParentTable = Parent; }
+			public Entry( EntryTable? parent ) { ParentTable = parent; }
 
 			[Browsable( false )]
 			public EntryTable? ParentTable { get; private set; }
@@ -82,7 +82,7 @@ namespace ORCToolKit.FileTypes
 				{
 					_valueType = value;
 
-					switch (_valueType )
+					switch ( _valueType )
 					{
 						case EntryValueType.TYPE_INT32_STORED:
 							Value = new Int32[1] { 0 };
@@ -123,23 +123,23 @@ namespace ORCToolKit.FileTypes
 			{
 				get
 				{
-					if ( Value is Array ArrayValue )
-						return ArrayValue.Length;
+					if ( Value is Array arrayValue )
+						return arrayValue.Length;
 
 					return 0;
 				}
 				set
 				{
-					Int32 NewValueLength = value;
-					if ( NewValueLength < 1 )
-						NewValueLength = 1;
+					Int32 newValueLength = value;
+					if ( newValueLength < 1 )
+						newValueLength = 1;
 
-					if ( Value is Array ArrayValue )
+					if ( Value is Array arrayValue )
 					{
 						// resize the array by creating a new one
-						Array NewArrayValue = Array.CreateInstance( ArrayValue.GetType().GetElementType(), NewValueLength );
-						Array.Copy( ArrayValue, NewArrayValue, Math.Min( ValueLength, NewValueLength ) );
-						Value = NewArrayValue;
+						Array newArrayValue = Array.CreateInstance( arrayValue.GetType().GetElementType(), newValueLength );
+						Array.Copy( arrayValue, newArrayValue, Math.Min( ValueLength, newValueLength ) );
+						Value = newArrayValue;
 					}
 				}
 			}
@@ -156,7 +156,7 @@ namespace ORCToolKit.FileTypes
 			{
 				get
 				{
-					string Result = string.Empty;
+					string result = string.Empty;
 
 					const Int32 MaxElementsToDisplay = 10;
 					switch ( ValueType )
@@ -168,35 +168,35 @@ namespace ORCToolKit.FileTypes
 						{
 							Debug.Assert( Value != null );
 
-							Array Values = Value as Array;
-							if ( Values.Length == 1 )
+							Array values = Value as Array;
+							if ( values.Length == 1 )
 							{
-								Result += Values.GetValue( 0 );
+								result += values.GetValue( 0 );
 							}
 							else
 							{
-								Result += "[";
-								Int32 Length = Math.Min( MaxElementsToDisplay, Values.Length );
-								for ( Int32 i = 0; i < Length; i++ )
+								result += "[";
+								Int32 length = Math.Min( MaxElementsToDisplay, values.Length );
+								for ( Int32 i = 0; i < length; i++ )
 								{
-									Result += Values.GetValue( i );
-									if ( i == (Length - 1) )
+									result += values.GetValue( i );
+									if ( i == (length - 1) )
 									{
-										if ( Length < Values.Length )
-											Result += ":...";
+										if ( length < values.Length )
+											result += ":...";
 									}
 									else
 									{
-										Result += StringValueSeparator;
+										result += StringValueSeparator;
 									}
 								}
-								Result += "]";
+								result += "]";
 							}
 							break;
 						}
 						case EntryValueType.TYPE_ENTRY_TABLE:
 						{
-							Result += Value.ToString();
+							result += Value.ToString();
 							break;
 						}
 						// this weird logic allows me to automatically propogate default values without having to worry about manually typing them out
@@ -204,21 +204,21 @@ namespace ORCToolKit.FileTypes
 						case EntryValueType.TYPE_INT32_ONE:
 						{
 							Debug.Assert( Value == null );
-							Result += Convert.ToInt32( ValueType - EntryValueType.TYPE_INT32_ZERO );
+							result += Convert.ToInt32( ValueType - EntryValueType.TYPE_INT32_ZERO );
 							break;
 						}
 						case EntryValueType.TYPE_FLOAT_ZERO:
 						case EntryValueType.TYPE_FLOAT_ONE:
 						{
 							Debug.Assert( Value == null );
-							Result += Convert.ToSingle( ValueType - EntryValueType.TYPE_FLOAT_ZERO );
+							result += Convert.ToSingle( ValueType - EntryValueType.TYPE_FLOAT_ZERO );
 							break;
 						}
 						case EntryValueType.TYPE_BYTE_ZERO:
 						case EntryValueType.TYPE_BYTE_ONE:
 						{
 							Debug.Assert( Value == null );
-							Result += Convert.ToBoolean( ValueType - EntryValueType.TYPE_BYTE_ZERO );
+							result += Convert.ToBoolean( ValueType - EntryValueType.TYPE_BYTE_ZERO );
 							break;
 						}
 						default:
@@ -229,7 +229,7 @@ namespace ORCToolKit.FileTypes
 						}
 					}
 
-					return Result;
+					return result;
 				}
 			}
 
@@ -255,26 +255,26 @@ namespace ORCToolKit.FileTypes
 						case EntryValueType.TYPE_STRING:
 						{
 							Debug.Assert( Value != null );
-							string FinalString = string.Empty;
-							string[] Strings = (Value as string[]);
-							for ( Int32 i = 0; i < Strings.Length; i++ )
+							string finalString = string.Empty;
+							string[] strings = (Value as string[]);
+							for ( Int32 i = 0; i < strings.Length; i++ )
 							{
-								FinalString += Strings[i];
-								if ( i != (Strings.Length - 1) )
-									FinalString += StringValueSeparator;
+								finalString += strings[i];
+								if ( i != (strings.Length - 1) )
+									finalString += StringValueSeparator;
 							}
-							return MathExtensions.AlignValue( Encoding.UTF8.GetByteCount( FinalString ) + 1, StringAlignment ); // +1 for null terminator
+							return MathExtensions.AlignValue( Encoding.UTF8.GetByteCount( finalString ) + 1, StringAlignment ); // +1 for null terminator
 						}
 						case EntryValueType.TYPE_ENTRY_TABLE:
 						{
 							Debug.Assert( Value != null );
-							Int32 Size = Marshal.SizeOf<SWB2EntryTableHeader>();
-							foreach ( Entry Entry in (Value as EntryTable).Entries )
+							Int32 size = Marshal.SizeOf<SWB2EntryTableHeader>();
+							foreach ( Entry entry in (Value as EntryTable).Entries )
 							{
-								Size += Marshal.SizeOf<SWB2EntryHeader>();
-								Size += Entry.ValueSize;
+								size += Marshal.SizeOf<SWB2EntryHeader>();
+								size += entry.ValueSize;
 							}
-							return Size;
+							return size;
 						}
 						case EntryValueType.TYPE_STRING_HASH:
 						{
@@ -301,92 +301,92 @@ namespace ORCToolKit.FileTypes
 				}
 			}
 
-			public void LoadFromBuffer( Stream BufferStream, Endianness Endian )
+			public void LoadFromBuffer( Stream bufferStream, Endianness endian )
 			{
-				using ( BinaryReader Reader = new BinaryReader( BufferStream, Encoding.UTF8, true ) )
+				using ( BinaryReader reader = new BinaryReader( bufferStream, Encoding.UTF8, true ) )
 				{
-					Int32 ValueSize = 0;
+					Int32 valueSize = 0;
 					{
-						UInt32 Key = Reader.ReadUInt32( Endian );
-						if ( Key == 2952159793 )
+						UInt32 key = reader.ReadUInt32( endian );
+						if ( key == 2952159793 )
 						{
 							// HACK: for some reason, entries with this key store a different layout?!?!?
 							// according to the disassembly of the game, it doesn't even parse this entry, it just skips it!
 							// possibly some debug info of the file?
-							this.Key = Key;
-							this.ValueType = EntryValueType.TYPE_INT32_STORED; // all values appear to be a mix of ints and floats, always byteswaped in batches of 4 bytes... slamming to int32 just so byteswapping is correct
-							this.Flags = 0;
-							ValueSize = Reader.ReadInt32( Endian );
+							Key = key;
+							ValueType = EntryValueType.TYPE_INT32_STORED; // all values appear to be a mix of ints and floats, always byteswaped in batches of 4 bytes... slamming to int32 just so byteswapping is correct
+							Flags = 0;
+							valueSize = reader.ReadInt32( endian );
 						}
 						else
 						{
-							Reader.BaseStream.Position -= Marshal.SizeOf<UInt32>();
+							reader.BaseStream.Position -= Marshal.SizeOf<UInt32>();
 
-							SWB2EntryHeader EntryHeader = Reader.ReadType<SWB2EntryHeader>( Endian );
-							this.Key = EntryHeader.Key;
-							this.ValueType = EntryHeader.ValueType;
-							this.Flags = EntryHeader.Unknown;
-							ValueSize = EntryHeader.ValueSize;
+							SWB2EntryHeader entryHeader = reader.ReadType<SWB2EntryHeader>( endian );
+							Key = entryHeader.Key;
+							ValueType = entryHeader.ValueType;
+							Flags = entryHeader.Unknown;
+							valueSize = entryHeader.ValueSize;
 						}
 					}
 
-					if ( ValueSize > 0 )
+					if ( valueSize > 0 )
 					{
-						switch ( this.ValueType )
+						switch ( ValueType )
 						{
 							case EntryValueType.TYPE_INT32_STORED:
 							{
-								if ( (ValueSize % Marshal.SizeOf<Int32>()) != 0 )
+								if ( (valueSize % Marshal.SizeOf<Int32>()) != 0 )
 									throw new FileFormatException();
 
-								this.Value = Reader.ReadInt32Array( ValueSize / Marshal.SizeOf<Int32>(), Endian );
+								Value = reader.ReadInt32Array( valueSize / Marshal.SizeOf<Int32>(), endian );
 								break;
 							}
 							case EntryValueType.TYPE_FLOAT_STORED:
 							{
-								if ( (ValueSize % Marshal.SizeOf<Single>()) != 0 )
+								if ( (valueSize % Marshal.SizeOf<Single>()) != 0 )
 									throw new FileFormatException();
 
-								this.Value = Reader.ReadSingleArray( ValueSize / Marshal.SizeOf<Single>(), Endian );
+								Value = reader.ReadSingleArray( valueSize / Marshal.SizeOf<Single>(), endian );
 								break;
 							}
 							case EntryValueType.TYPE_STRING:
 							{
-								string Value = Reader.ReadFixedLengthString( Encoding.UTF8, ValueSize );
-								if ( Value.Contains( ';' ) )
+								string value = reader.ReadFixedLengthString( Encoding.UTF8, valueSize );
+								if ( value.Contains( ';' ) )
 									StringValueSeparator = ';';
-								this.Value = Value.Split( StringValueSeparator );
+								Value = value.Split( StringValueSeparator );
 								break;
 							}
 							case EntryValueType.TYPE_ENTRY_TABLE:
 							{
-								Int64 OldPosition = Reader.BaseStream.Position;
-								EntryTable Value = new EntryTable( ParentTable );
-								Value.LoadFromBuffer( BufferStream, Endian );
-								this.Value = Value;
+								Int64 oldPosition = reader.BaseStream.Position;
+								EntryTable value = new EntryTable( ParentTable );
+								value.LoadFromBuffer( bufferStream, endian );
+								Value = value;
 
-								if ( (Reader.BaseStream.Position - OldPosition) != ValueSize )
+								if ( (reader.BaseStream.Position - oldPosition) != valueSize )
 									throw new FileFormatException();
 								break;
 							}
 							case EntryValueType.TYPE_STRING_HASH:
 							{
-								if ( (ValueSize % Marshal.SizeOf<CRC32>()) != 0 )
+								if ( (valueSize % Marshal.SizeOf<CRC32>()) != 0 )
 									throw new FileFormatException();
 
-								this.Value = Reader.ReadTypeArray<CRC32>( ValueSize / Marshal.SizeOf<CRC32>(), Endian );
+								Value = reader.ReadTypeArray<CRC32>( valueSize / Marshal.SizeOf<CRC32>(), endian );
 								break;
 							}
 							default:
 							{
-								this.Value = Reader.ReadBytes( ValueSize );
+								Value = reader.ReadBytes( valueSize );
 								break;
 							}
 						}
 					}
 					else
 					{
-						switch ( this.ValueType )
+						switch ( ValueType )
 						{
 							case EntryValueType.TYPE_INT32_STORED:
 							case EntryValueType.TYPE_FLOAT_STORED:
@@ -410,71 +410,71 @@ namespace ORCToolKit.FileTypes
 				}
 			}
 
-			public void SaveToBuffer( Stream BufferStream, Endianness Endian )
+			public void SaveToBuffer( Stream bufferStream, Endianness endian )
 			{
-				using ( BinaryWriter Writer = new BinaryWriter( BufferStream, Encoding.UTF8, true ) )
+				using ( BinaryWriter writer = new BinaryWriter( bufferStream, Encoding.UTF8, true ) )
 				{
-					UInt16 ValueSize = Convert.ToUInt16( this.ValueSize );
-					if ( this.Key == 2952159793 )
+					UInt16 valueSize = Convert.ToUInt16( ValueSize );
+					if ( Key == 2952159793 )
 					{
 						// HACK: for some reason, entries with this key store a different layout?!?!?
 						// according to the disassembly of the game, it doesn't even parse this entry, it just skips it!
 						// possibly some debug info of the file?
-						Writer.Write( this.Key );
-						Writer.Write( Convert.ToUInt32( ValueSize ), Endian );
+						writer.Write( Key );
+						writer.Write( Convert.ToUInt32( valueSize ), endian );
 					}
 					else
 					{
-						SWB2EntryHeader EntryHeader = new SWB2EntryHeader();
-						EntryHeader.Key = this.Key;
-						EntryHeader.ValueType = this.ValueType;
-						EntryHeader.Unknown = this.Flags;
-						EntryHeader.ValueSize = ValueSize;
-						Writer.WriteType( EntryHeader, Endian );
+						SWB2EntryHeader entryHeader = new SWB2EntryHeader();
+						entryHeader.Key = Key;
+						entryHeader.ValueType = ValueType;
+						entryHeader.Unknown = Flags;
+						entryHeader.ValueSize = valueSize;
+						writer.WriteType( entryHeader, endian );
 					}
 
-					switch ( this.ValueType )
+					switch ( ValueType )
 					{
 						case EntryValueType.TYPE_INT32_STORED:
 						{
-							foreach ( Int32 Value in (this.Value as Int32[]) )
-								Writer.Write( Value, Endian );
+							foreach ( Int32 value in (Value as Int32[]) )
+								writer.Write( value, endian );
 							break;
 						}
 						case EntryValueType.TYPE_FLOAT_STORED:
 						{
-							foreach ( Single Value in (this.Value as Single[]) )
-								Writer.Write( Value, Endian );
+							foreach ( Single value in (Value as Single[]) )
+								writer.Write( value, endian );
 							break;
 						}
 						case EntryValueType.TYPE_STRING:
 						{
-							string FinalString = string.Empty;
-							string[] Strings = (this.Value as string[]);
-							for ( Int32 i = 0; i < Strings.Length; i++ )
+							string finalString = string.Empty;
+							string[] strings = (Value as string[]);
+							for ( Int32 i = 0; i < strings.Length; i++ )
 							{
-								FinalString += Strings[i];
-								if ( i != (Strings.Length - 1) )
-									FinalString += StringValueSeparator;
+								finalString += strings[i];
+								if ( i != (strings.Length - 1) )
+									finalString += StringValueSeparator;
 							}
 
-							byte[] Value = Encoding.UTF8.GetBytes( FinalString );
-							Writer.Write( Value );
-							Writer.Write( (Byte)0 ); // null terminator
-							Int32 AlignmentCount = MathExtensions.AlignValue( ValueSize, StringAlignment ) - (Value.Length + 1);
-							for ( Int32 i = 0; i < AlignmentCount; i++ )
-								Writer.Write( (Byte)0 ); // alignment
+							byte[] value = Encoding.UTF8.GetBytes( finalString );
+							writer.Write( value );
+							writer.Write( (Byte)0 ); // null terminator
+							Int32 alignmentCount = MathExtensions.AlignValue( valueSize, StringAlignment ) - (value.Length + 1);
+							for ( Int32 i = 0; i < alignmentCount; i++ )
+								writer.Write( (Byte)0 ); // alignment
 							break;
 						}
 						case EntryValueType.TYPE_ENTRY_TABLE:
 						{
-							(this.Value as EntryTable).SaveToBuffer( BufferStream, Endian );
+							(Value as EntryTable).SaveToBuffer( bufferStream, endian );
 							break;
 						}
 						case EntryValueType.TYPE_STRING_HASH:
 						{
-							foreach ( CRC32 Value in (this.Value as CRC32[]) )
-								Writer.Write( Value, Endian );
+							foreach ( CRC32 value in (Value as CRC32[]) )
+								writer.Write( value, endian );
 							break;
 						}
 						case EntryValueType.TYPE_INT32_ZERO:
@@ -484,13 +484,13 @@ namespace ORCToolKit.FileTypes
 						case EntryValueType.TYPE_BYTE_ZERO:
 						case EntryValueType.TYPE_BYTE_ONE:
 						{
-							Debug.Assert( this.Value == null );
+							Debug.Assert( Value == null );
 							break;
 						}
 						default:
 						{
-							if ( this.Value != null )
-								Writer.Write( this.Value as Byte[] );
+							if ( Value != null )
+								writer.Write( Value as Byte[] );
 							break;
 						}
 					}
@@ -505,8 +505,8 @@ namespace ORCToolKit.FileTypes
 
 		public class EntryTable
 		{
-			public EntryTable( EntryTable? Parent ) { ParentTable = Parent; }
-			
+			public EntryTable( EntryTable? parent ) { ParentTable = parent; }
+
 			[Browsable( false )]
 			public EntryTable? ParentTable { get; private set; }
 
@@ -518,34 +518,34 @@ namespace ORCToolKit.FileTypes
 			[LocalizedDisplayName( "SWB2DatabaseFile.EntryTable.NumEntries.Name" )]
 			public Int32 NumEntries { get { return Entries.Count; } }
 
-			public void LoadFromBuffer( Stream BufferStream, Endianness Endian )
+			public void LoadFromBuffer( Stream bufferStream, Endianness endian )
 			{
-				using ( BinaryReader Reader = new BinaryReader( BufferStream, Encoding.UTF8, true ) )
+				using ( BinaryReader reader = new BinaryReader( bufferStream, Encoding.UTF8, true ) )
 				{
-					SWB2EntryTableHeader EntryTableHeader = Reader.ReadType<SWB2EntryTableHeader>( Endian );
+					SWB2EntryTableHeader entryTableHeader = reader.ReadType<SWB2EntryTableHeader>( endian );
 
-					this.Identifier = EntryTableHeader.Identifier;
-					this.Entries.Capacity = EntryTableHeader.NumEntries;
-					for ( UInt32 j = 0; j < EntryTableHeader.NumEntries; j++ )
+					Identifier = entryTableHeader.Identifier;
+					Entries.Capacity = entryTableHeader.NumEntries;
+					for ( UInt32 j = 0; j < entryTableHeader.NumEntries; j++ )
 					{
-						Entry Entry = new Entry( this );
-						Entry.LoadFromBuffer( BufferStream, Endian );
-						this.Entries.Add( Entry );
+						Entry entry = new Entry( this );
+						entry.LoadFromBuffer( bufferStream, endian );
+						Entries.Add( entry );
 					}
 				}
 			}
-			public void SaveToBuffer( Stream BufferStream, Endianness Endian )
+			public void SaveToBuffer( Stream bufferStream, Endianness endian )
 			{
-				using ( BinaryWriter Writer = new BinaryWriter( BufferStream, Encoding.UTF8, true ) )
+				using ( BinaryWriter writer = new BinaryWriter( bufferStream, Encoding.UTF8, true ) )
 				{
-					SWB2EntryTableHeader EntryTableHeader = new SWB2EntryTableHeader();
+					SWB2EntryTableHeader entryTableHeader = new SWB2EntryTableHeader();
 
-					EntryTableHeader.Identifier = this.Identifier;
-					EntryTableHeader.NumEntries = this.Entries.Count;
-					Writer.WriteType<SWB2EntryTableHeader>( EntryTableHeader, Endian );
+					entryTableHeader.Identifier = Identifier;
+					entryTableHeader.NumEntries = Entries.Count;
+					writer.WriteType<SWB2EntryTableHeader>( entryTableHeader, endian );
 
-					foreach ( Entry Entry in Entries )
-						Entry.SaveToBuffer( BufferStream, Endian );
+					foreach ( Entry entry in Entries )
+						entry.SaveToBuffer( bufferStream, endian );
 				}
 			}
 
@@ -556,60 +556,61 @@ namespace ORCToolKit.FileTypes
 		}
 
 		public List<EntryTable> EntryTables = new List<EntryTable>();
-		private Endianness FileEndianness = Endianness.Little;
+		private Endianness _fileEndianness = Endianness.Little;
 
 		public void Reset()
 		{
 			EntryTables.Clear();
 		}
 
-		public void LoadFromBuffer( Stream BufferStream )
+		public void LoadFromBuffer( Stream bufferStream )
 		{
 			Reset();
 
 			try
 			{
-				using ( BinaryReader Reader = new BinaryReader( BufferStream ) )
+				using ( BinaryReader reader = new BinaryReader( bufferStream ) )
 				{
 					// check if this is a valid file
-					UInt32 Magic = Reader.ReadUInt32();
-					if ( Magic == 1179011411 ) // "SIFF"
-						FileEndianness = Endianness.Little;
-					else if ( Magic == 1397311046 ) // "FFIS"
-						FileEndianness = Endianness.Big;
+					UInt32 magic = reader.ReadUInt32();
+					if ( magic == 1179011411 ) // "SIFF"
+						_fileEndianness = Endianness.Little;
+					else if ( magic == 1397311046 ) // "FFIS"
+						_fileEndianness = Endianness.Big;
 					else
 						throw new FileFormatException();
 
-					Reader.BaseStream.Position = 0;
+					reader.BaseStream.Position = 0;
 
-					SWB2Header Header = Reader.ReadType<SWB2Header>( FileEndianness );
-					if ( Header.Magic1 != 1179011411 || // "SIFF" or "FFIS"
-						Header.Magic2 != 1262701639 )   // "GLCK" or "KCLG"
+					SWB2Header header = reader.ReadType<SWB2Header>( _fileEndianness );
+					if ( header.Magic1 != 1179011411 || // "SIFF" or "FFIS"
+						header.Magic2 != 1262701639 )   // "GLCK" or "KCLG"
 						throw new FileFormatException();
 
-					if ( (Reader.BaseStream.Length - Reader.BaseStream.Position) != Header.SizeOfTableData )
+					if ( (reader.BaseStream.Length - reader.BaseStream.Position) != header.SizeOfTableData )
 						throw new FileFormatException();
 
-					// these are assumption I made when looking at game files... hopefully this never gets tripped!
-					Debug.Assert( Header.Unknown1[0] == 0 );
-					Debug.Assert( Header.Unknown1[1] == 0 );
-					Debug.Assert( Header.Unknown1[2] == 1 );
-					Debug.Assert( Header.Unknown1[3] == 0 );
-					Debug.Assert( Header.Unknown2 == 16 );
-					Debug.Assert( Header.Unknown3 == 0 );
-					Debug.Assert( Header.Unknown4[0] == 0 );
-					Debug.Assert( Header.Unknown4[1] == 0 );
-					Debug.Assert( Header.Unknown4[2] == 0 );
+					// these are assumption I made when looking at game files...
+					// and after going through *every* SWB2 file in the game, these never assert!
+					Debug.Assert( header.Unknown1[0] == 0 );
+					Debug.Assert( header.Unknown1[1] == 0 );
+					Debug.Assert( header.Unknown1[2] == 1 );
+					Debug.Assert( header.Unknown1[3] == 0 );
+					Debug.Assert( header.Unknown2 == 16 );
+					Debug.Assert( header.Unknown3 == 0 );
+					Debug.Assert( header.Unknown4[0] == 0 );
+					Debug.Assert( header.Unknown4[1] == 0 );
+					Debug.Assert( header.Unknown4[2] == 0 );
 
-					EntryTables.Capacity = Header.NumTables;
-					for ( UInt32 i = 0; i < Header.NumTables; i++ )
+					EntryTables.Capacity = header.NumTables;
+					for ( UInt32 i = 0; i < header.NumTables; i++ )
 					{
-						EntryTable EntryTable = new EntryTable( null );
-						EntryTable.LoadFromBuffer( BufferStream, FileEndianness );
-						EntryTables.Add( EntryTable );
+						EntryTable entryTable = new EntryTable( null );
+						entryTable.LoadFromBuffer( bufferStream, _fileEndianness );
+						EntryTables.Add( entryTable );
 					}
 
-					if ( Reader.BaseStream.Position != (Marshal.SizeOf<SWB2Header>() + Header.SizeOfTableData) )
+					if ( reader.BaseStream.Position != (Marshal.SizeOf<SWB2Header>() + header.SizeOfTableData) )
 						throw new FileFormatException();
 				}
 			}
@@ -619,36 +620,38 @@ namespace ORCToolKit.FileTypes
 			}
 		}
 
-		public void SaveToBuffer( Stream BufferStream )
+		public void SaveToBuffer( Stream bufferStream )
 		{
 			try
 			{
-				SWB2Header Header = new SWB2Header();
-				Header.Magic1 = 1179011411; // "SIFF"
-				Header.Unknown1 = new Byte[4];
-				Header.Unknown1[0] = Header.Unknown1[1] = Header.Unknown1[3] = 0;
-				Header.Unknown1[2] = 1;
-				Header.Unknown2 = 16;
-				Header.Unknown3 = 0;
-				Header.Unknown4 = new UInt32[3];
-				Header.Unknown4[0] = Header.Unknown4[1] = Header.Unknown4[2] = 0;
+				SWB2Header header = new SWB2Header();
+				header.Magic1 = 1179011411; // "SIFF"
+				header.Unknown1 = new Byte[4];
+				header.Unknown1[0] = header.Unknown1[1] = header.Unknown1[3] = 0;
+				header.Unknown1[2] = 1;
+				header.Unknown2 = 16;
+				header.Unknown3 = 0;
+				header.Unknown4 = new UInt32[3];
+				header.Unknown4[0] = header.Unknown4[1] = header.Unknown4[2] = 0;
 
-				Header.Magic2 = 1262701639; // "GLCK"
-				Header.NumTables = EntryTables.Count;
+				header.Magic2 = 1262701639; // "GLCK"
+				header.NumTables = EntryTables.Count;
 
-				EntryTables.ForEach( EntryTable => {
-					Header.SizeOfTableData += Marshal.SizeOf<SWB2EntryTableHeader>();
-					EntryTable.Entries.ForEach( Entry => {
-						Header.SizeOfTableData += Marshal.SizeOf<SWB2EntryHeader>();
-						Header.SizeOfTableData += Entry.ValueSize;
+				EntryTables.ForEach( entryTable =>
+				{
+					header.SizeOfTableData += Marshal.SizeOf<SWB2EntryTableHeader>();
+					entryTable.Entries.ForEach( entry =>
+					{
+						header.SizeOfTableData += Marshal.SizeOf<SWB2EntryHeader>();
+						header.SizeOfTableData += entry.ValueSize;
 					} );
 				} );
 
-				using ( BinaryWriter Writer = new BinaryWriter( BufferStream, Encoding.UTF8, true ) )
+				using ( BinaryWriter writer = new BinaryWriter( bufferStream, Encoding.UTF8, true ) )
 				{
-					Writer.WriteType<SWB2Header>( Header, FileEndianness );
-					foreach ( EntryTable EntryTable in EntryTables )
-						EntryTable.SaveToBuffer( BufferStream, FileEndianness );
+					writer.WriteType<SWB2Header>( header, _fileEndianness );
+					foreach ( EntryTable entryTable in EntryTables )
+						entryTable.SaveToBuffer( bufferStream, _fileEndianness );
 				}
 			}
 			catch ( Exception ex )

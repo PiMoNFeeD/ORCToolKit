@@ -14,13 +14,13 @@ namespace ORCToolKit.FileTypes
 
 	static public class TypeDeducer
 	{
-		static public FileType GuessFromFile( FileInfo FileInfoToGuess )
+		static public FileType GuessFromFile( FileInfo fileInfoToGuess )
 		{
 			try
 			{
-				using ( FileStream Stream = FileInfoToGuess.OpenRead() )
+				using ( FileStream stream = fileInfoToGuess.OpenRead() )
 				{
-					return GuessFromBuffer( FileInfoToGuess.FullName, Stream );
+					return GuessFromBuffer( fileInfoToGuess.FullName, stream );
 				}
 			}
 			catch ( Exception ex )
@@ -30,109 +30,109 @@ namespace ORCToolKit.FileTypes
 			}
 		}
 
-		static public FileType GuessFromBuffer( string? FileName, Stream FileBuffer )
+		static public FileType GuessFromBuffer( string? fileName, Stream fileStream )
 		{
-			FileType Type = FileType.Unknown;
+			FileType type = FileType.Unknown;
 
 			// first, look at extension
-			switch ( Path.GetExtension( FileName ) )
+			switch ( Path.GetExtension( fileName ) )
 			{
 				case ".ssg":
 				{
-					Type = FileType.SSGArchive;
+					type = FileType.SSGArchive;
 					break;
 				}
 				case ".swb2":
 				{
-					Type = FileType.SWB2Database;
+					type = FileType.SWB2Database;
 					break;
 				}
 				case "":
 				{
 					// extension-less? could be anything, read it and try to make the best guess
-					if ( FileBuffer.Length > 8 )
+					if ( fileStream.Length > 8 )
 					{
-						Int64 OldPosition = FileBuffer.Position;
-						FileBuffer.Position = 0;
+						Int64 oldPosition = fileStream.Position;
+						fileStream.Position = 0;
 
-						using ( BinaryReader Reader = new BinaryReader( FileBuffer, Encoding.UTF8, true ) )
+						using ( BinaryReader reader = new BinaryReader( fileStream, Encoding.UTF8, true ) )
 						{
-							UInt32 Header1 = Reader.ReadUInt32();
-							UInt32 Header2 = Reader.ReadUInt32();
+							UInt32 header1 = reader.ReadUInt32();
+							UInt32 header2 = reader.ReadUInt32();
 
-							if ( MathExtensions.IsPowerOfTwo( Header1 ) && Header2 == 0 )
-								Type = FileType.LocalizationContainer;
+							if ( MathExtensions.IsPowerOfTwo( header1 ) && header2 == 0 )
+								type = FileType.LocalizationContainer;
 						}
 
 						// make sure we don't screw up chained read calls
-						FileBuffer.Position = OldPosition;
+						fileStream.Position = oldPosition;
 					}
 					break;
 				}
 			}
-			return Type;
+			return type;
 		}
 
-		static public Form? GuessFromFileAndOpen( FileInfo FileInfoToGuess, Form? ParentForm = null, bool Silent = false )
+		static public Form? GuessFromFileAndOpen( FileInfo fileInfoToGuess, Form? parentForm = null, bool silent = false )
 		{
 			try
 			{
-				using ( FileStream Stream = FileInfoToGuess.OpenRead() )
+				using ( FileStream stream = fileInfoToGuess.OpenRead() )
 				{
-					return GuessFromBufferAndOpen( FileInfoToGuess.FullName, Stream, ParentForm, Silent );
+					return GuessFromBufferAndOpen( fileInfoToGuess.FullName, stream, parentForm, silent );
 				}
 			}
 			catch ( Exception ex )
 			{
-				if ( !Silent )
+				if ( !silent )
 					MessageBox.Show( ex.Message, Resources.ORCToolKit.UnableToOpenFileTitle, MessageBoxButtons.OK, MessageBoxIcon.Error );
 				return null;
 			}
 		}
 
-		static public Form? GuessFromBufferAndOpen( string? FileName, Stream FileBuffer, Form? ParentForm = null, bool Silent = false )
+		static public Form? GuessFromBufferAndOpen( string? fileName, Stream fileStream, Form? parentForm = null, bool silent = false )
 		{
-			FormEditor? Editor = null;
-			switch ( GuessFromBuffer( FileName, FileBuffer ) )
+			FormEditor? editor = null;
+			switch ( GuessFromBuffer( fileName, fileStream ) )
 			{
 				case FileType.LocalizationContainer:
 				{
-					Editor = new FormLocalizationEditor();
+					editor = new FormLocalizationEditor();
 					break;
 				}
 				case FileType.SSGArchive:
 				{
-					Editor = new FormSSGArchiveEditor();
+					editor = new FormSSGArchiveEditor();
 					break;
 				}
 				case FileType.SWB2Database:
 				{
-					Editor = new FormSWB2DatabaseEditor();
+					editor = new FormSWB2DatabaseEditor();
 					break;
 				}
 				default:
 				{
-					if ( !Silent )
+					if ( !silent )
 					{
 						// HACK: pass the file onto explorer to deal with it for us...
-						Process FileProcess = new Process();
-						FileProcess.StartInfo.FileName = "explorer";
-						FileProcess.StartInfo.Arguments = "\"" + FileName + "\"";
-						FileProcess.Start();
+						Process fileProcess = new Process();
+						fileProcess.StartInfo.FileName = "explorer";
+						fileProcess.StartInfo.Arguments = "\"" + fileName + "\"";
+						fileProcess.Start();
 					}
 					break;
 				}
 			}
 
-			if ( Editor != null )
+			if ( editor != null )
 			{
-				Editor.OpenFile( FileBuffer );
-				if ( ParentForm != null )
-					Editor.ShowDialog( ParentForm );
+				editor.OpenFile( fileStream );
+				if ( parentForm != null )
+					editor.ShowDialog( parentForm );
 				else
-					Editor.Show();
+					editor.Show();
 			}
-			return Editor;
+			return editor;
 		}
 	}
 }

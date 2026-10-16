@@ -12,17 +12,17 @@ namespace ORCToolKit
 						IConvertible
 	{
 		private UInt32 _value;
-		
-		public CRC32() {}
-		public CRC32( UInt32 Value ) { _value = Value; }
-		public CRC32( string Value ) { _value = CRC32StringMap.StoreString( Value ); }
 
-		static public implicit operator UInt32( CRC32 Value ) { return Value._value; }
-		static public implicit operator CRC32( UInt32 Value ) { return new CRC32( Value ); }
-		static public bool operator ==( CRC32 Value1, CRC32 Value2 ) { return Value1.Equals( Value2 ); }
-		static public bool operator ==( CRC32 ValueNum, string ValueString ) { return ValueNum.ToString() == ValueString; }
-		static public bool operator !=( CRC32 Value1, CRC32 Value2 ) { return !Value1.Equals( Value2 ); }
-		static public bool operator !=( CRC32 ValueNum, string ValueString ) { return ValueNum.ToString() != ValueString; }
+		public CRC32() { }
+		public CRC32( UInt32 value ) { _value = value; }
+		public CRC32( string value ) { _value = CRC32StringMap.StoreString( value ); }
+
+		static public implicit operator UInt32( CRC32 value ) { return value._value; }
+		static public implicit operator CRC32( UInt32 value ) { return new CRC32( value ); }
+		static public bool operator ==( CRC32 value1, CRC32 value2 ) { return value1.Equals( value2 ); }
+		static public bool operator ==( CRC32 value1, string value2 ) { return value1.ToString() == value2; }
+		static public bool operator !=( CRC32 value1, CRC32 value2 ) { return !value1.Equals( value2 ); }
+		static public bool operator !=( CRC32 value1, string value2 ) { return value1.ToString() != value2; }
 
 		public override string ToString()
 		{
@@ -82,24 +82,24 @@ namespace ORCToolKit
 
 			if ( value is string )
 			{
-				if ( UInt32.TryParse( (string)value, NumberStyles.Integer, culture, out UInt32 Number ) )
-					return new CRC32( Number );
+				if ( UInt32.TryParse( (string)value, NumberStyles.Integer, culture, out UInt32 number ) )
+					return new CRC32( number );
 
 				// if this isn't a valid number, instead treat it as string
 				return new CRC32( (string)value );
 			}
 
-			object? Result = base.ConvertFrom( context, culture, value );
-			if ( Result is UInt32 )
-				return new CRC32( (UInt32)Result );
+			object? result = base.ConvertFrom( context, culture, value );
+			if ( result is UInt32 )
+				return new CRC32( (UInt32)result );
 
 			return base.ConvertFrom( context, culture, value );
 		}
 
 		public override object? ConvertTo( ITypeDescriptorContext? context, CultureInfo? culture, object? value, Type destinationType )
 		{
-			if ( value is CRC32 Value )
-				return base.ConvertTo( context, culture, Value, destinationType );
+			if ( value is CRC32 valueCRC32 )
+				return base.ConvertTo( context, culture, valueCRC32, destinationType );
 			return base.ConvertTo( context, culture, value, destinationType );
 		}
 	}

@@ -1,6 +1,5 @@
 ﻿using ORCToolKit.FileTypes;
 using System.Diagnostics;
-using static ORCToolKit.FileTypes.SWB2DatabaseFile;
 
 namespace ORCToolKit
 {
@@ -11,51 +10,51 @@ namespace ORCToolKit
 			BeforeExpand += TreeViewSWB2EntryExplorer_BeforeExpand;
 		}
 
-		public void LoadSWB2File( SWB2DatabaseFile File )
+		public void LoadSWB2File( SWB2DatabaseFile file )
 		{
 			BeginUpdate();
 
 			Nodes.Clear();
 
 			// create an array of nodes, and then populate it all at once using AddRange instead of adding nodes one by one
-			TreeNode[] EntryTableNodes = new TreeNode[File.EntryTables.Count];
-			for ( Int32 i = 0; i < File.EntryTables.Count; i++ )
-				EntryTableNodes[i] = CreateEntryTableNode( File.EntryTables[i] );
-			Nodes.AddRange( EntryTableNodes );
+			TreeNode[] entryTableNodes = new TreeNode[file.EntryTables.Count];
+			for ( Int32 i = 0; i < file.EntryTables.Count; i++ )
+				entryTableNodes[i] = CreateEntryTableNode( file.EntryTables[i] );
+			Nodes.AddRange( entryTableNodes );
 
 			EndUpdate();
 		}
 
-		public TreeNode CreateEntryTableNode( SWB2DatabaseFile.EntryTable EntryTable, TreeNodeCollection? InsertTo = null )
+		public TreeNode CreateEntryTableNode( SWB2DatabaseFile.EntryTable entryTable, TreeNodeCollection? insertTo = null )
 		{
-			TreeNode EntryTableNode = new TreeNode()
+			TreeNode entryTableNode = new TreeNode()
 			{
-				Text = EntryTable.ToString(),
-				Tag = EntryTable
+				Text = entryTable.ToString(),
+				Tag = entryTable
 			};
 
 			// if this entry table has any entries, add a dummy node to be able to expand it
-			if ( EntryTable.Entries.Count > 0 )
-				EntryTableNode.Nodes.Add( new TreeNode() );
+			if ( entryTable.Entries.Count > 0 )
+				entryTableNode.Nodes.Add( new TreeNode() );
 
-			if ( InsertTo != null )
-				InsertTo.Add( EntryTableNode );
+			if ( insertTo != null )
+				insertTo.Add( entryTableNode );
 
-			return EntryTableNode;
+			return entryTableNode;
 		}
 
-		public TreeNode CreateEntryNode( SWB2DatabaseFile.Entry Entry, TreeNodeCollection? InsertTo = null )
+		public TreeNode CreateEntryNode( SWB2DatabaseFile.Entry entry, TreeNodeCollection? insertTo = null )
 		{
-			TreeNode EntryTableNode = new TreeNode()
+			TreeNode entryTableNode = new TreeNode()
 			{
-				Text = Entry.ToString(),
-				Tag = Entry
+				Text = entry.ToString(),
+				Tag = entry
 			};
 
-			if ( InsertTo != null )
-				InsertTo.Add( EntryTableNode );
+			if ( insertTo != null )
+				insertTo.Add( entryTableNode );
 
-			return EntryTableNode;
+			return entryTableNode;
 		}
 
 		private void TreeViewSWB2EntryExplorer_BeforeExpand( object? sender, TreeViewCancelEventArgs e )
@@ -69,23 +68,23 @@ namespace ORCToolKit
 
 			e.Node.Nodes.Clear();
 
-			SWB2DatabaseFile.EntryTable ParentEntryTable = (SWB2DatabaseFile.EntryTable)e.Node.Tag;
-			Debug.Assert( ParentEntryTable.Entries.Count > 0 );
+			SWB2DatabaseFile.EntryTable parentEntryTable = (SWB2DatabaseFile.EntryTable)e.Node.Tag;
+			Debug.Assert( parentEntryTable.Entries.Count > 0 );
 
-			TreeNode[] EntryNodes = new TreeNode[ParentEntryTable.Entries.Count];
-			for ( Int32 i = 0; i < ParentEntryTable.Entries.Count; i++ )
+			TreeNode[] entryNodes = new TreeNode[parentEntryTable.Entries.Count];
+			for ( Int32 i = 0; i < parentEntryTable.Entries.Count; i++ )
 			{
-				if ( ParentEntryTable.Entries[i].ValueType == SWB2DatabaseFile.EntryValueType.TYPE_ENTRY_TABLE )
+				if ( parentEntryTable.Entries[i].ValueType == SWB2DatabaseFile.EntryValueType.TYPE_ENTRY_TABLE )
 				{
-					Debug.Assert( ParentEntryTable.Entries[i].Value != null );
-					EntryNodes[i] = CreateEntryTableNode( ParentEntryTable.Entries[i].Value as SWB2DatabaseFile.EntryTable );
+					Debug.Assert( parentEntryTable.Entries[i].Value != null );
+					entryNodes[i] = CreateEntryTableNode( parentEntryTable.Entries[i].Value as SWB2DatabaseFile.EntryTable );
 				}
 				else
 				{
-					EntryNodes[i] = CreateEntryNode( ParentEntryTable.Entries[i] );
+					entryNodes[i] = CreateEntryNode( parentEntryTable.Entries[i] );
 				}
 			}
-			e.Node.Nodes.AddRange( EntryNodes );
+			e.Node.Nodes.AddRange( entryNodes );
 		}
 	}
 }

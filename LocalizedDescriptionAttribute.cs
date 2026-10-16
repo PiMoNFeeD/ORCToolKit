@@ -4,7 +4,7 @@ namespace ORCToolKit
 {
 	public class LocalizedDescriptionAttribute: DescriptionAttribute
 	{
-		public LocalizedDescriptionAttribute( string Name ) : base( Name )
+		public LocalizedDescriptionAttribute( string description ) : base( description )
 		{
 		}
 

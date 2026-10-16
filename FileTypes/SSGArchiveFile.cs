@@ -1,9 +1,8 @@
-﻿using System.Text;
-using System.IO.Hashing;
+﻿using ORCToolKit.Extensions;
 using System.IO.Compression;
+using System.IO.Hashing;
 using System.Runtime.InteropServices;
-using ORCToolKit.Extensions;
-using System.Diagnostics;
+using System.Text;
 
 namespace ORCToolKit.FileTypes
 {
@@ -49,10 +48,10 @@ namespace ORCToolKit.FileTypes
 			public bool IsCompressed = false;
 		}
 
-		private UInt32 FileVersion = 6;
-		private UInt16 FileAlignment = 16;
-		private Endianness FileEndianness = Endianness.Little;
-		private bool SplitCompression = false; // by default, assume we don't split, unless the file we open does split
+		private UInt32 _fileVersion = 6;
+		private UInt16 _fileAlignment = 16;
+		private Endianness _fileEndianness = Endianness.Little;
+		private bool _splitCompression = false; // by default, assume we don't split, unless the file we open does split
 		public List<DataSection> DataSections = new List<DataSection>();
 
 		// raw data is compressed in blocks of this size
@@ -66,162 +65,162 @@ namespace ORCToolKit.FileTypes
 			DataSections.Clear();
 		}
 
-		public void LoadFromBuffer( Stream BufferStream )
+		public void LoadFromBuffer( Stream bufferStream )
 		{
 			Reset();
 
-			FileStream? LogFile = null;
-			StreamWriter? LogWriter = null;
+			FileStream? logFile = null;
+			StreamWriter? logWriter = null;
 #if DEBUG
-			if ( BufferStream is FileStream BufferFileStream )
+			if ( bufferStream is FileStream bufferFileStream )
 			{
-				LogFile = File.OpenWrite( BufferFileStream.Name + "_log" );
-				LogWriter = new StreamWriter( LogFile );
+				logFile = File.OpenWrite( bufferFileStream.Name + "_log" );
+				logWriter = new StreamWriter( logFile );
 			}
 #endif
 
 			try
 			{
-				using ( BinaryReader Reader = new BinaryReader( BufferStream, Encoding.UTF8, true ) )
+				using ( BinaryReader reader = new BinaryReader( bufferStream, Encoding.UTF8, true ) )
 				{
 					// determine endianness, the way the game does it
-					UInt32 HeaderVersion = Reader.ReadUInt32( Endianness.Little );
-					FileEndianness = HeaderVersion > 0xFFFF ? Endianness.Big : Endianness.Little;
+					UInt32 headerVersion = reader.ReadUInt32( Endianness.Little );
+					_fileEndianness = headerVersion > 0xFFFF ? Endianness.Big : Endianness.Little;
 
-					Reader.BaseStream.Position -= Marshal.SizeOf<UInt32>();
-					SSGHeader Header = Reader.ReadType<SSGHeader>( FileEndianness );
-					if ( Header.Version != 6 && Header.Version != 5 ) // RE:ORC only has version 5 and 6 archives
+					reader.BaseStream.Position -= Marshal.SizeOf<UInt32>();
+					SSGHeader header = reader.ReadType<SSGHeader>( _fileEndianness );
+					if ( header.Version != 6 && header.Version != 5 ) // RE:ORC only has version 5 and 6 archives
 						throw new FileFormatException();
 
-					if ( Header.Padding1 != 0 ) // make sure it's 0 to know we have the right file
+					if ( header.Padding1 != 0 ) // make sure it's 0 to know we have the right file
 						throw new FileFormatException();
 
-					FileVersion = Header.Version;
-					if ( FileVersion == 5 )
+					_fileVersion = header.Version;
+					if ( _fileVersion == 5 )
 					{
-						FileAlignment = 16; // this line of code is brought to you by reverse-engineering the game
-						Header.CompressedBlocksSize = 0; // speculation, it's not 0 but there is no compression
+						_fileAlignment = 16; // this line of code is brought to you by reverse-engineering the game
+						header.CompressedBlocksSize = 0; // speculation, it's not 0 but there is no compression
 					}
 
-					LogWriter?.WriteLine( "SSG Header:" );
-					LogWriter?.WriteLine( $"Version:              {Header.Version}" );
-					LogWriter?.WriteLine( $"SectionInfosSize:     {Header.SectionInfosSize}" );
-					LogWriter?.WriteLine( $"SectionNamesSize:     {Header.SectionNamesSize}" );
-					LogWriter?.WriteLine( $"SectionDataSize:      {Header.SectionDataSize}" );
-					LogWriter?.WriteLine( $"CompressedBlocksSize: {Header.CompressedBlocksSize}" );
-					LogWriter?.WriteLine( $"Alignment:            {Header.Alignment}\n" );
+					logWriter?.WriteLine( "SSG Header:" );
+					logWriter?.WriteLine( $"Version:              {header.Version}" );
+					logWriter?.WriteLine( $"SectionInfosSize:     {header.SectionInfosSize}" );
+					logWriter?.WriteLine( $"SectionNamesSize:     {header.SectionNamesSize}" );
+					logWriter?.WriteLine( $"SectionDataSize:      {header.SectionDataSize}" );
+					logWriter?.WriteLine( $"CompressedBlocksSize: {header.CompressedBlocksSize}" );
+					logWriter?.WriteLine( $"Alignment:            {header.Alignment}\n" );
 
 					// TODO: console archives are using unknown compression, but it's the same between PS3 and XBOX 360
-					if ( FileEndianness == Endianness.Big && Header.CompressedBlocksSize > 0 )
+					if ( _fileEndianness == Endianness.Big && header.CompressedBlocksSize > 0 )
 						throw new FileFormatException( Resources.ORCToolKit.FileSSGArchiveFileCompressedConsoleNotSupported );
 
 					// read compressed blocks
 					// they come after section infos, but we need them earlier to be able to decompress data
-					List<Int32> CompressedBlockSizesList = new List<Int32>();
-					Reader.BaseStream.Position = Marshal.SizeOf<SSGHeader>() + Header.SectionInfosSize;
-					for ( Int32 BytesRead = 0; BytesRead < Header.CompressedBlocksSize; BytesRead += 4 )
+					List<Int32> compressedBlockSizesList = new List<Int32>();
+					reader.BaseStream.Position = Marshal.SizeOf<SSGHeader>() + header.SectionInfosSize;
+					for ( Int32 bytesRead = 0; bytesRead < header.CompressedBlocksSize; bytesRead += 4 )
 					{
-						Int32 Size = Reader.ReadInt32( FileEndianness );
-						if ( Size == 0 )
+						Int32 size = reader.ReadInt32( _fileEndianness );
+						if ( size == 0 )
 							break;
-						CompressedBlockSizesList.Add( Size );
+						compressedBlockSizesList.Add( size );
 					}
 
 					// read sections last, after we know compressed block sizes, to decompress them on the fly
-					if ( Header.SectionInfosSize % Marshal.SizeOf<SSGSection>() != 0 )
+					if ( header.SectionInfosSize % Marshal.SizeOf<SSGSection>() != 0 )
 						throw new FileFormatException();
-					Int32 SectionCount = Header.SectionInfosSize / Marshal.SizeOf<SSGSection>();
+					Int32 sectionCount = header.SectionInfosSize / Marshal.SizeOf<SSGSection>();
 
 					// compressed data comes right after uncompressed, and we need to know when it actually starts
-					Int32 CompressedDataOffset = 0;
-					List<byte> DecompressedData = new List<byte>();
+					Int32 compressedDataOffset = 0;
+					List<byte> decompressedData = new List<byte>();
 
-					Int32 LastNegativeCompressedSize = 0;
-					for ( int i = 0; i < SectionCount; i++ )
+					Int32 lastNegativeCompressedSize = 0;
+					for ( int i = 0; i < sectionCount; i++ )
 					{
-						Reader.BaseStream.Position = Marshal.SizeOf<SSGHeader>() + Marshal.SizeOf<SSGSection>() * i;
+						reader.BaseStream.Position = Marshal.SizeOf<SSGHeader>() + Marshal.SizeOf<SSGSection>() * i;
 
-						SSGSection Section = Reader.ReadType<SSGSection>( FileEndianness );
+						SSGSection section = reader.ReadType<SSGSection>( _fileEndianness );
 
 						// this is a very dumb hack to determine whether we need to split compressed blocks of sections or not
 						// doesn't seem to actually affect whether the file loads or not by the game, but I want num of compressed blocks
 						// to match the original file!
-						if ( Section.CompressedSize < 0 )
+						if ( section.CompressedSize < 0 )
 						{
-							if ( LastNegativeCompressedSize == 0 )
-								LastNegativeCompressedSize = Section.CompressedSize;
-							else if ( LastNegativeCompressedSize != Section.CompressedSize )
-								SplitCompression = true;
+							if ( lastNegativeCompressedSize == 0 )
+								lastNegativeCompressedSize = section.CompressedSize;
+							else if ( lastNegativeCompressedSize != section.CompressedSize )
+								_splitCompression = true;
 						}
 
 						// this block of code is brought to you by reverse-engineering the game
-						if ( Header.CompressedBlocksSize == 0 )
-							Section.CompressedSize = 0;
+						if ( header.CompressedBlocksSize == 0 )
+							section.CompressedSize = 0;
 
-						DataSection DataSection = new DataSection();
-						DataSection.Type = Section.Type;
-						DataSection.IsCompressed = (Section.CompressedSize != 0); // it can be negative, which means it shares a compressed block with the previous section
+						DataSection dataSection = new DataSection();
+						dataSection.Type = section.Type;
+						dataSection.IsCompressed = (section.CompressedSize != 0); // it can be negative, which means it shares a compressed block with the previous section
 
 						// read file name
-						Reader.BaseStream.Position = Marshal.SizeOf<SSGHeader>() + Header.SectionInfosSize + Header.CompressedBlocksSize + Section.NameOffset;
-						DataSection.Name = Reader.ReadNullTerminatedString( Encoding.UTF8 );
-						DataSection.NameCRC32 = Section.NameCRC32;
+						reader.BaseStream.Position = Marshal.SizeOf<SSGHeader>() + header.SectionInfosSize + header.CompressedBlocksSize + section.NameOffset;
+						dataSection.Name = reader.ReadNullTerminatedString( Encoding.UTF8 );
+						dataSection.NameCRC32 = section.NameCRC32;
 
-						if ( DataSection.IsCompressed )
+						if ( dataSection.IsCompressed )
 						{
-							if ( DecompressedData.Count == 0 )
+							if ( decompressedData.Count == 0 )
 							{
 								// uncompress all compressed blocks
-								Int32 CompressedDataReadSoFar = 0;
-								foreach ( Int32 CompressedBlockSize in CompressedBlockSizesList )
+								Int32 compressedDataReadSoFar = 0;
+								foreach ( Int32 compressedBlockSize in compressedBlockSizesList )
 								{
 									// need to open a new zlibstream every time, because reading one block results in the whole stream being marked as "finished"
-									using ( ZLibStream CompressionStream = new ZLibStream( BufferStream, CompressionMode.Decompress, true ) )
+									using ( ZLibStream compressionStream = new ZLibStream( bufferStream, CompressionMode.Decompress, true ) )
 									{
 										// guess the position of the next compressed block in file
-										CompressionStream.BaseStream.Position = Marshal.SizeOf<SSGHeader>() +
-											Header.SectionInfosSize +
-											Header.CompressedBlocksSize +
-											Header.SectionNamesSize +
-											CompressedDataOffset + CompressedDataReadSoFar;
+										compressionStream.BaseStream.Position = Marshal.SizeOf<SSGHeader>() +
+											header.SectionInfosSize +
+											header.CompressedBlocksSize +
+											header.SectionNamesSize +
+											compressedDataOffset + compressedDataReadSoFar;
 
-										using ( MemoryStream DecompressedStream = new MemoryStream() )
+										using ( MemoryStream decompressedStream = new MemoryStream() )
 										{
-											CompressionStream.CopyTo( DecompressedStream );
-											DecompressedData.AddRange( DecompressedStream.GetBuffer() );
-											LogWriter?.WriteLine( $"Compressed block: compressed {CompressedBlockSize}, decompressed {DecompressedStream.Length}" );
+											compressionStream.CopyTo( decompressedStream );
+											decompressedData.AddRange( decompressedStream.GetBuffer() );
+											logWriter?.WriteLine( $"Compressed block: compressed {compressedBlockSize}, decompressed {decompressedStream.Length}" );
 										}
 
-										CompressedDataReadSoFar += CompressedBlockSize;
+										compressedDataReadSoFar += compressedBlockSize;
 									}
 								}
-								CompressedDataOffset = 0; // revert this to zero, as it's now going to be an offset within compressed data, not within all data
+								compressedDataOffset = 0; // revert this to zero, as it's now going to be an offset within compressed data, not within all data
 							}
 
-							DataSection.RawData = new byte[Section.UncompressedSize];
-							DecompressedData.CopyTo( CompressedDataOffset, DataSection.RawData, 0, Section.UncompressedSize );
+							dataSection.RawData = new byte[section.UncompressedSize];
+							decompressedData.CopyTo( compressedDataOffset, dataSection.RawData, 0, section.UncompressedSize );
 						}
 						else
 						{
-							Reader.BaseStream.Position = Marshal.SizeOf<SSGHeader>() +
-								Header.SectionInfosSize + Header.CompressedBlocksSize + Header.SectionNamesSize + Section.DataOffset;
-							DataSection.RawData = Reader.ReadBytes( Section.UncompressedSize );
+							reader.BaseStream.Position = Marshal.SizeOf<SSGHeader>() +
+								header.SectionInfosSize + header.CompressedBlocksSize + header.SectionNamesSize + section.DataOffset;
+							dataSection.RawData = reader.ReadBytes( section.UncompressedSize );
 						}
 
 						// do not rely on data offset for compressed sections: data is often shared between multiple sections
 						// and can point to wrong offsets, so use uncompressed size instead
-						CompressedDataOffset += MathExtensions.AlignValue( Section.UncompressedSize, FileAlignment );
+						compressedDataOffset += MathExtensions.AlignValue( section.UncompressedSize, _fileAlignment );
 
-						LogWriter?.WriteLine( $"\nSection {DataSections.Count + 1}:" );
-						LogWriter?.WriteLine( $"NameCRC32:         {Section.NameCRC32}" );
-						LogWriter?.WriteLine( $"NameOffset:        {Section.NameOffset}" );
-						LogWriter?.WriteLine( $"UncompressedSize:  {Section.UncompressedSize}" );
-						LogWriter?.WriteLine( $"DataOffset:        {Section.DataOffset}" );
-						LogWriter?.WriteLine( $"Type:              {Section.Type}" );
-						LogWriter?.WriteLine( $"UncompressedCRC32: {Section.UncompressedCRC32}" );
-						LogWriter?.WriteLine( $"CompressedSize:    {Section.CompressedSize}" );
+						logWriter?.WriteLine( $"\nSection {DataSections.Count + 1}:" );
+						logWriter?.WriteLine( $"NameCRC32:         {section.NameCRC32}" );
+						logWriter?.WriteLine( $"NameOffset:        {section.NameOffset}" );
+						logWriter?.WriteLine( $"UncompressedSize:  {section.UncompressedSize}" );
+						logWriter?.WriteLine( $"DataOffset:        {section.DataOffset}" );
+						logWriter?.WriteLine( $"Type:              {section.Type}" );
+						logWriter?.WriteLine( $"UncompressedCRC32: {section.UncompressedCRC32}" );
+						logWriter?.WriteLine( $"CompressedSize:    {section.CompressedSize}" );
 
-						DataSections.Add( DataSection );
+						DataSections.Add( dataSection );
 					}
 				}
 			}
@@ -231,209 +230,209 @@ namespace ORCToolKit.FileTypes
 			}
 			finally
 			{
-				LogWriter?.Close();
-				LogFile?.Close();
+				logWriter?.Close();
+				logFile?.Close();
 			}
 		}
 
-		public void SaveToBuffer( Stream BufferStream )
+		public void SaveToBuffer( Stream bufferStream )
 		{
 			try
 			{
-				List<SSGSection> Sections = new List<SSGSection>( DataSections.Count );
-				Dictionary<string, Int32> SectionNames = new Dictionary<string, Int32>();
-				Int32 NextNameOffset = 0;
+				List<SSGSection> sections = new List<SSGSection>( DataSections.Count );
+				Dictionary<string, Int32> sectionNames = new Dictionary<string, Int32>();
+				Int32 nextNameOffset = 0;
 
-				foreach ( DataSection DataSection in DataSections )
+				foreach ( DataSection dataSection in DataSections )
 				{
 					// fill name dictionary
-					if ( !SectionNames.TryGetValue( DataSection.Name, out Int32 NameOffset ) )
+					if ( !sectionNames.TryGetValue( dataSection.Name, out Int32 nameOffset ) )
 					{
-						SectionNames.Add( DataSection.Name, NextNameOffset );
-						NameOffset = NextNameOffset;
-						NextNameOffset += Encoding.UTF8.GetByteCount( DataSection.Name ) + 1;
+						sectionNames.Add( dataSection.Name, nextNameOffset );
+						nameOffset = nextNameOffset;
+						nextNameOffset += Encoding.UTF8.GetByteCount( dataSection.Name ) + 1;
 					}
 				}
 
 				// remember this data to compress sections on the fly in one pass
-				Int32 ParentCompressedSectionIndex = -1;
-				Int32 NumCompressedBlocksProcessed = 0;
-				List<MemoryStream> CompressedBlocks = new List<MemoryStream>();
-				MemoryStream DataToCompress = new MemoryStream( MaxCompressionSize );
+				Int32 parentCompressedSectionIndex = -1;
+				Int32 numCompressedBlocksProcessed = 0;
+				List<MemoryStream> compressedBlocks = new List<MemoryStream>();
+				MemoryStream dataToCompress = new MemoryStream( MaxCompressionSize );
 
 				// in case there are multiple sections named the same, we need to split compression precisely where we meet a name that already exists
 				// particularly cutscene files, because they store raw animation data for each object in the scene, split in groups of frames
-				HashSet<string> CompressedSectionsWritten = new HashSet<string>();
+				HashSet<string> compressedSectionsWritten = new HashSet<string>();
 
-				Int32 NextDataOffset = 0;
-				for ( Int32 SectionIndex = 0; SectionIndex < DataSections.Count; SectionIndex++ )
+				Int32 nextDataOffset = 0;
+				for ( Int32 sectionIndex = 0; sectionIndex < DataSections.Count; sectionIndex++ )
 				{
-					SSGSection Section = new SSGSection();
-					//Section.NameCRC32 = DataSections[SectionIndex].Name.GetCRC32(); // TODO: UI/Gallery.ssg mismatch for GalleryImages section!
-					Section.NameCRC32 = DataSections[SectionIndex].NameCRC32;
-					Section.NameOffset = SectionNames[DataSections[SectionIndex].Name];
-					Section.UncompressedSize = DataSections[SectionIndex].RawData.Length;
-					Section.Unknown = 1;
+					SSGSection section = new SSGSection();
+					//Section.NameCRC32 = DataSections[sectionIndex].Name.GetCRC32(); // TODO: UI/Gallery.ssg mismatch for GalleryImages section!
+					section.NameCRC32 = DataSections[sectionIndex].NameCRC32;
+					section.NameOffset = sectionNames[DataSections[sectionIndex].Name];
+					section.UncompressedSize = DataSections[sectionIndex].RawData.Length;
+					section.Unknown = 1;
 
-					Section.Type = DataSections[SectionIndex].Type;
-					Section.UncompressedCRC32 = ~Crc32.HashToUInt32( DataSections[SectionIndex].RawData.ToArray() );
+					section.Type = DataSections[sectionIndex].Type;
+					section.UncompressedCRC32 = ~Crc32.HashToUInt32( DataSections[sectionIndex].RawData.ToArray() );
 
-					if ( DataSections[SectionIndex].IsCompressed )
+					if ( DataSections[sectionIndex].IsCompressed )
 					{
 						// group together sections up to 4 compressed chunks that will all share one compressed size, then split
-						if ( SplitCompression && ParentCompressedSectionIndex != -1 )
+						if ( _splitCompression && parentCompressedSectionIndex != -1 )
 						{
-							//bool SplitData = (DataToCompress.Length != 0) && (DataToCompress.Length + MathExtensions.AlignValue( Section.UncompressedSize, FileAlignment ) > DataToCompress.Capacity);
-							bool SplitData = CompressedSectionsWritten.Contains( DataSections[SectionIndex].Name );
-							if ( SplitData )
+							//bool SplitData = (dataToCompress.Length != 0) && (dataToCompress.Length + MathExtensions.AlignValue( Section.UncompressedSize, _fileAlignment ) > dataToCompress.Capacity);
+							bool splitData = compressedSectionsWritten.Contains( DataSections[sectionIndex].Name );
+							if ( splitData )
 							{
 								// compress data now
-								Int32 CompressedSizeForCurrentChunkBlock = 0;
-								DataToCompress.Position = 0;
-								while ( DataToCompress.Position < DataToCompress.Length )
+								Int32 compressedSizeForCurrentChunkBlock = 0;
+								dataToCompress.Position = 0;
+								while ( dataToCompress.Position < dataToCompress.Length )
 								{
-									MemoryStream CompressedBlock = new MemoryStream();
-									using ( ZLibStream CompressedStream = new ZLibStream( CompressedBlock, CompressionLevel.Fastest, true ) )
+									MemoryStream compressedBlock = new MemoryStream();
+									using ( ZLibStream compressedStream = new ZLibStream( compressedBlock, CompressionLevel.Fastest, true ) )
 									{
-										byte[] DataChunk = new byte[CompressionSize];
-										Int32 BytesInChunk = DataToCompress.Read( DataChunk, 0, CompressionSize );
-										CompressedStream.Write( DataChunk, 0, BytesInChunk );
+										byte[] dataChunk = new byte[CompressionSize];
+										Int32 bytesInChunk = dataToCompress.Read( dataChunk, 0, CompressionSize );
+										compressedStream.Write( dataChunk, 0, bytesInChunk );
 									}
-									CompressedSizeForCurrentChunkBlock += Convert.ToInt32( CompressedBlock.Length );
-									CompressedBlocks.Add( CompressedBlock );
+									compressedSizeForCurrentChunkBlock += Convert.ToInt32( compressedBlock.Length );
+									compressedBlocks.Add( compressedBlock );
 								}
 
-								Sections[ParentCompressedSectionIndex].CompressedSize = CompressedSizeForCurrentChunkBlock;
-								Sections[ParentCompressedSectionIndex].DataOffset = NextDataOffset;
-								NextDataOffset += CompressedSizeForCurrentChunkBlock;
+								sections[parentCompressedSectionIndex].CompressedSize = compressedSizeForCurrentChunkBlock;
+								sections[parentCompressedSectionIndex].DataOffset = nextDataOffset;
+								nextDataOffset += compressedSizeForCurrentChunkBlock;
 
 								// mark all previous sections to share compressed data with parent
-								for ( Int32 CompressedSectionIndex = ParentCompressedSectionIndex + 1; CompressedSectionIndex < SectionIndex; CompressedSectionIndex++ )
+								for ( Int32 compressedSectionIndex = parentCompressedSectionIndex + 1; compressedSectionIndex < sectionIndex; compressedSectionIndex++ )
 								{
-									Sections[CompressedSectionIndex].DataOffset = NextDataOffset;
+									sections[compressedSectionIndex].DataOffset = nextDataOffset;
 									// this is wrong, but it seems to work in-game, as long as it's negative and a unique value for each batch
 									// which means it might not actually matter what the value is, as long as it's unique..?
-									Sections[CompressedSectionIndex].CompressedSize = -NumCompressedBlocksProcessed - 1;
+									sections[compressedSectionIndex].CompressedSize = -numCompressedBlocksProcessed - 1;
 								}
 
 								// clear all data for the next block of compressed sections
-								CompressedSectionsWritten.Clear();
-								DataToCompress.SetLength( 0 );
-								DataToCompress.Position = 0;
-								ParentCompressedSectionIndex = -1;
-								NumCompressedBlocksProcessed++;
+								compressedSectionsWritten.Clear();
+								dataToCompress.SetLength( 0 );
+								dataToCompress.Position = 0;
+								parentCompressedSectionIndex = -1;
+								numCompressedBlocksProcessed++;
 							}
 						}
 
-						if ( ParentCompressedSectionIndex == -1 )
-							ParentCompressedSectionIndex = SectionIndex;
+						if ( parentCompressedSectionIndex == -1 )
+							parentCompressedSectionIndex = sectionIndex;
 
-						DataToCompress.Write( DataSections[SectionIndex].RawData );
-						CompressedSectionsWritten.Add( DataSections[SectionIndex].Name );
+						dataToCompress.Write( DataSections[sectionIndex].RawData );
+						compressedSectionsWritten.Add( DataSections[sectionIndex].Name );
 
 						// align it
-						Int64 AlignmentBytes = DataToCompress.Position - MathExtensions.AlignValue( DataToCompress.Position, FileAlignment );
-						if ( AlignmentBytes > 0 )
-							DataToCompress.Write( new byte[AlignmentBytes] );
+						Int64 alignmentBytes = dataToCompress.Position - MathExtensions.AlignValue( dataToCompress.Position, _fileAlignment );
+						if ( alignmentBytes > 0 )
+							dataToCompress.Write( new byte[alignmentBytes] );
 					}
 					else
 					{
-						Section.DataOffset = NextDataOffset;
-						Section.CompressedSize = 0;
-						NextDataOffset += MathExtensions.AlignValue( Section.UncompressedSize, FileAlignment );
+						section.DataOffset = nextDataOffset;
+						section.CompressedSize = 0;
+						nextDataOffset += MathExtensions.AlignValue( section.UncompressedSize, _fileAlignment );
 					}
 
-					Sections.Add( Section );
+					sections.Add( section );
 				}
 
 				// compress whatever data we have that didn't go beyond MaxCompressionSize
-				if ( ParentCompressedSectionIndex != -1 )
+				if ( parentCompressedSectionIndex != -1 )
 				{
-					Int32 CompressedSizeForCurrentChunkBlock = 0;
-					DataToCompress.Position = 0;
-					while ( DataToCompress.Position < DataToCompress.Length )
+					Int32 compressedSizeForCurrentChunkBlock = 0;
+					dataToCompress.Position = 0;
+					while ( dataToCompress.Position < dataToCompress.Length )
 					{
-						MemoryStream CompressedBlock = new MemoryStream();
-						using ( ZLibStream CompressedStream = new ZLibStream( CompressedBlock, CompressionLevel.Fastest, true ) )
+						MemoryStream compressedBlock = new MemoryStream();
+						using ( ZLibStream compressedStream = new ZLibStream( compressedBlock, CompressionLevel.Fastest, true ) )
 						{
-							byte[] DataChunk = new byte[CompressionSize];
-							Int32 BytesInChunk = DataToCompress.Read( DataChunk, 0, CompressionSize );
-							CompressedStream.Write( DataChunk, 0, BytesInChunk );
+							byte[] dataChunk = new byte[CompressionSize];
+							Int32 bytesInChunk = dataToCompress.Read( dataChunk, 0, CompressionSize );
+							compressedStream.Write( dataChunk, 0, bytesInChunk );
 						}
-						CompressedSizeForCurrentChunkBlock += Convert.ToInt32( CompressedBlock.Length );
-						CompressedBlocks.Add( CompressedBlock );
+						compressedSizeForCurrentChunkBlock += Convert.ToInt32( compressedBlock.Length );
+						compressedBlocks.Add( compressedBlock );
 					}
 
-					Sections[ParentCompressedSectionIndex].CompressedSize = CompressedSizeForCurrentChunkBlock;
-					Sections[ParentCompressedSectionIndex].DataOffset = NextDataOffset;
-					NextDataOffset += CompressedSizeForCurrentChunkBlock;
+					sections[parentCompressedSectionIndex].CompressedSize = compressedSizeForCurrentChunkBlock;
+					sections[parentCompressedSectionIndex].DataOffset = nextDataOffset;
+					nextDataOffset += compressedSizeForCurrentChunkBlock;
 
 					// mark all previous sections to share compressed data with parent
-					for ( Int32 CompressedSectionIndex = ParentCompressedSectionIndex + 1; CompressedSectionIndex < Sections.Count; CompressedSectionIndex++ )
+					for ( Int32 compressedSectionIndex = parentCompressedSectionIndex + 1; compressedSectionIndex < sections.Count; compressedSectionIndex++ )
 					{
-						Sections[CompressedSectionIndex].DataOffset = NextDataOffset;
+						sections[compressedSectionIndex].DataOffset = nextDataOffset;
 						// this is wrong, but it seems to work in-game, as long as it's negative and a unique value for each batch
 						// which means it might not actually matter what the value is, as long as it's unique..?
-						Sections[CompressedSectionIndex].CompressedSize = -NumCompressedBlocksProcessed - 1;
+						sections[compressedSectionIndex].CompressedSize = -numCompressedBlocksProcessed - 1;
 					}
 				}
 
-				SSGHeader Header = new SSGHeader();
-				Header.Version = FileVersion;
-				Header.Padding1 = 0;
-				Header.SectionInfosSize = Marshal.SizeOf<SSGSection>() * DataSections.Count;
-				Header.SectionNamesSize = MathExtensions.AlignValue( NextNameOffset, FileAlignment );
+				SSGHeader header = new SSGHeader();
+				header.Version = _fileVersion;
+				header.Padding1 = 0;
+				header.SectionInfosSize = Marshal.SizeOf<SSGSection>() * DataSections.Count;
+				header.SectionNamesSize = MathExtensions.AlignValue( nextNameOffset, _fileAlignment );
 
-				DataSections.ForEach( Section => { if ( !Section.IsCompressed ) Header.SectionDataSize += MathExtensions.AlignValue( Section.RawData.Length, FileAlignment ); } );
-				CompressedBlocks.ForEach( CompressedBlock => { Header.SectionDataSize += Convert.ToInt32( CompressedBlock.Length ); } ); // these aren't aligned
-				Header.Padding2 = 0;
-				Header.CompressedBlocksSize = MathExtensions.AlignValue( sizeof( Int32 ) * CompressedBlocks.Count, FileAlignment );
-				if ( FileVersion == 5 )
-					Header.Alignment = 0; // version 5 doesn't appear to be storing alignment, and instead forces 16 byte alignment
+				DataSections.ForEach( section => { if ( !section.IsCompressed ) header.SectionDataSize += MathExtensions.AlignValue( section.RawData.Length, _fileAlignment ); } );
+				compressedBlocks.ForEach( compressedBlock => { header.SectionDataSize += Convert.ToInt32( compressedBlock.Length ); } ); // these aren't aligned
+				header.Padding2 = 0;
+				header.CompressedBlocksSize = MathExtensions.AlignValue( sizeof( Int32 ) * compressedBlocks.Count, _fileAlignment );
+				if ( _fileVersion == 5 )
+					header.Alignment = 0; // version 5 doesn't appear to be storing alignment, and instead forces 16 byte alignment
 				else
-					Header.Alignment = FileAlignment;
-				Header.Padding3 = 0;
+					header.Alignment = _fileAlignment;
+				header.Padding3 = 0;
 
-				using ( BinaryWriter Writer = new BinaryWriter( BufferStream, Encoding.UTF8, true ) )
+				using ( BinaryWriter writer = new BinaryWriter( bufferStream, Encoding.UTF8, true ) )
 				{
 					// write header
-					Writer.WriteType( Header, FileEndianness );
-					Writer.BaseStream.Position = MathExtensions.AlignValue( Writer.BaseStream.Position, FileAlignment );
+					writer.WriteType( header, _fileEndianness );
+					writer.BaseStream.Position = MathExtensions.AlignValue( writer.BaseStream.Position, _fileAlignment );
 
 					// write section infos
-					foreach ( SSGSection Section in Sections )
-						Writer.WriteType( Section, FileEndianness );
-					Writer.BaseStream.Position = MathExtensions.AlignValue( Writer.BaseStream.Position, FileAlignment );
+					foreach ( SSGSection section in sections )
+						writer.WriteType( section, _fileEndianness );
+					writer.BaseStream.Position = MathExtensions.AlignValue( writer.BaseStream.Position, _fileAlignment );
 
 					// write compressed blocks
-					foreach ( MemoryStream CompressedBlock in CompressedBlocks )
-						Writer.Write( Convert.ToInt32( CompressedBlock.Length ), FileEndianness );
-					Writer.BaseStream.Position = MathExtensions.AlignValue( Writer.BaseStream.Position, FileAlignment );
+					foreach ( MemoryStream compressedBlock in compressedBlocks )
+						writer.Write( Convert.ToInt32( compressedBlock.Length ), _fileEndianness );
+					writer.BaseStream.Position = MathExtensions.AlignValue( writer.BaseStream.Position, _fileAlignment );
 
 					// write section names
-					foreach ( string SectionName in SectionNames.Keys )
+					foreach ( string sectionName in sectionNames.Keys )
 					{
-						Writer.Write( Encoding.UTF8.GetBytes( SectionName ) );
-						Writer.Write( (byte)0 ); // null terminator
+						writer.Write( Encoding.UTF8.GetBytes( sectionName ) );
+						writer.Write( (byte)0 ); // null terminator
 					}
-					Writer.BaseStream.Position = MathExtensions.AlignValue( Writer.BaseStream.Position, FileAlignment );
+					writer.BaseStream.Position = MathExtensions.AlignValue( writer.BaseStream.Position, _fileAlignment );
 
 					// write actual data
-					foreach ( DataSection Section in DataSections )
+					foreach ( DataSection section in DataSections )
 					{
 						// we only write uncompressed data here, compressed data comes later in chunks
-						if ( Section.IsCompressed )
+						if ( section.IsCompressed )
 							break;
 
-						Writer.Write( Section.RawData );
+						writer.Write( section.RawData );
 
 						// align the file (in case we don't have compressed data)
-						Int64 AlignmentBytes = MathExtensions.AlignValue( Writer.BaseStream.Position, FileAlignment ) - Writer.BaseStream.Position;
-						if ( AlignmentBytes > 0 )
-							Writer.Write( new byte[AlignmentBytes] );
+						Int64 alignmentBytes = MathExtensions.AlignValue( writer.BaseStream.Position, _fileAlignment ) - writer.BaseStream.Position;
+						if ( alignmentBytes > 0 )
+							writer.Write( new byte[alignmentBytes] );
 					}
-					foreach ( MemoryStream CompressedBlock in CompressedBlocks )
-						Writer.Write( CompressedBlock.GetBuffer(), 0, Convert.ToInt32( CompressedBlock.Length ) );
+					foreach ( MemoryStream compressedBlock in compressedBlocks )
+						writer.Write( compressedBlock.GetBuffer(), 0, Convert.ToInt32( compressedBlock.Length ) );
 					// compressed data is not aligned
 				}
 			}

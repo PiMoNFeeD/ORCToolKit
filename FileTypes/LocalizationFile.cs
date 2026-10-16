@@ -1,7 +1,5 @@
-﻿using System.Numerics;
+﻿using ORCToolKit.Extensions;
 using System.Text;
-using System.IO.Hashing;
-using ORCToolKit.Extensions;
 
 namespace ORCToolKit.FileTypes
 {
@@ -12,9 +10,9 @@ namespace ORCToolKit.FileTypes
 			public required string Name { get; set; }
 			public required string Text { get; set; }
 
-			public UInt32 GetHeaderOffset( UInt32 Alignment )
+			public UInt32 GetHeaderOffset( UInt32 alignment )
 			{
-				return 4 * (Name.ToLower().GetCRC32() % Alignment);
+				return 4 * (Name.ToLower().GetCRC32() % alignment);
 			}
 			public Int32 GetAlignedSize()
 			{
@@ -40,45 +38,45 @@ namespace ORCToolKit.FileTypes
 			TextEntries.Clear();
 		}
 
-		public void LoadFromBuffer( Stream BufferStream )
+		public void LoadFromBuffer( Stream bufferStream )
 		{
 			Reset();
 			TextEntries.Suspend();
 
 			try
 			{
-				using ( BinaryReader Reader = new BinaryReader( BufferStream ) )
+				using ( BinaryReader reader = new BinaryReader( bufferStream ) )
 				{
-					UInt32 NumOfEntriesAllocated = Reader.ReadUInt32();
-					UInt32 MagicNumber = Reader.ReadUInt32();
+					UInt32 numOfEntriesAllocated = reader.ReadUInt32();
+					UInt32 magicNumber = reader.ReadUInt32();
 
 					// check if this is a valid file
-					if ( !MathExtensions.IsPowerOfTwo( NumOfEntriesAllocated ) || MagicNumber != 0 )
+					if ( !MathExtensions.IsPowerOfTwo( numOfEntriesAllocated ) || magicNumber != 0 )
 						throw new FileFormatException();
 
-					Reader.BaseStream.Position = 8 + 4 * NumOfEntriesAllocated; // start of text entries
-					while ( Reader.BaseStream.Position < BufferStream.Length )
+					reader.BaseStream.Position = 8 + 4 * numOfEntriesAllocated; // start of text entries
+					while ( reader.BaseStream.Position < bufferStream.Length )
 					{
-						UInt32 EntryOffset = Convert.ToUInt32( Reader.BaseStream.Position );
+						UInt32 entryOffset = Convert.ToUInt32( reader.BaseStream.Position );
 
-						Reader.BaseStream.Position += 4; // skip recursive offset to other string with the same crc32
+						reader.BaseStream.Position += 4; // skip recursive offset to other string with the same crc32
 
-						byte NameLength = Reader.ReadByte();
-						string Name = Reader.ReadFixedLengthString( Encoding.UTF8, NameLength );
-						Reader.BaseStream.Position++; // skip null terminator
+						byte nameLength = reader.ReadByte();
+						string name = reader.ReadFixedLengthString( Encoding.UTF8, nameLength );
+						reader.BaseStream.Position++; // skip null terminator
 
-						string Text = Reader.ReadNullTerminatedString( Encoding.UTF8 );
+						string text = reader.ReadNullTerminatedString( Encoding.UTF8 );
 
-						TextEntry NewTextEntry = new TextEntry()
+						TextEntry newTextEntry = new TextEntry()
 						{
-							Name = Name,
-							Text = Text,
-							EntryOffset = EntryOffset,
+							Name = name,
+							Text = text,
+							EntryOffset = entryOffset,
 						};
-						TextEntries.Add( NewTextEntry );
+						TextEntries.Add( newTextEntry );
 
 						// align position to the next entry
-						Reader.BaseStream.Position = MathExtensions.AlignValue( Reader.BaseStream.Position + 1, 4 );
+						reader.BaseStream.Position = MathExtensions.AlignValue( reader.BaseStream.Position + 1, 4 );
 					}
 
 					if ( TextEntries.Count < 1 )
@@ -95,71 +93,71 @@ namespace ORCToolKit.FileTypes
 			}
 		}
 
-		public void SaveToBuffer( Stream BufferStream )
+		public void SaveToBuffer( Stream bufferStream )
 		{
 			try
 			{
-				UInt32 NumOfEntriesAllocated = MathExtensions.RoundUpToPowerOf2( Convert.ToUInt32( TextEntries.Count ) );
-				UInt32 TotalFileLength = 8 + (4 * NumOfEntriesAllocated);
+				UInt32 numOfEntriesAllocated = MathExtensions.RoundUpToPowerOf2( Convert.ToUInt32( TextEntries.Count ) );
+				UInt32 totalFileLength = 8 + (4 * numOfEntriesAllocated);
 
-				Dictionary<uint, int> HeaderOffsetDictionary = new Dictionary<uint, int>();
+				Dictionary<uint, int> headerOffsetDictionary = new Dictionary<uint, int>();
 				for ( int i = 0; i < TextEntries.Count; i++ )
 				{
 					// recalculate entry offset
-					TextEntries[i].EntryOffset = Convert.ToUInt32( TotalFileLength );
-					TotalFileLength += Convert.ToUInt32( TextEntries[i].GetAlignedSize() );
+					TextEntries[i].EntryOffset = Convert.ToUInt32( totalFileLength );
+					totalFileLength += Convert.ToUInt32( TextEntries[i].GetAlignedSize() );
 
 					// calculate recursive text entries in the most confusing way possible
 					// for each text entry, check all entries that came before it backwards for colliding crc32 (header offset)...
 					// ...which is VERY slow, so it's now a dictionary instead with just one loop :)
 					TextEntries[i].RecursiveTextEntry = null;
-					UInt32 HeaderOffset = TextEntries[i].GetHeaderOffset( NumOfEntriesAllocated );
-					if ( HeaderOffsetDictionary.TryGetValue( HeaderOffset, out int Index ) )
-						TextEntries[i].RecursiveTextEntry = TextEntries[Index];
+					UInt32 headerOffset = TextEntries[i].GetHeaderOffset( numOfEntriesAllocated );
+					if ( headerOffsetDictionary.TryGetValue( headerOffset, out int index ) )
+						TextEntries[i].RecursiveTextEntry = TextEntries[index];
 
-					HeaderOffsetDictionary[HeaderOffset] = i;
+					headerOffsetDictionary[headerOffset] = i;
 				}
 
-				BufferStream.SetLength( TotalFileLength );
-				using ( BinaryWriter Writer = new BinaryWriter( BufferStream, Encoding.UTF8, true ) )
+				bufferStream.SetLength( totalFileLength );
+				using ( BinaryWriter writer = new BinaryWriter( bufferStream, Encoding.UTF8, true ) )
 				{
-					Writer.Write( NumOfEntriesAllocated );
+					writer.Write( numOfEntriesAllocated );
 
 					// write header offsets first
-					foreach ( TextEntry TextEntry in TextEntries )
+					foreach ( TextEntry textEntry in TextEntries )
 					{
-						Writer.BaseStream.Position = 8 + TextEntry.GetHeaderOffset( NumOfEntriesAllocated );
-						Writer.Write( TextEntry.EntryOffset );
+						writer.BaseStream.Position = 8 + textEntry.GetHeaderOffset( numOfEntriesAllocated );
+						writer.Write( textEntry.EntryOffset );
 					}
 
 					// write entries
-					Writer.BaseStream.Position = 8 + (4 * NumOfEntriesAllocated);
-					foreach ( TextEntry TextEntry in TextEntries )
+					writer.BaseStream.Position = 8 + (4 * numOfEntriesAllocated);
+					foreach ( TextEntry textEntry in TextEntries )
 					{
 						// recursive offset to a colliding crc32 entry name
-						if ( TextEntry.RecursiveTextEntry != null )
-							Writer.Write( TextEntry.RecursiveTextEntry.EntryOffset );
+						if ( textEntry.RecursiveTextEntry != null )
+							writer.Write( textEntry.RecursiveTextEntry.EntryOffset );
 						else
-							Writer.Write( 0 );
+							writer.Write( 0 );
 
 						// entry name length
-						Int32 EntryNameLength = MathExtensions.AlignValue( Encoding.UTF8.GetByteCount( TextEntry.Name ), 2 );
-						Writer.Write( Convert.ToByte( EntryNameLength ) );
+						Int32 entryNameLength = MathExtensions.AlignValue( Encoding.UTF8.GetByteCount( textEntry.Name ), 2 );
+						writer.Write( Convert.ToByte( entryNameLength ) );
 
 						// entry name
-						Writer.Write( Encoding.UTF8.GetBytes( TextEntry.Name ) );
-						for ( int i = TextEntry.Name.Length; i < EntryNameLength; i++ )
-							Writer.Write( (byte)0 ); // alignment
-						Writer.Write( (byte)0 ); // null terminator
+						writer.Write( Encoding.UTF8.GetBytes( textEntry.Name ) );
+						for ( int i = textEntry.Name.Length; i < entryNameLength; i++ )
+							writer.Write( (byte)0 ); // alignment
+						writer.Write( (byte)0 ); // null terminator
 
 						// entry text
-						Writer.Write( Encoding.UTF8.GetBytes( TextEntry.Text ) );
-						Writer.Write( (byte)0 ); // null terminator
+						writer.Write( Encoding.UTF8.GetBytes( textEntry.Text ) );
+						writer.Write( (byte)0 ); // null terminator
 
 						// align everything to 4 bytes
-						Int32 BytesWrittenSoFar = 4 + 1 + EntryNameLength + 1 + Encoding.UTF8.GetByteCount( TextEntry.Text ) + 1;
-						Writer.BaseStream.Position += TextEntry.GetAlignedSize() - BytesWrittenSoFar - 1;
-						Writer.Write( (byte)0 );
+						Int32 bytesWrittenSoFar = 4 + 1 + entryNameLength + 1 + Encoding.UTF8.GetByteCount( textEntry.Text ) + 1;
+						writer.BaseStream.Position += textEntry.GetAlignedSize() - bytesWrittenSoFar - 1;
+						writer.Write( (byte)0 );
 					}
 				}
 			}

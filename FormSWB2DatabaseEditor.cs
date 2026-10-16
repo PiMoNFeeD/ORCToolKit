@@ -1,7 +1,6 @@
 ﻿using ORCToolKit.FileTypes;
 using ORCToolKit.Search;
 using System.Diagnostics;
-using static ORCToolKit.FileTypes.SWB2DatabaseFile;
 
 namespace ORCToolKit
 {
@@ -26,47 +25,47 @@ namespace ORCToolKit
 		}
 
 #if DEBUG // for hashcat
-		private void RecurseEntryTable( ref string Result, SWB2DatabaseFile.EntryTable EntryTable )
+		private void RecurseEntryTable( ref string result, SWB2DatabaseFile.EntryTable entryTable )
 		{
-			if ( CRC32StringMap.FindString( EntryTable.Identifier ) == null )
+			if ( CRC32StringMap.FindString( entryTable.Identifier ) == null )
 			{
-				Result += (~(UInt32)EntryTable.Identifier).ToString( "X8" );
-				Result += '\n';
+				result += (~(UInt32)entryTable.Identifier).ToString( "X8" );
+				result += '\n';
 			}
-			foreach ( SWB2DatabaseFile.Entry Entry in EntryTable.Entries )
+			foreach ( SWB2DatabaseFile.Entry entry in entryTable.Entries )
 			{
-				if ( CRC32StringMap.FindString( Entry.Key ) == null )
+				if ( CRC32StringMap.FindString( entry.Key ) == null )
 				{
-					Result += (~(UInt32)Entry.Key).ToString( "X8" );
-					Result += '\n';
+					result += (~(UInt32)entry.Key).ToString( "X8" );
+					result += '\n';
 				}
-				if ( Entry.ValueType == EntryValueType.TYPE_STRING_HASH )
+				if ( entry.ValueType == SWB2DatabaseFile.EntryValueType.TYPE_STRING_HASH )
 				{
-					CRC32[] Values = Entry.Value as CRC32[];
-					foreach ( CRC32 Value in Values )
+					CRC32[] values = entry.Value as CRC32[];
+					foreach ( CRC32 value in values )
 					{
-						if ( CRC32StringMap.FindString( Value ) == null )
+						if ( CRC32StringMap.FindString( value ) == null )
 						{
-							Result += (~(UInt32)Value).ToString( "X8" );
-							Result += '\n';
+							result += (~(UInt32)value).ToString( "X8" );
+							result += '\n';
 						}
 					}
 				}
-				else if ( Entry.ValueType == EntryValueType.TYPE_ENTRY_TABLE )
+				else if ( entry.ValueType == SWB2DatabaseFile.EntryValueType.TYPE_ENTRY_TABLE )
 				{
-					RecurseEntryTable( ref Result, Entry.Value as SWB2DatabaseFile.EntryTable );
+					RecurseEntryTable( ref result, entry.Value as SWB2DatabaseFile.EntryTable );
 				}
 			}
 		}
 
-		private void EntryTreeView_NodeMouseClick1( Object? sender, TreeNodeMouseClickEventArgs e )
+		private void EntryTreeView_NodeMouseClick1( object? sender, TreeNodeMouseClickEventArgs e )
 		{
 			if ( e.Button == MouseButtons.Right )
 			{
-				string Result = string.Empty;
-				foreach ( SWB2DatabaseFile.EntryTable EntryTable in _file.EntryTables )
-					RecurseEntryTable ( ref Result, EntryTable );
-				Clipboard.SetText( Result );
+				string result = string.Empty;
+				foreach ( SWB2DatabaseFile.EntryTable entryTable in _file.EntryTables )
+					RecurseEntryTable( ref result, entryTable );
+				Clipboard.SetText( result );
 			}
 		}
 #endif
@@ -93,7 +92,7 @@ namespace ORCToolKit
 			}
 		}
 
-		private void FormSWB2DatabaseEditor_Shown( Object? sender, EventArgs e )
+		private void FormSWB2DatabaseEditor_Shown( object? sender, EventArgs e )
 		{
 			// keep in sync with FormSWB2DatabaseEditor_OnEntriesUpdated
 			MenuStripItemFileSave.Enabled = false;
@@ -103,38 +102,38 @@ namespace ORCToolKit
 			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.EntryTables.Count );
 		}
 
-		private void FormSWB2DatabaseEditor_OnNewFile( Object? sender, EventArgs e )
+		private void FormSWB2DatabaseEditor_OnNewFile( object? sender, EventArgs e )
 		{
 			EntryTreeView.Nodes.Clear();
 			EntryPropertyGrid.SelectedObject = null;
 		}
 
-		private void FormSWB2DatabaseEditor_OnOpenFile( Object? sender, EventArgs e )
+		private void FormSWB2DatabaseEditor_OnOpenFile( object? sender, EventArgs e )
 		{
 			EntryTreeView.LoadSWB2File( _file );
 		}
 
-		private void FormSWB2DatabaseEditor_OnEntriesUpdated( Object? sender, EntriesUpdatedEventArgs e )
+		private void FormSWB2DatabaseEditor_OnEntriesUpdated( object? sender, EntriesUpdatedEventArgs e )
 		{
-			TreeNode SelectedNode = EntryTreeView.SelectedNode;
-			if ( SelectedNode != null )
+			TreeNode selectedNode = EntryTreeView.SelectedNode;
+			if ( selectedNode != null )
 			{
 				// check if currently selected node is not the type it should be, in case the user changed to TYPE_ENTRY_TABLE
-				if ( SelectedNode.Tag is SWB2DatabaseFile.Entry Entry )
+				if ( selectedNode.Tag is SWB2DatabaseFile.Entry entry )
 				{
-					if ( Entry.ValueType == SWB2DatabaseFile.EntryValueType.TYPE_ENTRY_TABLE )
+					if ( entry.ValueType == SWB2DatabaseFile.EntryValueType.TYPE_ENTRY_TABLE )
 					{
-						SelectedNode.Tag = Entry.Value;
-						EntryPropertyGrid.SelectedObject = Entry.Value;
+						selectedNode.Tag = entry.Value;
+						EntryPropertyGrid.SelectedObject = entry.Value;
 					}
 				}
 
 				// in case the number of entries has changed, update the text of the select node hierarchy
-				TreeNode ParentNode = SelectedNode;
-				while ( ParentNode != null )
+				TreeNode parentNode = selectedNode;
+				while ( parentNode != null )
 				{
-					ParentNode.Text = ParentNode.Tag.ToString();
-					ParentNode = ParentNode.Parent;
+					parentNode.Text = parentNode.Tag.ToString();
+					parentNode = parentNode.Parent;
 				}
 			}
 
@@ -146,22 +145,22 @@ namespace ORCToolKit
 			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.EntryTables.Count );
 		}
 
-		override protected bool TrySearch( SearchDirection Direction, string SearchString, bool WholeWord, bool CaseSensitive )
+		override protected bool TrySearch( SearchDirection direction, string searchString, bool wholeWord, bool caseSensitive )
 		{
 			MenuStripItemEditSearchForward.Enabled = true;
 			MenuStripItemEditSearchBackward.Enabled = true;
 
-			object? SelectedEntry = EntryTreeView.SelectedNode?.Tag;
-			for ( Int32 i = (Direction == SearchDirection.Backward) ? (_file.EntryTables.Count - 1) : 0;
+			object? selectedEntry = EntryTreeView.SelectedNode?.Tag;
+			for ( Int32 i = (direction == SearchDirection.Backward) ? (_file.EntryTables.Count - 1) : 0;
 				  i >= 0 && i < _file.EntryTables.Count;
-				  i += (Direction == SearchDirection.Backward) ? -1 : 1 )
+				  i += (direction == SearchDirection.Backward) ? -1 : 1 )
 			{
-				object? SearchResult = RecursiveFindSWB2Entry( _file.EntryTables[i], ref SelectedEntry, Direction, SearchString, WholeWord, CaseSensitive );
-				if ( SearchResult != null )
+				object? searchResult = RecursiveFindSWB2Entry( _file.EntryTables[i], ref selectedEntry, direction, searchString, wholeWord, caseSensitive );
+				if ( searchResult != null )
 				{
 					EntryTreeView.BeginUpdate();
-					TreeNode TreeNode = FindAndExpandTreeNodeForEntry( EntryTreeView.Nodes, SearchResult );
-					EntryTreeView.SelectedNode = TreeNode;
+					TreeNode treeNode = FindAndExpandTreeNodeForEntry( EntryTreeView.Nodes, searchResult );
+					EntryTreeView.SelectedNode = treeNode;
 					EntryTreeView.EndUpdate();
 					return true;
 				}
@@ -169,7 +168,7 @@ namespace ORCToolKit
 
 			// if this isn't null, then we have never found our search starting point in the first place
 			// which is impossible??!?
-			Debug.Assert( SelectedEntry == null );
+			Debug.Assert( selectedEntry == null );
 			return false;
 		}
 
@@ -195,9 +194,9 @@ namespace ORCToolKit
 
 		private void MenuStripItemEditInsertEntryTable_Click( object sender, EventArgs e )
 		{
-			SWB2DatabaseFile.EntryTable NewEntry = new SWB2DatabaseFile.EntryTable( null );
-			_file.EntryTables.Add( NewEntry );
-			EntryTreeView.CreateEntryTableNode( NewEntry, EntryTreeView.Nodes );
+			SWB2DatabaseFile.EntryTable newEntry = new SWB2DatabaseFile.EntryTable( null );
+			_file.EntryTables.Add( newEntry );
+			EntryTreeView.CreateEntryTableNode( newEntry, EntryTreeView.Nodes );
 		}
 
 		private void MenuStripItemEditSearch_Click( object sender, EventArgs e )
@@ -220,20 +219,20 @@ namespace ORCToolKit
 			EntryPropertyGrid.SelectedObject = e.Node.Tag;
 		}
 
-		private void EntryTreeView_NodeMouseClick( Object sender, TreeNodeMouseClickEventArgs e )
+		private void EntryTreeView_NodeMouseClick( object sender, TreeNodeMouseClickEventArgs e )
 		{
-			TreeView EntryView = (TreeView)sender;
+			TreeView entryView = (TreeView)sender;
 
 			switch ( e.Button )
 			{
 				case MouseButtons.Right:
 				{
-					EntryView.SelectedNode = e.Node;
+					entryView.SelectedNode = e.Node;
 
 					// open context menu
 					EntryTreeViewContextMenuItemInsertEntry.Visible = (e.Node.Tag is SWB2DatabaseFile.EntryTable);
 					EntryTreeViewContextMenu.Tag = e.Node;
-					EntryTreeViewContextMenu.Show( EntryView, e.Location );
+					EntryTreeViewContextMenu.Show( entryView, e.Location );
 
 					break;
 				}
@@ -244,28 +243,28 @@ namespace ORCToolKit
 		{
 			EntryTreeView.BeginUpdate();
 
-			TreeNode SelectedNode = (TreeNode)EntryTreeViewContextMenu.Tag;
-			SWB2DatabaseFile.EntryTable SelectedTable = (SWB2DatabaseFile.EntryTable)SelectedNode.Tag;
+			TreeNode selectedNode = (TreeNode)EntryTreeViewContextMenu.Tag;
+			SWB2DatabaseFile.EntryTable selectedTable = (SWB2DatabaseFile.EntryTable)selectedNode.Tag;
 
-			SWB2DatabaseFile.Entry NewEntry = new SWB2DatabaseFile.Entry( SelectedTable );
-			SelectedTable.Entries.Add( NewEntry );
+			SWB2DatabaseFile.Entry newEntry = new SWB2DatabaseFile.Entry( selectedTable );
+			selectedTable.Entries.Add( newEntry );
 
-			if ( SelectedNode.Nodes.Count > 0 && SelectedNode.Nodes[0].Tag != null )
+			if ( selectedNode.Nodes.Count > 0 && selectedNode.Nodes[0].Tag != null )
 			{
 				// if the child list has already been populated, then manually add a new node
-				TreeNode NewNode = EntryTreeView.CreateEntryNode( NewEntry, SelectedNode.Nodes );
-				EntryTreeView.SelectedNode = NewNode;
+				TreeNode newNode = EntryTreeView.CreateEntryNode( newEntry, selectedNode.Nodes );
+				EntryTreeView.SelectedNode = newNode;
 			}
 			else
 			{
 				// otherwise, just expand it and let it make a node manually
-				if ( SelectedNode.Nodes.Count == 0 ) // make sure it can actually expand!
-					SelectedNode.Nodes.Add( new TreeNode() );
-				SelectedNode.Expand();
+				if ( selectedNode.Nodes.Count == 0 ) // make sure it can actually expand!
+					selectedNode.Nodes.Add( new TreeNode() );
+				selectedNode.Expand();
 
-				TreeNode? NewNode = FindTreeNodeForEntry( EntryTreeView.Nodes, NewEntry );
-				Debug.Assert( NewNode != null );
-				EntryTreeView.SelectedNode = NewNode;
+				TreeNode? newNode = FindTreeNodeForEntry( EntryTreeView.Nodes, newEntry );
+				Debug.Assert( newNode != null );
+				EntryTreeView.SelectedNode = newNode;
 			}
 			// TODO: it doesn't scroll to the new node?!?!?
 
@@ -276,42 +275,42 @@ namespace ORCToolKit
 
 		private void EntryTreeViewContextMenuItemDelete_Click( object sender, EventArgs e )
 		{
-			TreeNode SelectedNode = (TreeNode)EntryTreeViewContextMenu.Tag;
-			object SelectedEntry = SelectedNode.Tag;
-			if ( SelectedEntry is SWB2DatabaseFile.EntryTable EntryTable )
+			TreeNode selectedNode = (TreeNode)EntryTreeViewContextMenu.Tag;
+			object selectedEntry = selectedNode.Tag;
+			if ( selectedEntry is SWB2DatabaseFile.EntryTable entryTable )
 			{
-				if ( EntryTable.ParentTable != null )
+				if ( entryTable.ParentTable != null )
 				{
-					foreach ( SWB2DatabaseFile.Entry Entry in EntryTable.Entries )
+					foreach ( SWB2DatabaseFile.Entry entry in entryTable.Entries )
 					{
-						if ( Entry.Value == SelectedEntry )
+						if ( entry.Value == selectedEntry )
 						{
-							EntryTable.Entries.Remove( Entry );
+							entryTable.Entries.Remove( entry );
 							break;
 						}
 					}
 				}
 				else
 				{
-					_file.EntryTables.Remove( EntryTable );
+					_file.EntryTables.Remove( entryTable );
 				}
 			}
 			else
 			{
-				SWB2DatabaseFile.Entry Entry = (SWB2DatabaseFile.Entry)SelectedEntry;
-				Debug.Assert( Entry.ParentTable != null );
+				SWB2DatabaseFile.Entry entry = (SWB2DatabaseFile.Entry)selectedEntry;
+				Debug.Assert( entry.ParentTable != null );
 
-				foreach ( SWB2DatabaseFile.Entry SubEntry in Entry.ParentTable.Entries )
+				foreach ( SWB2DatabaseFile.Entry subEntry in entry.ParentTable.Entries )
 				{
-					if ( SubEntry == Entry )
+					if ( subEntry == entry )
 					{
-						Entry.ParentTable.Entries.Remove( SubEntry );
+						entry.ParentTable.Entries.Remove( subEntry );
 						break;
 					}
 				}
 			}
 
-			SelectedNode.Remove();
+			selectedNode.Remove();
 
 			EntriesUpdated();
 		}
@@ -321,27 +320,27 @@ namespace ORCToolKit
 			if ( s is not PropertyGrid )
 				return;
 
-			PropertyGrid EntryPropertyGrid = (PropertyGrid)s;
-			TreeNode? TreeNode = FindTreeNodeForEntry( EntryTreeView.Nodes, EntryPropertyGrid.SelectedObject );
-			Debug.Assert( TreeNode != null );
+			PropertyGrid entryPropertyGrid = (PropertyGrid)s;
+			TreeNode? treeNode = FindTreeNodeForEntry( EntryTreeView.Nodes, EntryPropertyGrid.SelectedObject );
+			Debug.Assert( treeNode != null );
 			EntryPropertyGrid.Refresh();
 
 			EntriesUpdated();
 		}
 
-		private TreeNode? FindTreeNodeForEntry( TreeNodeCollection Nodes, object Entry )
+		private TreeNode? FindTreeNodeForEntry( TreeNodeCollection nodes, object entry )
 		{
-			foreach ( TreeNode Node in Nodes )
+			foreach ( TreeNode node in nodes )
 			{
-				if ( Node.Tag == Entry )
-					return Node;
+				if ( node.Tag == entry )
+					return node;
 
 				// only look through child nodes if it's actually populated nodes with valid entries
-				if ( Node.Nodes.Count > 0 && Node.Nodes[0].Tag != null )
+				if ( node.Nodes.Count > 0 && node.Nodes[0].Tag != null )
 				{
-					TreeNode? ChildNode = FindTreeNodeForEntry( Node.Nodes, Entry );
-					if ( ChildNode != null )
-						return ChildNode;
+					TreeNode? childNode = FindTreeNodeForEntry( node.Nodes, entry );
+					if ( childNode != null )
+						return childNode;
 				}
 			}
 
@@ -350,73 +349,73 @@ namespace ORCToolKit
 
 		// NOTE: this uses CRC32.ToString() for comparison purposes, so that we can find by *exactly* how they are visualized
 		// rather than the CRC32 of the string itself (so that you can search by both strings and CRC32s at the same time!)
-		public object? RecursiveFindSWB2Entry( SWB2DatabaseFile.EntryTable EntryTable, ref object? SearchStartPoint, SearchDirection Direction, string SearchString, bool WholeWord, bool CaseSensitive )
+		public object? RecursiveFindSWB2Entry( SWB2DatabaseFile.EntryTable entryTable, ref object? searchStartPoint, SearchDirection direction, string searchString, bool wholeWord, bool caseSensitive )
 		{
-			if ( SearchStartPoint != null )
+			if ( searchStartPoint != null )
 			{
 				// if we haven't found the search start point, ignore all entries
-				if ( EntryTable == SearchStartPoint )
-					SearchStartPoint = null;
+				if ( entryTable == searchStartPoint )
+					searchStartPoint = null;
 			}
 			else
 			{
-				if ( StringSearch.Compare( EntryTable.Identifier.ToString(), SearchString, WholeWord, CaseSensitive ) )
-					return EntryTable;
+				if ( StringSearch.Compare( entryTable.Identifier.ToString(), searchString, wholeWord, caseSensitive ) )
+					return entryTable;
 			}
 
-			for ( Int32 i = (Direction == SearchDirection.Backward) ? (EntryTable.Entries.Count - 1) : 0;
-				  i >= 0 && i < EntryTable.Entries.Count;
-				  i += (Direction == SearchDirection.Backward) ? -1 : 1 )
+			for ( Int32 i = (direction == SearchDirection.Backward) ? (entryTable.Entries.Count - 1) : 0;
+				  i >= 0 && i < entryTable.Entries.Count;
+				  i += (direction == SearchDirection.Backward) ? -1 : 1 )
 			{
-				SWB2DatabaseFile.Entry Entry = EntryTable.Entries[i];
+				SWB2DatabaseFile.Entry entry = entryTable.Entries[i];
 
-				if ( SearchStartPoint != null )
+				if ( searchStartPoint != null )
 				{
 					// if we haven't found the search start point, ignore all entries
-					if ( Entry == SearchStartPoint )
-						SearchStartPoint = null;
+					if ( entry == searchStartPoint )
+						searchStartPoint = null;
 				}
 				else
 				{
-					if ( StringSearch.Compare( Entry.Key.ToString(), SearchString, WholeWord, CaseSensitive ) )
-						return Entry;
+					if ( StringSearch.Compare( entry.Key.ToString(), searchString, wholeWord, caseSensitive ) )
+						return entry;
 				}
 
-				if ( Entry.ValueType == SWB2DatabaseFile.EntryValueType.TYPE_ENTRY_TABLE )
+				if ( entry.ValueType == SWB2DatabaseFile.EntryValueType.TYPE_ENTRY_TABLE )
 				{
-					SWB2DatabaseFile.EntryTable Value = Entry.Value as SWB2DatabaseFile.EntryTable;
-					object? Result = RecursiveFindSWB2Entry( Value, ref SearchStartPoint, Direction, SearchString, WholeWord, CaseSensitive );
-					if ( Result != null )
-						return Result;
+					SWB2DatabaseFile.EntryTable value = entry.Value as SWB2DatabaseFile.EntryTable;
+					object? result = RecursiveFindSWB2Entry( value, ref searchStartPoint, direction, searchString, wholeWord, caseSensitive );
+					if ( result != null )
+						return result;
 				}
 			}
 
 			return null;
 		}
 
-		private TreeNode FindAndExpandTreeNodeForEntry( TreeNodeCollection Nodes, object Entry )
+		private TreeNode FindAndExpandTreeNodeForEntry( TreeNodeCollection nodes, object entry )
 		{
 			// expand our parent first, because we won't exist until the parent gets expanded!
-			SWB2DatabaseFile.EntryTable? ParentTable;
-			if ( Entry is SWB2DatabaseFile.EntryTable EntryTable )
-				ParentTable = EntryTable.ParentTable;
+			SWB2DatabaseFile.EntryTable? parentTable;
+			if ( entry is SWB2DatabaseFile.EntryTable entryTable )
+				parentTable = entryTable.ParentTable;
 			else
-				ParentTable = (Entry as SWB2DatabaseFile.Entry).ParentTable;
+				parentTable = (entry as SWB2DatabaseFile.Entry).ParentTable;
 
-			if ( ParentTable != null )
+			if ( parentTable != null )
 			{
-				TreeNode ParentNode = FindAndExpandTreeNodeForEntry( Nodes, ParentTable );
+				TreeNode parentNode = FindAndExpandTreeNodeForEntry( nodes, parentTable );
 				// if this asserts, then either this logic is seriously flawed (it wasn't when I wrote it)
 				// or we ended up in a scenario where recursion did not expand a parent of our parent so we ended up without one...
-				Debug.Assert( ParentNode != null );
-				ParentNode.Expand();
-				Nodes = ParentNode.Nodes; // no need to look through the root if we already know where we reside...
+				Debug.Assert( parentNode != null );
+				parentNode.Expand();
+				nodes = parentNode.Nodes; // no need to look through the root if we already know where we reside...
 			}
 
-			foreach ( TreeNode Node in Nodes )
+			foreach ( TreeNode node in nodes )
 			{
-				if ( Node.Tag == Entry )
-					return Node;
+				if ( node.Tag == entry )
+					return node;
 			}
 
 			// we should NEVER end up here!

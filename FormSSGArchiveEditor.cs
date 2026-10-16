@@ -7,7 +7,8 @@ namespace ORCToolKit
 	public partial class FormSSGArchiveEditor: FormEditor
 	{
 		private FileTypes.SSGArchiveFile _file = new FileTypes.SSGArchiveFile();
-		private Int32 LastOpenedSection = -1;
+		private Int32 _lastOpenedSection = -1;
+
 		override protected FileTypes.IFileType? CurrentFile { get { return _file; } }
 		override protected string FileDialogFilter { get { return "SSG Archives (*.ssg)|*.ssg"; } }
 
@@ -50,7 +51,7 @@ namespace ORCToolKit
 			}
 		}
 
-		private void FormSSGArchiveEditor_Shown( Object? sender, EventArgs e )
+		private void FormSSGArchiveEditor_Shown( object? sender, EventArgs e )
 		{
 			// keep in sync with FormSSGArchiveEditor_OnEntriesUpdated
 			MenuStripItemFileSave.Enabled = false;
@@ -60,25 +61,25 @@ namespace ORCToolKit
 			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.DataSections.Count );
 		}
 
-		private void FormSSGArchiveEditor_OnNewFile( Object? sender, EventArgs e )
+		private void FormSSGArchiveEditor_OnNewFile( object? sender, EventArgs e )
 		{
-			LastOpenedSection = -1;
+			_lastOpenedSection = -1;
 			FilesListView.Items.Clear();
 		}
 
 		private void FormSSGArchiveEditor_OnOpenFile( object? sender, EventArgs e )
 		{
-			LastOpenedSection = -1;
+			_lastOpenedSection = -1;
 			FilesListView.Items.Clear();
-			foreach ( FileTypes.SSGArchiveFile.DataSection DataSection in _file.DataSections )
+			foreach ( FileTypes.SSGArchiveFile.DataSection dataSection in _file.DataSections )
 			{
-				ListViewItem ListItem = new ListViewItem();
-				ListItem.Text = DataSection.Name;
-				string[] SubItemsRow = { DataSection.Type.ToString(),
-										 string.Format( Resources.ORCToolKit.SizeInBytes, DataSection.RawData.Length ),
-										 DataSection.IsCompressed ? Resources.ORCToolKit.Yes : Resources.ORCToolKit.No };
-				ListItem.SubItems.AddRange( SubItemsRow );
-				FilesListView.Items.Add( ListItem );
+				ListViewItem listItem = new ListViewItem();
+				listItem.Text = dataSection.Name;
+				string[] subItemsRow = { dataSection.Type.ToString(),
+										 string.Format( Resources.ORCToolKit.SizeInBytes, dataSection.RawData.Length ),
+										 dataSection.IsCompressed ? Resources.ORCToolKit.Yes : Resources.ORCToolKit.No };
+				listItem.SubItems.AddRange( subItemsRow );
+				FilesListView.Items.Add( listItem );
 			}
 		}
 
@@ -92,24 +93,24 @@ namespace ORCToolKit
 			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.DataSections.Count );
 		}
 
-		override protected bool TrySearch( SearchDirection Direction, string SearchString, bool WholeWord, bool CaseSensitive )
+		override protected bool TrySearch( SearchDirection direction, string searchString, bool wholeWord, bool caseSensitive )
 		{
 			MenuStripItemEditSearchForward.Enabled = true;
 			MenuStripItemEditSearchBackward.Enabled = true;
 
-			switch ( Direction )
+			switch ( direction )
 			{
 				case SearchDirection.Forward:
 				{
 					for ( int i = FilesListView.SelectedIndices.Count != 0 ? FilesListView.SelectedIndices[FilesListView.SelectedItems.Count - 1] + 1 : 0;
 						i < _file.DataSections.Count; i++ )
 					{
-						if ( StringSearch.Compare( _file.DataSections[i].Name, SearchString, WholeWord, CaseSensitive ) )
+						if ( StringSearch.Compare( _file.DataSections[i].Name, searchString, wholeWord, caseSensitive ) )
 						{
-							foreach ( ListViewItem Item in FilesListView.Items )
+							foreach ( ListViewItem item in FilesListView.Items )
 							{
-								Item.Focused = (Item.Index == i);
-								Item.Selected = (Item.Index == i);
+								item.Focused = (item.Index == i);
+								item.Selected = (item.Index == i);
 							}
 							return true;
 						}
@@ -122,12 +123,12 @@ namespace ORCToolKit
 					for ( int i = FilesListView.SelectedIndices.Count != 0 ? FilesListView.SelectedIndices[0] - 1 : _file.DataSections.Count - 1;
 						i >= 0; i-- )
 					{
-						if ( StringSearch.Compare( _file.DataSections[i].Name, SearchString, WholeWord, CaseSensitive ) )
+						if ( StringSearch.Compare( _file.DataSections[i].Name, searchString, wholeWord, caseSensitive ) )
 						{
-							foreach ( ListViewItem Item in FilesListView.Items )
+							foreach ( ListViewItem item in FilesListView.Items )
 							{
-								Item.Focused = (Item.Index == i);
-								Item.Selected = (Item.Index == i);
+								item.Focused = (item.Index == i);
+								item.Selected = (item.Index == i);
 							}
 							return true;
 						}
@@ -140,25 +141,25 @@ namespace ORCToolKit
 			return false;
 		}
 
-		override protected void SaveChild( FileTypes.IFileType? File )
+		override protected void SaveChild( FileTypes.IFileType? file )
 		{
-			if ( File == null )
+			if ( file == null )
 				return;
 
-			Debug.Assert( LastOpenedSection != -1 );
-			if ( LastOpenedSection != -1 )
+			Debug.Assert( _lastOpenedSection != -1 );
+			if ( _lastOpenedSection != -1 )
 			{
 				// TODO: swap RawData for a memory stream to save directly into it, without a middleman stream
-				using ( MemoryStream FileStream = new MemoryStream() )
+				using ( MemoryStream fileStream = new MemoryStream() )
 				{
-					File.SaveToBuffer( FileStream );
+					file.SaveToBuffer( fileStream );
 
-					_file.DataSections[LastOpenedSection].RawData = FileStream.ToArray();
-					FilesListView.Items[LastOpenedSection].SubItems[2].Text = FileStream.Length.ToString(); // cursed
+					_file.DataSections[_lastOpenedSection].RawData = fileStream.ToArray();
+					FilesListView.Items[_lastOpenedSection].SubItems[2].Text = fileStream.Length.ToString(); // cursed
 					MessageBox.Show( Resources.ORCToolKit.FileSSGArchiveEmbeddedSaveText, Resources.ORCToolKit.FileSSGArchiveEmbeddedSaveTitle, MessageBoxButtons.OK, MessageBoxIcon.Information );
 				}
 			}
-			base.SaveChild( File );
+			base.SaveChild( file );
 		}
 
 		private void MenuStripItemFileNew_Click( object sender, EventArgs e )
@@ -200,27 +201,27 @@ namespace ORCToolKit
 		{
 			if ( FilesListView.SelectedIndices.Count > 0 )
 			{
-				LastOpenedSection = FilesListView.SelectedIndices[0];
-				using ( MemoryStream FileStream = new MemoryStream( _file.DataSections[LastOpenedSection].RawData ) )
+				_lastOpenedSection = FilesListView.SelectedIndices[0];
+				using ( MemoryStream fileStream = new MemoryStream( _file.DataSections[_lastOpenedSection].RawData ) )
 				{
-					FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[LastOpenedSection].Name, FileStream, this );
+					FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[_lastOpenedSection].Name, fileStream, this );
 				}
 			}
 		}
 
 		private void FilesListView_MouseClick( object sender, MouseEventArgs e )
 		{
-			ListView FilesList = (ListView)sender;
+			ListView filesList = (ListView)sender;
 
 			switch ( e.Button )
 			{
 				case MouseButtons.Right:
 				{
-					if ( FilesList.SelectedIndices.Count > 0 )
+					if ( filesList.SelectedIndices.Count > 0 )
 					{
 						// open context menu
-						FilesListViewContextMenu.Tag = FilesList.SelectedItems;
-						FilesListViewContextMenu.Show( FilesList, e.Location );
+						FilesListViewContextMenu.Tag = filesList.SelectedItems;
+						FilesListViewContextMenu.Show( filesList, e.Location );
 					}
 
 					break;
@@ -232,33 +233,33 @@ namespace ORCToolKit
 		{
 			if ( e.Label != null )
 			{
-				foreach ( ListViewItem Item in FilesListView.SelectedItems )
+				foreach ( ListViewItem item in FilesListView.SelectedItems )
 				{
-					_file.DataSections[Item.Index].Name = e.Label;
-					Item.Text = e.Label;
+					_file.DataSections[item.Index].Name = e.Label;
+					item.Text = e.Label;
 				}
 			}
 		}
 
 		private void FilesListView_KeyDown( object sender, KeyEventArgs e )
 		{
-			ListView FilesList = (ListView)sender;
+			ListView filesList = (ListView)sender;
 			switch ( e.KeyData )
 			{
 				case Keys.F2:
 				{
-					if ( FilesList.SelectedItems.Count > 0 )
-						FilesList.SelectedItems[0].BeginEdit();
+					if ( filesList.SelectedItems.Count > 0 )
+						filesList.SelectedItems[0].BeginEdit();
 					break;
 				}
 				case Keys.Enter:
 				{
-					if ( FilesList.SelectedItems.Count > 0 )
+					if ( filesList.SelectedItems.Count > 0 )
 					{
-						LastOpenedSection = FilesList.SelectedItems[0].Index;
-						using ( MemoryStream FileStream = new MemoryStream( _file.DataSections[LastOpenedSection].RawData, false ) )
+						_lastOpenedSection = filesList.SelectedItems[0].Index;
+						using ( MemoryStream fileStream = new MemoryStream( _file.DataSections[_lastOpenedSection].RawData, false ) )
 						{
-							FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[LastOpenedSection].Name, FileStream, this );
+							FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[_lastOpenedSection].Name, fileStream, this );
 						}
 					}
 					break;
@@ -268,57 +269,57 @@ namespace ORCToolKit
 
 		private void FilesListViewContextMenuItemOpen_Click( object sender, EventArgs e )
 		{
-			ListView.SelectedListViewItemCollection? SelectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
-			if ( SelectedItems == null )
+			ListView.SelectedListViewItemCollection? selectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
+			if ( selectedItems == null )
 				return;
 
-			if ( SelectedItems.Count > 0 )
+			if ( selectedItems.Count > 0 )
 			{
-				LastOpenedSection = SelectedItems[0].Index;
-				using ( MemoryStream FileStream = new MemoryStream( _file.DataSections[LastOpenedSection].RawData, false ) )
+				_lastOpenedSection = selectedItems[0].Index;
+				using ( MemoryStream fileStream = new MemoryStream( _file.DataSections[_lastOpenedSection].RawData, false ) )
 				{
-					FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[LastOpenedSection].Name, FileStream, this );
+					FileTypes.TypeDeducer.GuessFromBufferAndOpen( _file.DataSections[_lastOpenedSection].Name, fileStream, this );
 				}
 			}
 		}
 
 		private void FilesListViewContextMenuItemExtract_Click( object sender, EventArgs e )
 		{
-			ListView.SelectedListViewItemCollection? SelectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
-			if ( SelectedItems == null )
+			ListView.SelectedListViewItemCollection? selectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
+			if ( selectedItems == null )
 				return;
 
-			if ( SelectedItems.Count == 1 )
+			if ( selectedItems.Count == 1 )
 			{
-				using ( SaveFileDialog FileDialog = new SaveFileDialog() )
+				using ( SaveFileDialog fileDialog = new SaveFileDialog() )
 				{
-					FileDialog.FileName = Path.GetFileName( _file.DataSections[SelectedItems[0].Index].Name );
-					FileDialog.RestoreDirectory = true;
-					if ( FileDialog.ShowDialog() == DialogResult.OK )
+					fileDialog.FileName = Path.GetFileName( _file.DataSections[selectedItems[0].Index].Name );
+					fileDialog.RestoreDirectory = true;
+					if ( fileDialog.ShowDialog() == DialogResult.OK )
 					{
-						using ( FileStream File = new FileStream( FileDialog.FileName, FileMode.Create, FileAccess.Write ) )
+						using ( FileStream file = new FileStream( fileDialog.FileName, FileMode.Create, FileAccess.Write ) )
 						{
-							File.Write( _file.DataSections[SelectedItems[0].Index].RawData );
+							file.Write( _file.DataSections[selectedItems[0].Index].RawData );
 						}
 					}
 				}
 			}
-			else if ( SelectedItems.Count > 1 )
+			else if ( selectedItems.Count > 1 )
 			{
-				using ( FolderBrowserDialog FolderDialog = new FolderBrowserDialog() )
+				using ( FolderBrowserDialog folderDialog = new FolderBrowserDialog() )
 				{
-					if ( FolderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace( FolderDialog.SelectedPath ) )
+					if ( folderDialog.ShowDialog() == DialogResult.OK && !string.IsNullOrWhiteSpace( folderDialog.SelectedPath ) )
 					{
-						foreach ( ListViewItem SelectedItem in SelectedItems )
+						foreach ( ListViewItem selectedItem in selectedItems )
 						{
-							string FilePath = FolderDialog.SelectedPath + "\\" + _file.DataSections[SelectedItem.Index].Name;
-							DirectoryInfo FileDirectory = new DirectoryInfo( Path.GetDirectoryName( FilePath ) );
-							if ( !FileDirectory.Exists )
-								FileDirectory.Create();
+							string filePath = folderDialog.SelectedPath + "\\" + _file.DataSections[selectedItem.Index].Name;
+							DirectoryInfo fileDirectory = new DirectoryInfo( Path.GetDirectoryName( filePath ) );
+							if ( !fileDirectory.Exists )
+								fileDirectory.Create();
 
-							using ( FileStream File = new FileStream( FilePath.NormalizeSlashes(), FileMode.Create, FileAccess.Write ) )
+							using ( FileStream file = new FileStream( filePath.NormalizeSlashes(), FileMode.Create, FileAccess.Write ) )
 							{
-								File.Write( _file.DataSections[SelectedItem.Index].RawData );
+								file.Write( _file.DataSections[selectedItem.Index].RawData );
 							}
 						}
 					}
@@ -328,31 +329,31 @@ namespace ORCToolKit
 
 		private void FilesListViewContextMenuItemReplace_Click( object sender, EventArgs e )
 		{
-			ListView.SelectedListViewItemCollection? SelectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
-			if ( SelectedItems == null )
+			ListView.SelectedListViewItemCollection? selectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
+			if ( selectedItems == null )
 				return;
 
-			if ( SelectedItems.Count > 0 )
+			if ( selectedItems.Count > 0 )
 			{
-				using ( OpenFileDialog FileDialog = new OpenFileDialog() )
+				using ( OpenFileDialog fileDialog = new OpenFileDialog() )
 				{
-					FileDialog.RestoreDirectory = true;
-					FileDialog.Multiselect = false;
-					if ( FileDialog.ShowDialog() == DialogResult.OK )
+					fileDialog.RestoreDirectory = true;
+					fileDialog.Multiselect = false;
+					if ( fileDialog.ShowDialog() == DialogResult.OK )
 					{
-						byte[] FileData = Array.Empty<byte>();
-						using ( FileStream File = new FileStream( FileDialog.FileName, FileMode.Open, FileAccess.Read ) )
+						byte[] fileData = Array.Empty<byte>();
+						using ( FileStream file = new FileStream( fileDialog.FileName, FileMode.Open, FileAccess.Read ) )
 						{
-							using ( BinaryReader Reader = new BinaryReader( File ) )
+							using ( BinaryReader reader = new BinaryReader( file ) )
 							{
-								FileData = Reader.ReadBytes( Convert.ToInt32( File.Length ) );
+								fileData = reader.ReadBytes( Convert.ToInt32( file.Length ) );
 							}
 						}
 
-						foreach ( ListViewItem SelectedItem in SelectedItems )
+						foreach ( ListViewItem selectedItem in selectedItems )
 						{
-							_file.DataSections[SelectedItem.Index].RawData = FileData;
-							SelectedItem.SubItems[2].Text = FileData.Length.ToString(); // cursed
+							_file.DataSections[selectedItem.Index].RawData = fileData;
+							selectedItem.SubItems[2].Text = fileData.Length.ToString(); // cursed
 						}
 					}
 				}
@@ -361,24 +362,24 @@ namespace ORCToolKit
 
 		private void FilesListViewContextMenuItemRename_Click( object sender, EventArgs e )
 		{
-			ListView.SelectedListViewItemCollection? SelectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
-			if ( SelectedItems == null )
+			ListView.SelectedListViewItemCollection? selectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
+			if ( selectedItems == null )
 				return;
 
-			if ( SelectedItems.Count > 0 )
-				FilesListView.Items[SelectedItems[0].Index].BeginEdit();
+			if ( selectedItems.Count > 0 )
+				FilesListView.Items[selectedItems[0].Index].BeginEdit();
 		}
 
 		private void FilesListViewContextMenuItemDelete_Click( object sender, EventArgs e )
 		{
-			ListView.SelectedListViewItemCollection? SelectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
-			if ( SelectedItems == null )
+			ListView.SelectedListViewItemCollection? selectedItems = FilesListViewContextMenu.Tag as ListView.SelectedListViewItemCollection;
+			if ( selectedItems == null )
 				return;
 
-			foreach ( ListViewItem SelectedItem in SelectedItems )
+			foreach ( ListViewItem selectedItem in selectedItems )
 			{
-				_file.DataSections.RemoveAt( SelectedItem.Index );
-				FilesListView.Items.RemoveAt( SelectedItem.Index );
+				_file.DataSections.RemoveAt( selectedItem.Index );
+				FilesListView.Items.RemoveAt( selectedItem.Index );
 			}
 			EntriesUpdated();
 		}
