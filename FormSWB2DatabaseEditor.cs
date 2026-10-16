@@ -18,6 +18,7 @@ namespace ORCToolKit
 			Shown += FormSWB2DatabaseEditor_Shown;
 			OnNewFile += FormSWB2DatabaseEditor_OnNewFile;
 			OnOpenFile += FormSWB2DatabaseEditor_OnOpenFile;
+			OnSaveFile += FormSWB2DatabaseEditor_OnSaveFile;
 			OnEntriesUpdated += FormSWB2DatabaseEditor_OnEntriesUpdated;
 #if DEBUG // for hashcat
 			EntryTreeView.NodeMouseClick += EntryTreeView_NodeMouseClick1;
@@ -111,6 +112,11 @@ namespace ORCToolKit
 		private void FormSWB2DatabaseEditor_OnOpenFile( object? sender, EventArgs e )
 		{
 			EntryTreeView.LoadSWB2File( _file );
+		}
+
+		private void FormSWB2DatabaseEditor_OnSaveFile( Object? sender, EventArgs e )
+		{
+			MenuStripItemFileSave.Enabled = false;
 		}
 
 		private void FormSWB2DatabaseEditor_OnEntriesUpdated( object? sender, EntriesUpdatedEventArgs e )

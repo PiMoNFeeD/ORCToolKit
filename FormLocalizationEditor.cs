@@ -15,6 +15,7 @@ namespace ORCToolKit
 			LocalizeComponent();
 
 			Shown += FormLocalizationEditor_Shown;
+			OnSaveFile += FormLocalizationEditor_OnSaveFile;
 			OnEntriesUpdated += FormLocalizationEditor_OnEntriesUpdated;
 			TextEntriesGridView.DataSource = _file.TextEntries;
 		}
@@ -51,6 +52,11 @@ namespace ORCToolKit
 			MenuStripItemEditSearchForward.Enabled = (_file.TextEntries.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
 			MenuStripItemEditSearchBackward.Enabled = (_file.TextEntries.Count > 0) && !string.IsNullOrEmpty( LastSearchString );
 			StatusStripEntriesLabel.Text = string.Format( Resources.ORCToolKit.NumberOfEntries, _file.TextEntries.Count );
+		}
+
+		private void FormLocalizationEditor_OnSaveFile( Object? sender, EventArgs e )
+		{
+			MenuStripItemFileSave.Enabled = false;
 		}
 
 		private void FormLocalizationEditor_OnEntriesUpdated( object? sender, EntriesUpdatedEventArgs e )

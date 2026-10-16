@@ -20,6 +20,7 @@ namespace ORCToolKit
 			Shown += FormSSGArchiveEditor_Shown;
 			OnNewFile += FormSSGArchiveEditor_OnNewFile;
 			OnOpenFile += FormSSGArchiveEditor_OnOpenFile;
+			OnSaveFile += FormSSGArchiveEditor_OnSaveFile;
 			OnEntriesUpdated += FormSSGArchiveEditor_OnEntriesUpdated;
 		}
 
@@ -81,6 +82,11 @@ namespace ORCToolKit
 				listItem.SubItems.AddRange( subItemsRow );
 				FilesListView.Items.Add( listItem );
 			}
+		}
+
+		private void FormSSGArchiveEditor_OnSaveFile( Object? sender, EventArgs e )
+		{
+			MenuStripItemFileSave.Enabled = false;
 		}
 
 		private void FormSSGArchiveEditor_OnEntriesUpdated( object? sender, EntriesUpdatedEventArgs e )
