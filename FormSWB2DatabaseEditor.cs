@@ -1,8 +1,7 @@
 ﻿using ORCToolKit.FileTypes;
 using ORCToolKit.Search;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Xml.Linq;
+using static ORCToolKit.FileTypes.SWB2DatabaseFile;
 
 namespace ORCToolKit
 {
@@ -21,7 +20,56 @@ namespace ORCToolKit
 			OnNewFile += FormSWB2DatabaseEditor_OnNewFile;
 			OnOpenFile += FormSWB2DatabaseEditor_OnOpenFile;
 			OnEntriesUpdated += FormSWB2DatabaseEditor_OnEntriesUpdated;
+#if DEBUG // for hashcat
+			EntryTreeView.NodeMouseClick += EntryTreeView_NodeMouseClick1;
+#endif
 		}
+
+#if DEBUG // for hashcat
+		private void RecurseEntryTable( ref string Result, SWB2DatabaseFile.EntryTable EntryTable )
+		{
+			if ( CRC32StringMap.FindString( EntryTable.Identifier ) == null )
+			{
+				Result += (~(UInt32)EntryTable.Identifier).ToString( "X8" );
+				Result += '\n';
+			}
+			foreach ( SWB2DatabaseFile.Entry Entry in EntryTable.Entries )
+			{
+				if ( CRC32StringMap.FindString( Entry.Key ) == null )
+				{
+					Result += (~(UInt32)Entry.Key).ToString( "X8" );
+					Result += '\n';
+				}
+				if ( Entry.ValueType == EntryValueType.TYPE_STRING_HASH )
+				{
+					CRC32[] Values = Entry.Value as CRC32[];
+					foreach ( CRC32 Value in Values )
+					{
+						if ( CRC32StringMap.FindString( Value ) == null )
+						{
+							Result += (~(UInt32)Value).ToString( "X8" );
+							Result += '\n';
+						}
+					}
+				}
+				else if ( Entry.ValueType == EntryValueType.TYPE_ENTRY_TABLE )
+				{
+					RecurseEntryTable( ref Result, Entry.Value as SWB2DatabaseFile.EntryTable );
+				}
+			}
+		}
+
+		private void EntryTreeView_NodeMouseClick1( Object? sender, TreeNodeMouseClickEventArgs e )
+		{
+			if ( e.Button == MouseButtons.Right )
+			{
+				string Result = string.Empty;
+				foreach ( SWB2DatabaseFile.EntryTable EntryTable in _file.EntryTables )
+					RecurseEntryTable ( ref Result, EntryTable );
+				Clipboard.SetText( Result );
+			}
+		}
+#endif
 
 		public override LocalizedControl[] LocalizedControls
 		{

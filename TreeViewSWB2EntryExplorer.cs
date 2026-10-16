@@ -9,41 +9,6 @@ namespace ORCToolKit
 		public TreeViewSWB2EntryExplorer()
 		{
 			BeforeExpand += TreeViewSWB2EntryExplorer_BeforeExpand;
-			NodeMouseClick += TreeViewSWB2EntryExplorer_NodeMouseClick;
-		}
-
-		private void TreeViewSWB2EntryExplorer_NodeMouseClick( Object? sender, TreeNodeMouseClickEventArgs e )
-		{
-#if DEBUG // for hashcat
-			if ( e.Button == MouseButtons.Right )
-			{
-				if ( e.Node.Tag is SWB2DatabaseFile.EntryTable EntryTable )
-				{
-					string Result = string.Empty;
-					Result += (~(UInt32)EntryTable.Identifier).ToString( "X8" );
-					Result += '\n';
-					foreach ( SWB2DatabaseFile.Entry Entry in EntryTable.Entries )
-					{
-						Result += (~(UInt32)Entry.Key).ToString( "X8" );
-						Result += '\n';
-						if ( Entry.ValueType == EntryValueType.TYPE_STRING_HASH )
-						{
-							CRC32[] Values = Entry.Value as CRC32[];
-							foreach ( CRC32 Value in Values )
-							{
-								Result += (~(UInt32)Value).ToString( "X8" );
-								Result += '\n';
-							}
-						}
-					}
-					Clipboard.SetText( Result );
-				}
-				else if ( e.Node.Tag is SWB2DatabaseFile.Entry Entry )
-				{
-					Clipboard.SetText( (~(UInt32)Entry.Key).ToString( "X8" ) );
-				}
-			}
-#endif
 		}
 
 		public void LoadSWB2File( SWB2DatabaseFile File )
