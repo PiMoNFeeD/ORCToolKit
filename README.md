@@ -11,7 +11,7 @@ Consider this a future roadmap:
 | Editing compressed SSG archives (i.e. texture and model archives)                       | ✔️ | ❌ (unknown compression) | ✔️ | ❌ |
 | Editing SSG archives that are both compressed and uncompressed (i.e. cutscene archives) | ✔️ | ❌ (unknown compression) | ❌ | ❌ |
 | Localization editing                                                                    | ✔️ | ✔️ | ❌ | ❌ |
-| SWB2 database editing (things like character stats or mission scripts)                  | ✔️ | ✔️ | ❌ | ❌ |
+| SWB2 database editing (things like character stats or level layouts)                    | ✔️ | ✔️ | ❌ | ❌ |
 | Model viewer                                                                            | ❌ | ❌ | ✔️ (see below) | ❓ |
 | Animation viewer                                                                        | ❌ | ❌ | ✔️ (see below) | ❓ |
 
