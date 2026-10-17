@@ -55,6 +55,12 @@ namespace ORCToolKit
 			}
 		}
 
+		private void FormSearch_KeyDown( object sender, KeyEventArgs e )
+		{
+			if ( e.KeyCode == Keys.Escape )
+				Hide();
+		}
+
 		private void SearchBackwardButton_Click( object sender, EventArgs e )
 		{
 			InvokeSearch( SearchDirection.Backward );
@@ -65,11 +71,11 @@ namespace ORCToolKit
 			InvokeSearch( SearchDirection.Forward );
 		}
 
-		private void SearchTextBox_KeyPress( object sender, KeyPressEventArgs e )
+		private void SearchTextBox_KeyDown( object sender, KeyEventArgs e )
 		{
-			if ( e.KeyChar == (char)Keys.Enter )
+			if ( e.KeyCode == Keys.Enter )
 			{
-				if ( Control.ModifierKeys == Keys.Shift )
+				if ( e.Shift )
 					InvokeSearch( SearchDirection.Backward );
 				else
 					InvokeSearch( SearchDirection.Forward );

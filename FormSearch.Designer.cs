@@ -42,7 +42,7 @@
 			SearchTextBox.Name = "SearchTextBox";
 			SearchTextBox.Size = new Size( 260, 23 );
 			SearchTextBox.TabIndex = 0;
-			SearchTextBox.KeyPress += SearchTextBox_KeyPress;
+			SearchTextBox.KeyDown += SearchTextBox_KeyDown;
 			// 
 			// SearchLabel
 			// 
@@ -105,6 +105,7 @@
 			Controls.Add( SearchLabel );
 			Controls.Add( SearchTextBox );
 			FormBorderStyle = FormBorderStyle.FixedDialog;
+			KeyPreview = true;
 			Margin = new Padding( 4, 3, 4, 3 );
 			MaximizeBox = false;
 			MinimizeBox = false;
@@ -116,6 +117,7 @@
 			TopMost = true;
 			FormClosing += FormSearch_FormClosing;
 			VisibleChanged += FormSearch_VisibleChanged;
+			KeyDown += FormSearch_KeyDown;
 			ResumeLayout( false );
 			PerformLayout();
 		}
