@@ -384,7 +384,11 @@ namespace ORCToolKit
 				else
 				{
 					if ( StringSearch.Compare( entry.Key.ToString(), searchString, wholeWord, caseSensitive ) )
+					{
+						if ( entry.ValueType == SWB2DatabaseFile.EntryValueType.TYPE_ENTRY_TABLE )
+							return entry.Value;
 						return entry;
+					}
 				}
 
 				if ( entry.ValueType == SWB2DatabaseFile.EntryValueType.TYPE_ENTRY_TABLE )
