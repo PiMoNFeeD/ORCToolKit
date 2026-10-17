@@ -389,6 +389,28 @@ namespace ORCToolKit
 							return entry.Value;
 						return entry;
 					}
+
+					// compare values too
+					switch ( entry.ValueType )
+					{
+						case SWB2DatabaseFile.EntryValueType.TYPE_INT32_STORED:
+						case SWB2DatabaseFile.EntryValueType.TYPE_FLOAT_STORED:
+						case SWB2DatabaseFile.EntryValueType.TYPE_STRING:
+						case SWB2DatabaseFile.EntryValueType.TYPE_STRING_HASH:
+						{
+							Array values = entry.Value as Array;
+							for ( Int32 j = 0; j < values.Length; j++ )
+							{
+								if ( StringSearch.Compare( values.GetValue( j ).ToString(), searchString, wholeWord, caseSensitive ) )
+								{
+									if ( entry.ValueType == SWB2DatabaseFile.EntryValueType.TYPE_ENTRY_TABLE )
+										return entry.Value;
+									return entry;
+								}
+							}
+							break;
+						}
+					}
 				}
 
 				if ( entry.ValueType == SWB2DatabaseFile.EntryValueType.TYPE_ENTRY_TABLE )
