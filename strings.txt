@@ -28,6 +28,7 @@ BlastMaster
 BodyArmor
 BombAttachment
 BombAttachmentList
+BrutalKillAbility
 BrutalKillWeapon
 BulletHitEffect
 BurnRate
@@ -89,6 +90,7 @@ FadeStart
 FadeStartDelay
 Female
 File
+FirstAidProficiency
 FlammableBone
 FlammableLayout
 FlinchingWeight
@@ -98,6 +100,8 @@ GVirus
 GVirusCase
 Generic
 GravityPull
+GravityResistance
+GunsABlazin
 Health
 Hips
 HitEffect
@@ -113,6 +117,7 @@ IgniteBullets
 IgniteExplosion
 IgniteFire
 IgniteIncendiary
+IgnitionTime
 ImpactEffect
 IncendiaryRounds
 InduceInfection
@@ -144,6 +149,7 @@ Length
 LevelChunk
 LevelScript
 Licker
+LockerSlot
 MaxDistance
 MaxEffects
 MeterSize
@@ -153,11 +159,14 @@ Mimicry_Level1
 Mine
 MineAbility
 MineObject
+MinimapScan
 MissionProgressionMarker
 Model
+MorphineShot
 MotionDetector
 MusicGroup
 MusicWeight
+MuzzleFlash
 NISObject
 NIS_01_1_Door
 NIS_01_1_Hunk
@@ -166,6 +175,7 @@ NPCSpawn
 NPCSpawnZone
 Nemesis
 NeutralizeInfection
+NumActivations
 ObjectSpawner
 Open
 Opening
@@ -180,10 +190,10 @@ PointB
 PrimaryWeapon
 Project
 ProximityDetector
+QuickReload
 Radius
 Ragdoll
 Range
-RecoilSeveralty
 RenderVolumeObject
 RumbleGenerator
 ScriptableCameraObject
@@ -296,6 +306,8 @@ effectScale
 effectiveBulletRange
 encumbrance
 endPoint
+environmentBased
+event_prop
 expiry
 explosionDamage
 explosionDamageScale
@@ -314,6 +326,7 @@ geometry
 glowEffect
 glowSettings
 group
+hashNum
 healthDecrement
 healthPercent
 hips
@@ -325,6 +338,7 @@ initialState
 interests
 isAttachable
 isLocked
+isStatic
 itemlocker_gunbox
 jaw_face
 jitter
@@ -338,6 +352,7 @@ leftmouthcorner_face
 linkedTo
 local
 locked
+loopedRumble
 makesSound
 maxBulletRange
 maxHealth
@@ -354,6 +369,7 @@ mover
 multiplier
 myBlocker
 myDoor
+myProp
 mySound
 name
 nameHash
@@ -372,6 +388,7 @@ onStart
 orientation
 passive
 pause
+physicsLayer
 pitchAngleMax
 pitchAngleMin
 playMode
