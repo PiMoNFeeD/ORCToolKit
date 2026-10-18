@@ -3,6 +3,8 @@ A C# tool that can do a bunch of stuff with Hexane Engine's Resident Evil: Opera
 
 Created to make modding RE:ORC easier, and improve my C# skills =) (this is the first big app I made on C#).
 
+<img alt="README_image_swb2_editor" src="https://raw.githubusercontent.com/PiMoNFeeD/ORCToolKit/refs/heads/main/Assets/README_image_swb2_editor.png" />
+
 # Capabilities
 Consider this a future roadmap:
 | Feature | ORCToolKit (PC files) | ORCToolKit (console files) | Other public tools (PC files) | Other public tools (console files)
