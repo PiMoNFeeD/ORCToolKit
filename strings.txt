@@ -50,12 +50,14 @@ ClassName
 ClassNameScript
 ClassPrimaryWeapons
 ClassSecondaryWeapons
+CleanUpEffect
 Closed
 ColoredDraining
 CommandGroup
 ControlAbility
 ControlDuration
 Cooldown
+CoreBoneName
 CostumeParent
 CoverData2
 CoverObject
@@ -81,6 +83,8 @@ Effect
 EffectGround
 EffectLight
 EffectObject
+EffectSpotIgnite
+EffectTravelTime
 EnvironmentSensor
 ExplosionJointName
 ExplosionOffset
@@ -99,7 +103,9 @@ File
 FireDamageMod
 FirstAidProficiency
 FlammableBone
+FlammableCharacterDefinition
 FlammableLayout
+FlammableSpotDefinition
 FlinchingWeight
 FlinchingWeightList
 Fuel
@@ -146,6 +152,7 @@ InteractiveObject
 InteractiveObjectSpawner
 InventoryAbility
 IsBoss
+IsSquadMate
 IsZombie
 ItemDetection
 ItemDrops
@@ -197,6 +204,7 @@ Opening
 Parasite
 PenetratingRounds
 PilotActiveEffect
+PilotInactiveEffect
 PlaceableCollisionVolume
 PlatformObject
 PlaySound
@@ -237,6 +245,7 @@ Stimpack
 StimpackAbility
 StoryCharacter
 SuperSoldier
+SupportMirror
 TacPoint
 TargetAlive
 TargetAlly
