@@ -166,8 +166,8 @@ namespace ORCToolKit
 				{
 					EntryTreeView.BeginUpdate();
 					TreeNode treeNode = FindAndExpandTreeNodeForEntry( EntryTreeView.Nodes, searchResult );
-					EntryTreeView.SelectedNode = treeNode;
 					EntryTreeView.EndUpdate();
+					EntryTreeView.SelectedNode = treeNode;
 					return true;
 				}
 			}
@@ -255,11 +255,11 @@ namespace ORCToolKit
 			SWB2DatabaseFile.Entry newEntry = new SWB2DatabaseFile.Entry( selectedTable );
 			selectedTable.Entries.Add( newEntry );
 
+			TreeNode? newNode = null;
 			if ( selectedNode.Nodes.Count > 0 && selectedNode.Nodes[0].Tag != null )
 			{
 				// if the child list has already been populated, then manually add a new node
-				TreeNode newNode = EntryTreeView.CreateEntryNode( newEntry, selectedNode.Nodes );
-				EntryTreeView.SelectedNode = newNode;
+				newNode = EntryTreeView.CreateEntryNode( newEntry, selectedNode.Nodes );
 			}
 			else
 			{
@@ -268,13 +268,11 @@ namespace ORCToolKit
 					selectedNode.Nodes.Add( new TreeNode() );
 				selectedNode.Expand();
 
-				TreeNode? newNode = FindTreeNodeForEntry( EntryTreeView.Nodes, newEntry );
+				newNode = FindTreeNodeForEntry( EntryTreeView.Nodes, newEntry );
 				Debug.Assert( newNode != null );
-				EntryTreeView.SelectedNode = newNode;
 			}
-			// TODO: it doesn't scroll to the new node?!?!?
-
 			EntryTreeView.EndUpdate();
+			EntryTreeView.SelectedNode = newNode;
 
 			EntriesUpdated();
 		}
